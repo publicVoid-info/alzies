@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { Link } from 'react-router-dom'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -7,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import SaveIcon from '@material-ui/icons/Save'
+import EditIcon from '@material-ui/icons/Edit'
 
 const useStyles = makeStyles(() => (
   {
@@ -16,20 +17,15 @@ const useStyles = makeStyles(() => (
       width: '440px',
       float: 'left'
     },
-    saveButton: {
-      marginLeft: 'auto'
-    }
   }
 ))
 
 
-export default function MemoryCard({ memory, onClickSave }) {
+export default function MemoryCard({ memory }) {
 
   const classes = useStyles()
 
   return (
-
-
     <Card className={classes.card} elevation={4} >
       <CardHeader title={memory.headline} autoCorrect="false" />
       <CardContent autoCorrect="false" >
@@ -38,8 +34,10 @@ export default function MemoryCard({ memory, onClickSave }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton className={classes.saveButton} onClick={() => onClickSave(memory)}>
-          <SaveIcon />
+        <IconButton className={classes.editButton}>
+          <Link to={`/memory/${memory.id}`}>
+            <EditIcon />
+          </Link>
         </IconButton>
       </CardActions>
     </Card >

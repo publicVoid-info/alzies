@@ -7,20 +7,14 @@ class MemoryList extends React.Component {
     constructor(props) {
         super(props)
 
-        this.db = getFirebase()
-
         this.state = {
             memoryList: []
         }
     }
 
-    componentDidMount() {
-        this.getMemoryFromFirebase()
-    }
+    getMemories() {
 
-    getMemoryFromFirebase = () => {
-
-        this.db.collection("memories")
+        getFirebase().collection('memories')
             .get()
             .then((qs) => {
                 const result = []
@@ -29,20 +23,23 @@ class MemoryList extends React.Component {
                         result.push({ id: doc.id, ...doc.data() })
                     }
                 )
+
                 this.setState({
                     memoryList: result
                 })
             })
     }
 
-    handleClickSave(memory) {
-        console.log(memory)
-    }
+    componentDidMount() {
+
+        this.getMemories()
+
+    }    
 
     render() {
         return (
             <div className="align-center">
-                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} onClickSave={this.handleClickSave} />)}
+                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
             </div>
         )
     }

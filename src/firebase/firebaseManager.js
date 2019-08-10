@@ -18,7 +18,7 @@ firebase.initializeApp({
 
 const db = firebase.firestore()
 
-function getFirebase() {
+function getFirebase(){
     return db
 }
 
