@@ -1,6 +1,7 @@
 import React from 'react'
+import { getFirebase } from '../../firebase/firebaseManager'
+
 import MemoryCard from './MemoryCard'
-import { getFirebase } from '../../firebase/FirebaseProvider'
 
 class MemoryList extends React.Component {
     constructor(props) {
@@ -21,9 +22,9 @@ class MemoryList extends React.Component {
 
         this.db.collection("memories")
             .get()
-            .then((querySnapshot) => {
+            .then((qs) => {
                 const result = []
-                querySnapshot.forEach(
+                qs.forEach(
                     (doc) => {
                         result.push({ id: doc.id, ...doc.data() })
                     }
@@ -34,11 +35,15 @@ class MemoryList extends React.Component {
             })
     }
 
+    handleClickSave(memory) {
+        console.log(memory)
+    }
+
     render() {
         return (
-            < React.Fragment >
-                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
-            </React.Fragment >
+            <div className="align-center">
+                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} onClickSave={this.handleClickSave} />)}
+            </div>
         )
     }
 }

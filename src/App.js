@@ -1,14 +1,34 @@
 import React from 'react'
-import Home from './components/home/Home'
+import { ThemeProvider } from '@material-ui/styles'
+import { createMuiTheme } from '@material-ui/core/styles'
+import Routes from './routes'
+import { deepOrange, blueGrey } from '@material-ui/core/colors'
+
+const theme = createMuiTheme({
+  palette: {
+    secondary: {
+      main: deepOrange[400]
+    },
+    primary: {
+      main: blueGrey[700]
+    }
+  },
+  typography: {
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '"Lato"',
+      'sans-serif'
+    ].join(',')
+  }
+});
 
 function App() {
 
   return (
-    <div className="App">
-      <React.Fragment>
-        <Home />
-      </React.Fragment>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Routes />
+    </ThemeProvider>
   )
 }
+
 export default App

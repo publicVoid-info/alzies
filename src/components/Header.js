@@ -1,43 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles'
+
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid'
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 
-const lightColor = 'rgba(255, 255, 255, 0.7)';
+const useStyles = makeStyles((theme) => (
+  {
 
-const styles = theme => ({
-  secondaryBar: {
-    zIndex: 0,
-  },
-  menuButton: {
-    marginLeft: -theme.spacing(1),
-  },
-  iconButtonAvatar: {
-    padding: 4,
-  },
-  link: {
-    textDecoration: 'none',
-    color: lightColor,
-    '&:hover': {
-      color: theme.palette.common.white,
-    },
-  },
-  button: {
-    borderColor: lightColor,
-  },
-});
+  }
+))
 
 function Header(props) {
-  const { classes } = props;
+
+  const classes = useStyles();
 
   return (
     <React.Fragment>
-      <AppBar color="primary" position="sticky" elevation={6}>
+      <AppBar position="sticky" elevation={6}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Grid item xs>
@@ -49,9 +32,8 @@ function Header(props) {
               <IconButton color="inherit" className={classes.iconButtonAvatar}>
                 <Avatar
                   className={classes.avatar}
-                  src="/static/images/avatar/1.jpg"
                   alt="My Avatar"
-                />
+                >R</Avatar>
               </IconButton>
             </Grid>
           </Grid>
@@ -61,8 +43,4 @@ function Header(props) {
   );
 }
 
-Header.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(Header);
+export default Header;
