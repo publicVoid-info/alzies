@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => (
   {
     card: {
       margin: '10px',
-      width: '440px',
+      minWidth: '300px',
       float: 'left'
     },
   }

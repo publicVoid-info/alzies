@@ -2,6 +2,7 @@ import React from 'react'
 import { getFirebase } from '../../firebase/firebaseManager'
 
 import MemoryCard from './MemoryCard'
+import Container from '@material-ui/core/Container'
 
 class MemoryList extends React.Component {
     constructor(props) {
@@ -15,8 +16,7 @@ class MemoryList extends React.Component {
     getMemories() {
 
         getFirebase().collection('memories')
-            .get()
-            .then((qs) => {
+            .onSnapshot((qs) => {
                 const result = []
                 qs.forEach(
                     (doc) => {
@@ -34,13 +34,15 @@ class MemoryList extends React.Component {
 
         this.getMemories()
 
-    }    
+    }
 
     render() {
         return (
-            <div className="align-center">
-                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
-            </div>
+            <Container fixed="true">
+                <div className="align-center">
+                    {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
+                </div>
+            </Container>
         )
     }
 }
