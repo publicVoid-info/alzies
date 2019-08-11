@@ -9,6 +9,7 @@ import CardActions from '@material-ui/core/CardActions'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import EditIcon from '@material-ui/icons/Edit'
+import Editor from '../quill/Editor'
 
 const useStyles = makeStyles(() => (
   {
@@ -23,14 +24,16 @@ const useStyles = makeStyles(() => (
 
 export default function MemoryCard({ memory }) {
 
-  const classes = useStyles()
+  const classes = useStyles()  
 
   return (
     <Card className={classes.card} elevation={4} >
       <CardHeader title={memory.headline} autoCorrect="false" />
       <CardContent autoCorrect="false" >
         <Typography variant="body2" color="textSecondary" component="p">
-          {memory.content}
+          <Editor
+            theme="bubble"            
+            text={memory.content} />
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

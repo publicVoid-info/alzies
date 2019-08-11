@@ -1,16 +1,18 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
+import { red, grey } from '@material-ui/core/colors'
+import { CssBaseline } from '@material-ui/core';
 import Routes from './routes'
-import { deepOrange, blueGrey } from '@material-ui/core/colors'
 
 const theme = createMuiTheme({
   palette: {
     secondary: {
-      main: deepOrange[400]
+      main: red[400]
     },
     primary: {
-      main: blueGrey[700]
+      main: red[600],
+      contrastText: grey[200],
     }
   },
   typography: {
@@ -26,6 +28,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Routes />
     </ThemeProvider>
   )

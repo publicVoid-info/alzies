@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { getFirebase } from '../../firebase/firebaseManager'
+import { getFirebase } from '../../firebaseManager'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import uuidv4 from 'uuid/v4'
+import Editor from '../quill/Editor'
 
 import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
 import IconButton from '@material-ui/core/IconButton'
 import SaveIcon from '@material-ui/icons/Check'
-import CancelIcon from '@material-ui/icons/Cancel'
+import BackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
 import TextField from '@material-ui/core/TextField'
 import Header from '../Header'
@@ -27,10 +28,6 @@ const useStyles = makeStyles(theme => ({
         margin: '10px',
         width: '90%',
     },
-    link: {
-        textDecoration: 'none',
-        color: 'inherit'
-    },
 }))
 
 export default function MemoryEdit(props) {
@@ -38,6 +35,7 @@ export default function MemoryEdit(props) {
     const classes = useStyles()
 
     const [memory, setMemory] = React.useState({ id: '', headline: '', content: '' })
+    const [editorText, setEditorText] = React.useState('')
     const [message, setMessage] = React.useState('')
 
     const getMemory = (id) => {
@@ -47,6 +45,7 @@ export default function MemoryEdit(props) {
         docRef.get().then(function (doc) {
             if (doc.exists) {
                 setMemory({ id: doc.id, ...doc.data() })
+                setEditorText(doc.data().content)
             }
         }).catch(function (error) {
             setMessage(`Error getting document:, ${error}`);
@@ -60,7 +59,13 @@ export default function MemoryEdit(props) {
     }, [props.match.params.id])
 
     const handleChange = name => event => {
+
         setMemory({ ...memory, [name]: event.target.value })
+    }
+
+    const handleChangeEditor = () => text => {
+        setEditorText(text)
+        setMemory({ ...memory, content: text })
     }
 
     const handleClickSave = (memory) => () => {
@@ -73,7 +78,6 @@ export default function MemoryEdit(props) {
         getFirebase().collection('memories').doc(memory.id).set(memory)
             .then(function () {
                 setMessage('Document successfully written!')
-                props.history.push('/')
             })
             .catch(function (error) {
                 setMessage('Error writing document: ', error)
@@ -113,18 +117,10 @@ export default function MemoryEdit(props) {
                                 margin="normal"
                                 required
                             />
-                            <TextField
-                                id="standard-multiline-flexible"
-                                label="Content"
-                                multiline
-                                rowsMax="20"
-                                rows="5"
-                                value={memory.content}
-                                onChange={handleChange('content')}
-                                className={classes.textField}
-                                margin="normal"
-                                required
-                            />
+                            <Editor
+                                theme="snow"
+                                onChange={handleChangeEditor()}
+                                text={editorText} />
                         </form>
                         <CardActions disableSpacing>
                             <IconButton className={classes.cardButton} onClick={handleClickSave(memory)}>
@@ -132,7 +128,7 @@ export default function MemoryEdit(props) {
                             </IconButton>
                             <IconButton className={clsx(classes.cardButton, classes.link)}>
                                 <Link to="/">
-                                    <CancelIcon />
+                                    <BackIcon />
                                 </Link>
                             </IconButton>
                             <IconButton className={classes.cardButton} onClick={handleClickDelete(memory)}>

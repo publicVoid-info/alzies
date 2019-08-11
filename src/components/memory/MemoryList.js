@@ -1,5 +1,5 @@
 import React from 'react'
-import { getFirebase } from '../../firebase/firebaseManager'
+import { getFirebase } from '../../firebaseManager'
 
 import MemoryCard from './MemoryCard'
 import Container from '@material-ui/core/Container'
@@ -38,8 +38,8 @@ class MemoryList extends React.Component {
 
     render() {
         return (
-            <Container fixed="true">
-                <div className="align-center">
+            <Container fixed={true}>
+                <div>
                     {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
                 </div>
             </Container>
