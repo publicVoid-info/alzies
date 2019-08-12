@@ -8,10 +8,10 @@ import 'react-quill/dist/quill.core.css'
 /* 
  * Simple editor component that takes placeholder text as a prop 
  */
-class Editor extends React.Component {
+class Editor extends React.Component {    
     
     render() {
-
+        
         return (
             <div>
                 <ReactQuill
@@ -21,7 +21,8 @@ class Editor extends React.Component {
                     modules={Editor.modules}
                     formats={Editor.formats}
                     bounds={'.app'}
-                    placeholder={this.props.placeholder}
+                    placeholder={this.props.placeholder}                    
+                    readOnly={this.props.readOnly}
                 />
             </div>
         )

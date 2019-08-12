@@ -8,6 +8,8 @@ class MemoryList extends React.Component {
     constructor(props) {
         super(props)
 
+        this.unsubscribe = null
+
         this.state = {
             memoryList: []
         }
@@ -15,24 +17,31 @@ class MemoryList extends React.Component {
 
     getMemories() {
 
-        getFirebase().collection('memories')
-            .onSnapshot((qs) => {
-                const result = []
-                qs.forEach(
-                    (doc) => {
-                        result.push({ id: doc.id, ...doc.data() })
-                    }
-                )
+        this.unsubscribe =
+            getFirebase().collection('memories')
+                .onSnapshot((qs) => {
+                    const result = []
+                    qs.forEach(
+                        (doc) => {
+                            result.push({ id: doc.id, ...doc.data() })
+                        }
+                    )
 
-                this.setState({
-                    memoryList: result
+                    this.setState({
+                        memoryList: result
+                    })
                 })
-            })
     }
 
     componentDidMount() {
 
         this.getMemories()
+
+    }
+
+    componentWillUnmount() {
+
+        this.unsubscribe()
 
     }
 

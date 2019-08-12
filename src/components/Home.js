@@ -10,15 +10,17 @@ class Home extends React.Component {
   render() {
 
     return (
-      <nav >
-        <Header />
+      <React.Fragment>
+        <nav >
+          <Header />
+        </nav>
         <main>
           <MemoryList />
           <Link to="/memory/add">
             <Fab />
           </Link>
         </main>
-      </nav>
+      </React.Fragment>
     );
   }
 }

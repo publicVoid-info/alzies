@@ -1,27 +1,33 @@
 import React from 'react'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
-import { red, grey } from '@material-ui/core/colors'
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core'
 import Routes from './routes'
 
 const theme = createMuiTheme({
   palette: {
-    secondary: {
-      main: red[400]
-    },
     primary: {
-      main: red[600],
-      contrastText: grey[200],
+      main: '#060606'
+    },
+    secondary: {
+      main: '#F71E05'
+    },
+    background: {
+      paper: '#F7F4F2',
+      default: '#484848',
+    },
+    text: {
+      primary: '#EFF0F0',
+      secondary: '#060606'
     }
   },
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      '"Lato"',
-      'sans-serif'
-    ].join(',')
-  }
+  overrides: {
+    MuiInput: {
+      root: {
+        color: '#060606',
+      },
+    },
+  },
 });
 
 function App() {
