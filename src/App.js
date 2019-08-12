@@ -6,26 +6,19 @@ import Routes from './routes'
 
 const theme = createMuiTheme({
   palette: {
+    type: 'light',
+
     primary: {
-      main: '#060606'
+      main: '#000000'
+
     },
     secondary: {
-      main: '#F71E05'
+
+      main: '#FF290C'
     },
     background: {
       paper: '#F7F4F2',
       default: '#484848',
-    },
-    text: {
-      primary: '#EFF0F0',
-      secondary: '#060606'
-    }
-  },
-  overrides: {
-    MuiInput: {
-      root: {
-        color: '#060606',
-      },
     },
   },
 });

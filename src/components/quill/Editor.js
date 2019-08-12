@@ -1,32 +1,40 @@
 import React from 'react'
 import ReactQuill from 'react-quill'
 import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core/styles'
+
 import 'react-quill/dist/quill.snow.css'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.core.css'
 
-/* 
- * Simple editor component that takes placeholder text as a prop 
- */
-class Editor extends React.Component {    
-    
-    render() {
-        
-        return (
-            <div>
-                <ReactQuill
-                    theme={this.props.theme}
-                    onChange={this.props.onChange}
-                    value={this.props.text}
-                    modules={Editor.modules}
-                    formats={Editor.formats}
-                    bounds={'.app'}
-                    placeholder={this.props.placeholder}                    
-                    readOnly={this.props.readOnly}
-                />
-            </div>
-        )
+const useStyles = makeStyles(theme => ({
+    quill: {
+        color: theme.palette.text.primary,
+        '& a': {
+            color: theme.palette.text.primary
+        }
     }
+}))
+
+function Editor(props) {
+
+    const classes = useStyles()
+
+    return (
+        <div id="#quill" className={classes.quill}>
+            <ReactQuill
+                theme={props.theme}
+                onChange={props.onChange}
+                value={props.text}
+                modules={Editor.modules}
+                formats={Editor.formats}
+                bounds={'#quill'}
+                placeholder={props.placeholder}
+                readOnly={props.readOnly}
+                scrollingContainer={'#quill'}
+            />
+        </div>
+    )
 }
 
 /* 

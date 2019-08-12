@@ -4,33 +4,36 @@ import { getFirebase } from '../../firebaseManager'
 import uuidv4 from 'uuid/v4'
 import Editor from '../quill/Editor'
 
-import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
+import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import SaveIcon from '@material-ui/icons/Check'
 import TextField from '@material-ui/core/TextField'
 import Header from '../Header'
 import Snackbar from '../dialogs/Snackbar'
 
+
 const useStyles = makeStyles(theme => ({
     card: {
         width: '95%',
-        height: '80vh',
+        height: '85vh',
         margin: '10px',
         padding: '10px',
-        wordWrap: 'break-word',
-        color: theme.palette.text.secondary,
+    },
+    cardContent: {
+        overflow: 'auto',
+        height: '100%',
     },
     cardActions: {
         position: 'absolute',
-        bottom: 50,
+        bottom: 25,
     },
     textField: {
         margin: 'auto',
         width: '95%',
         padding: '10px',
-        color: theme.palette.text.secondary,
     },
 }))
 
@@ -109,32 +112,33 @@ export default function MemoryEdit(props) {
         <nav >
             <Header />
             <main>
-                <Container maxWidth="xl">
-                    <Card className={classes.card} elevation={4} >
-                        <TextField
-                            id="standard-name"
-                            label="Headline"
-                            className={classes.textField}
-                            value={memory.headline}
-                            onChange={handleChange('headline')}
-                            required
-                        />
-                        <Editor
-                            theme="snow"
-                            onChange={handleChangeEditor()}
-                            text={editorText}
-                            readOnly={false} />
-                        <CardActions className={classes.cardActions} disableSpacing>
-                            <IconButton onClick={handleClickSave(memory)}>
-                                <SaveIcon />
-                            </IconButton>
-                        </CardActions>
-                    </Card>
-                    {
-                        message && <Snackbar message={message} />
-                    }
-
-                </Container>
+                <Card className={classes.card} elevation={4} >
+                    <TextField
+                        id="standard-name"
+                        label="Headline"
+                        className={classes.textField}
+                        value={memory.headline}
+                        onChange={handleChange('headline')}
+                        required
+                    />
+                    <CardContent className={classes.cardContent} autoCorrect="false" >
+                        <Typography variant="body1" color="textSecondary" component="div">
+                            <Editor
+                                theme="snow"
+                                onChange={handleChangeEditor()}
+                                text={editorText}
+                                readOnly={false} />
+                        </Typography>
+                    </CardContent>
+                    <CardActions className={classes.cardActions} disableSpacing>
+                        <IconButton onClick={handleClickSave(memory)}>
+                            <SaveIcon />
+                        </IconButton>
+                    </CardActions>
+                </Card>
+                {
+                    message && <Snackbar message={message} />
+                }
             </main>
         </nav>
     )
