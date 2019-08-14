@@ -91,23 +91,6 @@ export default function MemoryEdit(props) {
             })
     }
 
-    // const handleClickDelete = (memory) => () => {
-
-    //     if (memory.id === '') {
-    //         memory.id = uuidv4()
-    //     }
-
-    //     // Add a new document in collection "cities"
-    //     getFirebase().collection('memories').doc(memory.id).delete()
-    //         .then(function () {
-    //             setMessage('Document deleted!')
-    //             props.history.push('/')
-    //         })
-    //         .catch(function (error) {
-    //             setMessage('Error deleting document: ', error)
-    //         })
-    // }
-
     return (
         <nav >
             <Header />

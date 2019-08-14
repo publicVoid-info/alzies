@@ -5,24 +5,22 @@ import MemoryList from './memory/MemoryList'
 import Header from './Header'
 import Fab from './buttons/FloatingActionButton'
 
-class Home extends React.Component {
+export default function Home(props) {
 
-  render() {
-
-    return (
-      <React.Fragment>
-        <nav >
-          <Header />
-        </nav>
-        <main>
-          <MemoryList />
-          <Link to="/memory/add">
-            <Fab />
-          </Link>
-        </main>
-      </React.Fragment>
-    );
-  }
+  return (
+    <React.Fragment>
+      <nav >
+        <Header />
+      </nav>
+      <main>        
+        <MemoryList />
+        <Link to="/memory/add">
+          <Fab />
+        </Link>
+      </main>
+    </React.Fragment>
+  );
 }
 
-export default Home;
+
+
