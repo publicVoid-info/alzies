@@ -47,10 +47,8 @@ class MemoryList extends React.Component {
 
     render() {
         return (
-            <Container fixed={true}>
-                <div>
-                    {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
-                </div>
+            <Container maxWidth="xl">
+                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
             </Container>
         )
     }

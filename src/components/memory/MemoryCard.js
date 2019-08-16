@@ -13,12 +13,13 @@ import EditIcon from '@material-ui/icons/Edit'
 import Editor from '../quill/Editor'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Snackbar from '../dialogs/Snackbar'
+import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => (
   {
     link: {
       textDecoration: 'none',
-      color: theme.palette.text.secondary
+      color: theme.palette.text.primary
     },
     card: {
       margin: '10px',
@@ -26,11 +27,16 @@ const useStyles = makeStyles((theme) => (
       float: 'left',
     },
     cardHeader: {
-      color: theme.palette.text.primary,
+      color: theme.palette.text.secondary,
       backgroundColor: theme.palette.secondary.main
     },
+    // cardContent: {
+    //   color: 'green', //theme.palette.text.secondary,
+    //   backgroundColor: theme.palette.secondary.main
+    // },
     deleteButton: {
       marginLeft: 'auto',
+      color: theme.palette.text.primary
     },
   }
 ))
@@ -56,16 +62,20 @@ export default function MemoryCard({ memory }) {
   }
 
   return (
-    <Card className={classes.card} elevation={4} >
+    <Card className={classes.card} elevation={8} >
       <CardHeader className={classes.cardHeader} title={memory.headline} autoCorrect="false" />
-      <CardContent autoCorrect="false" >
-        <Typography variant="body1" color="textSecondary" component="div">
+
+      <Divider variant="fullWidth" />
+      <CardContent className={classes.cardContent} autoCorrect="false" >
+        <Typography variant="body1" component="div">
           <Editor
             theme="bubble"
             text={memory.content}
-            readOnly={true} />
+            readOnly={true}
+          />
         </Typography>
       </CardContent>
+      <Divider variant="fullWidth" />
       <CardActions disableSpacing>
         <IconButton >
           <Link to={`/memory/${memory.id}`} className={classes.link}>

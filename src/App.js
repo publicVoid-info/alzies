@@ -3,6 +3,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
 import Routes from './routes'
+import './App.css'
 
 const theme = createMuiTheme({
   palette: {
@@ -15,11 +16,16 @@ const theme = createMuiTheme({
       main: '#FF290C'
     },
     background: {
-      paper: '#F7F4F2',
-      default: '#484848',
+      paper: '#FFFFFF',
+      default: '#ffffff',
     },
+    text: {
+      primary: '#000000',
+      secondary: '#ffffff',
+
+    }
   },
-});
+})
 
 function App() {
 

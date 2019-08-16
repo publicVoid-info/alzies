@@ -34,49 +34,31 @@ class GoogleAuth {
         this._provider = googleAuthProvider
     }
 
-    getAuth() {
-
-        return JSON.stringify(this._auth)
+    getAuth(json = false) {
+        return (
+            (json)
+                ?
+                JSON.stringify(this._auth)
+                :
+                this._auth
+        )
     }
 
-    handleAuthChange(user) {
-        console.log('AUTH CHANGE!!!!!!!!!!!!!!')
-        console.log(user)
+    getCurrentUser() {
+        return this._auth.currentUser
     }
 
     signIn() {
-
-        this._provider.redirectUrl = 'http://localhost:3000/home/'
-        this._provider.setCustomParameters = 'select_account'
-
-        this._auth.onAuthStateChanged(this.handleAuthChange)
-
-        this._auth.signInWithRedirect(this._provider);
-        this._auth.getRedirectResult()
-            .then((result) => {
-                console.log('REDIRECT INICIO!!!!!!!!!!!!!!')
-                console.log(result)
-            })
+        this._auth.signInWithRedirect(this._provider)
     }
 
     signOut() {
-        this._auth.signOut().then(value => {
-            console.log('SIGN OUT!!!!!!!!!!!!!!')
-            console.log(value)
-
-        })
+        return this._auth.signOut()
     }
 
     getRedirectResult() {
         this._auth.getRedirectResult()
-            .then((result) => {
-                if (result) {
-                    console.log('REDIRECT FIM!!!!!!!!!!')
-                    console.log(result)
-                }
-            })
     }
-
 }
 
 
