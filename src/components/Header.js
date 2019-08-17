@@ -10,8 +10,8 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
-import AlziesIcon from '@material-ui/icons/BlurOn'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import AlziesIcon from '../icons/Alzies'
 
 
 const useStyles = makeStyles((theme) => (
@@ -20,9 +20,9 @@ const useStyles = makeStyles((theme) => (
       fontSize: '28px',
     },
     alziesIcon: {
-      color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.primary.main,
-      fontSize: '40px',
+      width: '48px',
+      height: '48px',
+      margin: '10px',
     },
     link: {
       textDecoration: 'none',
@@ -120,6 +120,9 @@ function Header(props) {
       <AppBar className={classes.appBar} position="sticky" elevation={12} >
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
+            <Link className={classes.link} to={(user) ? "/home" : "/"}>
+              <AlziesIcon className={classes.alziesIcon} />
+            </Link>
             <Grid item xs>
               <Link className={classes.link} to={(user) ? "/home" : "/"}>
                 <Typography
@@ -127,13 +130,11 @@ function Header(props) {
                   color="textSecondary"
                   variant="overline"
                   component="span">
-                  <IconButton >
-                    <AlziesIcon className={classes.alziesIcon} />
-                  </IconButton>
                   Alzies
               </Typography>
               </Link>
             </Grid>
+
             <Grid item>
               {(user)
                 ?

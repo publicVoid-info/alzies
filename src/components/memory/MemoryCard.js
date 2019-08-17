@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => (
     },
     cardHeader: {
       color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.secondary.main
+      backgroundColor: theme.palette.secondary.dark
     },
     // cardContent: {
     //   color: 'green', //theme.palette.text.secondary,

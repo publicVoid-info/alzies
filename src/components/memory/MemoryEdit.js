@@ -7,14 +7,11 @@ import Editor from '../quill/Editor'
 import Container from '@material-ui/core/Container'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import SaveIcon from '@material-ui/icons/Check'
 import TextField from '@material-ui/core/TextField'
 import Header from '../Header'
 import Snackbar from '../dialogs/Snackbar'
-
+import Fab from '../buttons/FloatingActionButton'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -93,7 +90,7 @@ export default function MemoryEdit(props) {
 
     return (
         <nav >
-            <Header />
+            <Header history={props.history} />
             <main>
                 <Container maxWidth="xl">
                     <Card className={classes.card} elevation={4} >
@@ -114,16 +111,12 @@ export default function MemoryEdit(props) {
                                     readOnly={false} />
                             </Typography>
                         </CardContent>
-                        <CardActions className={classes.cardActions} disableSpacing>
-                            <IconButton onClick={handleClickSave(memory)}>
-                                <SaveIcon />
-                            </IconButton>
-                        </CardActions>
                     </Card>
                     {
                         message && <Snackbar message={message} />
                     }
                 </Container>
+                <Fab onClick={handleClickSave(memory)} />
             </main>
         </nav>
     )
