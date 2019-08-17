@@ -17,7 +17,7 @@ import AlziesIcon from '../icons/Alzies'
 const useStyles = makeStyles((theme) => (
   {
     alzies: {
-      fontSize: '18px',
+      fontSize: '24px',
     },
     alziesIcon: {
       width: '32px',
