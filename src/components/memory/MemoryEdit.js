@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField'
 import Header from '../Header'
 import Snackbar from '../dialogs/Snackbar'
 import Fab from '../buttons/FloatingActionButton'
+import SaveIcon from '@material-ui/icons/Done'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -73,7 +74,7 @@ export default function MemoryEdit(props) {
         setMemory({ ...memory, content: text })
     }
 
-    const handleClickSave = (memory) => () => {
+    const handleClickSave = () => () => {
 
         if (memory.id === '') {
             memory.id = uuidv4()
@@ -116,7 +117,11 @@ export default function MemoryEdit(props) {
                         message && <Snackbar message={message} />
                     }
                 </Container>
-                <Fab onClick={handleClickSave(memory)} />
+                <Fab onClick={handleClickSave}
+                    color="primary"
+                    label="add">
+                    <SaveIcon />
+                </Fab>
             </main>
         </nav>
     )
