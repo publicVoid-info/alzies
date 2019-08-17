@@ -17,12 +17,12 @@ import AlziesIcon from '../icons/Alzies'
 const useStyles = makeStyles((theme) => (
   {
     alzies: {
-      fontSize: '28px',
+      fontSize: '18px',
     },
     alziesIcon: {
-      width: '48px',
-      height: '48px',
-      margin: '10px',
+      width: '32px',
+      height: '32px',
+      margin: '5px',
     },
     link: {
       textDecoration: 'none',
@@ -33,23 +33,23 @@ const useStyles = makeStyles((theme) => (
       backgroundColor: theme.palette.primary.main,
       border: `1.5px solid ${theme.palette.secondary.main}`,
       borderRadius: '10px',
-      paddingLeft: '20px',
-      paddingTop: '15px',
-      paddingBottom: '15px',
+      paddingTop: '3px',
+      paddingBottom: '3px',
+      paddingLeft: '10px',
       cursor: 'pointer',
+      textTransform: 'uppercase',
     },
     userIcon: {
       color: theme.palette.secondary.main,
       backgroundColor: theme.palette.primary.main,
       paddingTop: '5px',
       paddingBottom: '5px',
-      paddingLeft: '20px',
-      paddingRight: '10px',
     },
     appBar: {
       color: theme.palette.secondary.main,
       backgroundColor: theme.palette.primary.main,
       outline: `1px solid ${theme.palette.secondary.main}`,
+      marginBottom: '10px',
     },
 
   }
@@ -62,10 +62,10 @@ function Header(props) {
 
   let idInterval = null
   const classes = useStyles()
-  const user = googleAuth.getCurrentUser()
-
 
   const timer = () => {
+
+    if (googleAuth.getCurrentUser()) return
 
     if (signInState.getSignInState().request) {
 
@@ -92,7 +92,7 @@ function Header(props) {
 
   const handleSignIn = () => {
 
-    if (!user) {
+    if (!googleAuth.getCurrentUser()) {
 
       signInState.start()
 
@@ -120,11 +120,11 @@ function Header(props) {
       <AppBar className={classes.appBar} position="sticky" elevation={12} >
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
-            <Link className={classes.link} to={(user) ? "/home" : "/"}>
+            <Link className={classes.link} to={(googleAuth.getCurrentUser()) ? "/home" : "/"}>
               <AlziesIcon className={classes.alziesIcon} />
             </Link>
             <Grid item xs>
-              <Link className={classes.link} to={(user) ? "/home" : "/"}>
+              <Link className={classes.link} to={(googleAuth.getCurrentUser()) ? "/home" : "/"}>
                 <Typography
                   className={classes.alzies}
                   color="textSecondary"
@@ -136,21 +136,18 @@ function Header(props) {
             </Grid>
 
             <Grid item>
-              {(user)
+              {(googleAuth.getCurrentUser())
                 ?
-                <Typography className={classes.userButton} variant="button" onClick={handleSignOut}>
-                  {user.displayName}
+                <h5 className={classes.userButton} onClick={handleSignOut}>
+                  {googleAuth.getCurrentUser().displayName}
                   <IconButton className={classes.userIcon}>
                     <LogoutIcon />
                   </IconButton>
-                </Typography>
+                </h5>
                 :
-                <Typography className={classes.userButton} variant="button" onClick={handleSignIn}>
-                  {(signInState.getSignInState().request) ? 'Processing...' : 'Login'}
-                  <IconButton className={classes.userIcon}>
-                    <LogoutIcon />
-                  </IconButton>
-                </Typography>
+                <IconButton className={classes.userIcon} onClick={handleSignIn}>
+                  <LogoutIcon />
+                </IconButton>
               }
             </Grid>
           </Grid>

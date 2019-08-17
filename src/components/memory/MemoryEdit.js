@@ -119,7 +119,7 @@ export default function MemoryEdit(props) {
                 </Container>
                 <Fab onClick={handleClickSave}
                     color="primary"
-                    label="add">
+                    label="Edit">
                     <SaveIcon />
                 </Fab>
             </main>

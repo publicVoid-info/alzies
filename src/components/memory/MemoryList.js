@@ -1,14 +1,15 @@
 import React from 'react'
-import { getFirebase } from '../../firebaseManager'
+import { getFirebase, GoogleAuth } from '../../firebaseManager'
 
 import MemoryCard from './MemoryCard'
-import Container from '@material-ui/core/Container'
 
 class MemoryList extends React.Component {
     constructor(props) {
         super(props)
 
         this.unsubscribe = null
+
+        this.googleAuth = new GoogleAuth()
 
         this.state = {
             memoryList: []
@@ -17,8 +18,11 @@ class MemoryList extends React.Component {
 
     getMemories() {
 
+        const uuid = (this.googleAuth.getCurrentUser()) ? this.googleAuth.getCurrentUser().uid : ''
+
         this.unsubscribe =
             getFirebase().collection('memories')
+                .where('owner', 'array-contains', uuid)
                 .onSnapshot((qs) => {
                     const result = []
                     qs.forEach(
@@ -47,9 +51,10 @@ class MemoryList extends React.Component {
 
     render() {
         return (
-            <Container maxWidth="xl">
+            <React.Fragment>
                 {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
-            </Container>
+            </React.Fragment>
+
         )
     }
 }

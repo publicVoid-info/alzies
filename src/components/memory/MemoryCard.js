@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography'
 import EditIcon from '@material-ui/icons/Edit'
 import Editor from '../quill/Editor'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Snackbar from '../dialogs/Snackbar'
 import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => (
@@ -22,18 +21,31 @@ const useStyles = makeStyles((theme) => (
       color: theme.palette.text.primary
     },
     card: {
-      margin: '10px',
-      minWidth: '300px',
       float: 'left',
+      margin: '10px',
+    },
+    '@media (max-width: 340px)': {
+      card: {
+        maxWidth: '280px',
+      }
     },
     cardHeader: {
       color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.secondary.dark
+      backgroundColor: theme.palette.secondary.dark,
+      '& h3': {
+        padding: '0',
+        margin: '0',
+        textTransform: 'uppercase',
+      },
     },
-    // cardContent: {
-    //   color: 'green', //theme.palette.text.secondary,
-    //   backgroundColor: theme.palette.secondary.main
-    // },
+    cardContent: {
+      padding: '0px',
+      margin: '0px',
+    },
+    cardAction: {
+      padding: '0px',
+      margin: '0px',
+    },
     deleteButton: {
       marginLeft: 'auto',
       color: theme.palette.text.primary
@@ -45,10 +57,7 @@ export default function MemoryCard({ memory }) {
 
   const classes = useStyles()
 
-  //const [message, setMessage] = React.useState('')
-  const message = ''
-
-  const handleDeleteClick = (memory) => () => {
+  const handleDeleteClick = () => () => {
 
     if (!memory.id) { return }
 
@@ -63,7 +72,11 @@ export default function MemoryCard({ memory }) {
 
   return (
     <Card className={classes.card} elevation={8} >
-      <CardHeader className={classes.cardHeader} title={memory.headline} autoCorrect="false" />
+      <CardHeader
+        className={classes.cardHeader}
+        title={<h3>{memory.headline}</h3>}
+        autoCorrect="false"
+        disableTypography={true} />
 
       <Divider variant="fullWidth" />
       <CardContent className={classes.cardContent} autoCorrect="false" >
@@ -76,17 +89,16 @@ export default function MemoryCard({ memory }) {
         </Typography>
       </CardContent>
       <Divider variant="fullWidth" />
-      <CardActions disableSpacing>
+      <CardActions className={classes.cardAction} disableSpacing>
         <IconButton >
           <Link to={`/memory/${memory.id}`} className={classes.link}>
             <EditIcon />
           </Link>
         </IconButton>
-        <IconButton className={classes.deleteButton} onClick={handleDeleteClick(memory)}>
+        <IconButton className={classes.deleteButton} onClick={handleDeleteClick()}>
           <DeleteIcon />
         </IconButton>
       </CardActions>
-      {message && <Snackbar message={message} />}
     </Card >
   )
 }

@@ -18,7 +18,7 @@ export default function Home(props) {
         <Container maxWidth="xl">
           <MemoryList />
           <Link to="/memory/add">
-            <Fab color="primary" label="add">
+            <Fab color="primary" label="Add">
               <AddIcon />
             </Fab>
           </Link>
