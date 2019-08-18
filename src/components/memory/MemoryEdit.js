@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { getFirebase, GoogleAuth } from '../../firebaseManager'
+import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
 import uuidv4 from 'uuid/v4'
 import Editor from '../quill/Editor'
 
@@ -36,8 +36,6 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-const googleAuth = new GoogleAuth()
-
 export default function MemoryEdit(props) {
 
     const classes = useStyles()
@@ -46,11 +44,11 @@ export default function MemoryEdit(props) {
     const [editorText, setEditorText] = React.useState('')
     const [message, setMessage] = React.useState('')
 
-    const userId = (googleAuth.getCurrentUser()) ? googleAuth.getCurrentUser().uid : ''
+    const userId = (getFirebaseAuth().getCurrentUser()) ? getFirebaseAuth().getCurrentUser().uid : ''
 
     const getMemory = (id) => {
 
-        const docRef = getFirebase().collection('memories').doc(id)
+        const docRef = getFirestore().collection('memories').doc(id)
 
         docRef.get().then(function (doc) {
             if (doc.exists) {
@@ -83,7 +81,7 @@ export default function MemoryEdit(props) {
         if (memory.id === '') { memory.id = uuidv4() }
         if (memory.owner.length === 0) { memory.owner.push(userId) }
 
-        getFirebase().collection('memories').doc(memory.id).set(memory)
+        getFirestore().collection('memories').doc(memory.id).set(memory)
             .then(function () {
                 props.history.push('/home')
             })

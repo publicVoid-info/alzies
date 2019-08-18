@@ -24,7 +24,7 @@ function DeleteCardDialog(props) {
     }
 
     return (
-        <div className={props.className}>
+        <React.Fragment>
             <IconButton onClick={handleClickOpen} >
                 <DeleteIcon />
             </IconButton >
@@ -46,7 +46,7 @@ function DeleteCardDialog(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </React.Fragment>
     )
 }
 

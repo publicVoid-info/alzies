@@ -84,6 +84,7 @@ function Header(props) {
 
           signInState.finish()
           clearInterval(idInterval)
+          googleAuth.registerCurrentUser()
           props.history.push('/home')
 
         }

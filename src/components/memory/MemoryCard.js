@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router-dom'
-import { getFirebase } from '../../firebaseManager'
+import { getFirestore } from '../../firebaseManager'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -12,7 +12,8 @@ import Typography from '@material-ui/core/Typography'
 import EditIcon from '@material-ui/icons/Edit'
 import Editor from '../quill/Editor'
 import Divider from '@material-ui/core/Divider'
-import DeleteCardDialog from '../dialogs/DeleteCardDialog';
+import DeleteCardDialog from '../dialogs/DeleteCardDialog'
+import FindUserDialog from '../dialogs/FindUsersDialog'
 
 const useStyles = makeStyles((theme) => (
   {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => (
       padding: '0px',
       margin: '0px',
     },
-    deleteButton: {
+    actionButtonRight: {
       marginLeft: 'auto',
     },
   }
@@ -59,7 +60,7 @@ function MemoryCard(props) {
 
     if (!memory.id) { return }
 
-    getFirebase().collection('memories').doc(memory.id).delete()
+    getFirestore().collection('memories').doc(memory.id).delete()
   }
 
   const handleMemoryEdit = () => {
@@ -89,9 +90,13 @@ function MemoryCard(props) {
         <IconButton onClick={handleMemoryEdit}>
           <EditIcon />
         </IconButton>
-        <DeleteCardDialog className={classes.deleteButton}
-          handleDelete={handleDeleteClick}>
-        </DeleteCardDialog>
+        <div className={classes.actionButtonRight}>
+          <DeleteCardDialog className={classes.actionButton}
+            handleDelete={handleDeleteClick}>
+          </DeleteCardDialog>
+          <FindUserDialog className={classes.actionButton}>
+          </FindUserDialog>
+        </div>
       </CardActions>
     </Card >
   )

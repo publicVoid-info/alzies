@@ -1,5 +1,5 @@
 import React from 'react'
-import { getFirebase, GoogleAuth } from '../../firebaseManager'
+import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
 
 import MemoryCard from './MemoryCard'
 
@@ -9,8 +9,6 @@ class MemoryList extends React.Component {
 
         this.unsubscribe = null
 
-        this.googleAuth = new GoogleAuth()
-
         this.state = {
             memoryList: []
         }
@@ -18,10 +16,10 @@ class MemoryList extends React.Component {
 
     getMemories() {
 
-        const userId = (this.googleAuth.getCurrentUser()) ? this.googleAuth.getCurrentUser().uid : ''
+        const userId = (getFirebaseAuth().currentUser) ? getFirebaseAuth().currentUser.uid : ''
 
         this.unsubscribe =
-            getFirebase().collection('memories')
+            getFirestore().collection('memories')
                 .where('owner', 'array-contains', userId)
                 .onSnapshot((qs) => {
                     const result = []
