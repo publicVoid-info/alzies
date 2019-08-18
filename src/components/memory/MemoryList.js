@@ -54,7 +54,6 @@ class MemoryList extends React.Component {
             <React.Fragment>
                 {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
             </React.Fragment>
-
         )
     }
 }

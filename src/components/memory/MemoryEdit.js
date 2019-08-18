@@ -94,7 +94,7 @@ export default function MemoryEdit(props) {
 
     return (
         <nav >
-            <Header history={props.history} />
+            <Header />
             <main>
                 <Container maxWidth="xl">
                     <Card className={classes.card} elevation={4} >

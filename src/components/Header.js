@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { GoogleAuth } from '../firebaseManager'
 import SignInManager from '../signInManager'
 
@@ -145,4 +145,4 @@ function Header(props) {
   );
 }
 
-export default Header
+export default withRouter(Header)

@@ -40,7 +40,7 @@ export default function Welcome(props) {
     return (
         <React.Fragment>
             <nav >
-                <Header history={props.history} />
+                <Header />
             </nav>
             <main>
                 <Container className={classes.container} maxWidth="xl">

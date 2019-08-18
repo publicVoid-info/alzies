@@ -12,7 +12,7 @@ export default function Home(props) {
   return (
     <React.Fragment>
       <nav >
-        <Header history={props.history} />
+        <Header />
       </nav>
       <main>
         <Container maxWidth="xl">

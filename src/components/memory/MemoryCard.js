@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { getFirebase } from '../../firebaseManager'
 
 import Card from '@material-ui/core/Card'
@@ -11,18 +11,15 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import EditIcon from '@material-ui/icons/Edit'
 import Editor from '../quill/Editor'
-import DeleteIcon from '@material-ui/icons/Delete'
 import Divider from '@material-ui/core/Divider'
+import DeleteCardDialog from '../dialogs/DeleteCardDialog';
 
 const useStyles = makeStyles((theme) => (
   {
-    link: {
-      textDecoration: 'none',
-      color: theme.palette.text.primary
-    },
     card: {
       float: 'left',
       margin: '10px',
+      minWidth: '280px',
     },
     '@media (max-width: 340px)': {
       card: {
@@ -31,7 +28,7 @@ const useStyles = makeStyles((theme) => (
     },
     cardHeader: {
       color: theme.palette.text.secondary,
-      backgroundColor: theme.palette.secondary.dark,
+      backgroundColor: theme.palette.secondary.main,
       '& h3': {
         padding: '0',
         margin: '0',
@@ -48,30 +45,29 @@ const useStyles = makeStyles((theme) => (
     },
     deleteButton: {
       marginLeft: 'auto',
-      color: theme.palette.text.primary
     },
   }
 ))
 
-export default function MemoryCard({ memory }) {
+function MemoryCard(props) {
+
+  const { memory, history } = props
 
   const classes = useStyles()
 
-  const handleDeleteClick = () => () => {
+  const handleDeleteClick = () => {
 
     if (!memory.id) { return }
 
     getFirebase().collection('memories').doc(memory.id).delete()
-      .then(function () {
-        //setMessage('Document deleted!')
-      })
-      .catch(function (error) {
-        //setMessage('Error deleting document: ', error)
-      })
+  }
+
+  const handleMemoryEdit = () => {
+    history.push(`/memory/${memory.id}`)
   }
 
   return (
-    <Card className={classes.card} elevation={8} >
+    <Card className={classes.card} elevation={8} onDoubleClick={handleMemoryEdit}>
       <CardHeader
         className={classes.cardHeader}
         title={<h3>{memory.headline}</h3>}
@@ -89,16 +85,17 @@ export default function MemoryCard({ memory }) {
         </Typography>
       </CardContent>
       <Divider variant="fullWidth" />
-      <CardActions className={classes.cardAction} disableSpacing>
-        <IconButton >
-          <Link to={`/memory/${memory.id}`} className={classes.link}>
-            <EditIcon />
-          </Link>
+      <CardActions className={classes.cardAction} disableSpacing >
+        <IconButton onClick={handleMemoryEdit}>
+          <EditIcon />
         </IconButton>
-        <IconButton className={classes.deleteButton} onClick={handleDeleteClick()}>
-          <DeleteIcon />
-        </IconButton>
+        <DeleteCardDialog className={classes.deleteButton}
+          handleDelete={handleDeleteClick}>
+        </DeleteCardDialog>
       </CardActions>
     </Card >
   )
 }
+
+export default withRouter(MemoryCard)
+
