@@ -44,7 +44,7 @@ export default function MemoryEdit(props) {
     const [editorText, setEditorText] = React.useState('')
     const [message, setMessage] = React.useState('')
 
-    const userId = (getFirebaseAuth().getCurrentUser()) ? getFirebaseAuth().getCurrentUser().uid : ''
+    const userId = (getFirebaseAuth().currentUser) ? getFirebaseAuth().currentUser.uid : ''
 
     const getMemory = (id) => {
 

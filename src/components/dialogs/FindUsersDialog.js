@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
 
 import Grow from '@material-ui/core/Grow'
@@ -8,15 +8,20 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import ShareIcon from '@material-ui/icons/Share'
 import IconButton from '@material-ui/core/IconButton'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
-export default function FindUsersDialog(props) {
+export default class FindUsersDialog extends React.Component {
+    constructor(props) {
+        super(props)
 
-    const [open, setOpen] = React.useState(false)
-    const [userList, setUserList] = React.useState([])
-    const anchorRef = React.useRef(null)
+        this.state = {
+            open: false,
+            userList: [],
+        }
 
-    const getUsers = () => {
+        this.anchorRef = React.createRef(null)
+    }
+
+    getUsers = () => {
 
         getFirestore().collection('users')
             .get()
@@ -30,55 +35,76 @@ export default function FindUsersDialog(props) {
                     }
                 )
 
-                setUserList(() => result)
+                this.setState({
+                    userList: result
+                })
             })
+        console.log('getusers')
     }
 
-    function handleToggle() {
-        setOpen(prevOpen => !prevOpen)
+    handleToggle = () => {
+        this.setState({
+            open: !this.state.open,
+        })
     }
 
-    function handleClose(event) {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
+    handleClose = (event) => {
+        if (this.anchorRef.current && this.anchorRef.current.contains(event.target)) {
+            return
         }
 
-        setOpen(false);
+        this.setState({
+            open: false,
+        })
     }
 
-    useEffect(() => {
-        getUsers()
+    handleSelect = (user) => {
 
-    }, [userList])
+        this.props.onSelectUser(user)
 
-    return (
+    }
 
-        <React.Fragment>
-            <IconButton
-                ref={anchorRef}
-                aria-controls="menu-list-grow"
-                aria-haspopup="true"
-                onClick={handleToggle}>
-                <ShareIcon />
-            </IconButton >
-            <Popper open={open} anchorEl={anchorRef.current} keepMounted transition>
-                {({ TransitionProps, placement }) => (
-                    <Grow
-                        {...TransitionProps}
-                        style={{ transformOrigin: placement === 'bottom ' ? 'center bottom' : 'center top' }}
-                    >
-                        <Paper id="menu-list-grow">
-                            <ClickAwayListener onClickAway={handleClose}>
+    componentWillMount() {
+
+        this.getUsers()
+
+    }
+
+    render() {
+        return (
+
+            <React.Fragment>
+                <IconButton
+                    ref={this.anchorRef}
+                    aria-controls="menu-list-grow"
+                    aria-haspopup="true"
+                    onClick={this.handleToggle}>
+                    <ShareIcon />
+                </IconButton >
+                <Popper open={this.state.open} anchorEl={this.anchorRef.current} keepMounted transition>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{ transformOrigin: placement === 'bottom ' ? 'center bottom' : 'center top' }}
+                        >
+                            <Paper id="menu-list-grow">
+
                                 <MenuList>
-                                    {userList.map((value, index) => {
-                                        return <MenuItem key={index} onClick={handleClose}>{value.displayName}</MenuItem>
+                                    {this.state.userList.map((value, index) => {
+                                        return (
+                                            <MenuItem
+                                                key={index}
+                                                onClick={this.handleClose}>
+                                                {value.displayName}
+                                            </MenuItem>
+                                        )
                                     })}
                                 </MenuList>
-                            </ClickAwayListener>
-                        </Paper>
-                    </Grow>
-                )}
-            </Popper>
-        </React.Fragment>
-    )
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+            </React.Fragment>
+        )
+    }
 }

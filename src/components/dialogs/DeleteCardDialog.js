@@ -19,7 +19,7 @@ function DeleteCardDialog(props) {
         setOpen(false)
 
         if (modalResult) {
-            props.handleDelete()
+            props.onDelete()
         }
     }
 

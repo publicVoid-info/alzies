@@ -25,11 +25,15 @@ const useStyles = makeStyles((theme) => (
     '@media (max-width: 340px)': {
       card: {
         maxWidth: '280px',
-      }
+      },
     },
     cardHeader: {
       color: theme.palette.text.secondary,
       backgroundColor: theme.palette.secondary.main,
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.light,
+      },
       '& h3': {
         padding: '0',
         margin: '0',
@@ -63,12 +67,29 @@ function MemoryCard(props) {
     getFirestore().collection('memories').doc(memory.id).delete()
   }
 
+  const handleSelectUser = (user) => {
+
+    const newMemory = {
+      ...memory,
+      owner: [...memory.owner, user.uid]
+    }
+
+    getFirestore().collection('memories').doc(memory.id).set(newMemory)
+      .then(function () {
+        props.history.push('/home')
+      })
+  }
+
   const handleMemoryEdit = () => {
     history.push(`/memory/${memory.id}`)
   }
 
   return (
-    <Card className={classes.card} elevation={8} onDoubleClick={handleMemoryEdit}>
+    <Card
+      className={classes.card}
+      elevation={8}
+      onDoubleClick={handleMemoryEdit}
+      draggable={true}>
       <CardHeader
         className={classes.cardHeader}
         title={<h3>{memory.headline}</h3>}
@@ -91,11 +112,12 @@ function MemoryCard(props) {
           <EditIcon />
         </IconButton>
         <div className={classes.actionButtonRight}>
-          <DeleteCardDialog className={classes.actionButton}
-            handleDelete={handleDeleteClick}>
-          </DeleteCardDialog>
-          <FindUserDialog className={classes.actionButton}>
-          </FindUserDialog>
+          <DeleteCardDialog
+            className={classes.actionButton}
+            onDelete={handleDeleteClick} />
+          <FindUserDialog
+            className={classes.actionButton}
+            onSelectUser={handleSelectUser} />
         </div>
       </CardActions>
     </Card >
