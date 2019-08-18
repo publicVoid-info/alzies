@@ -18,11 +18,11 @@ class MemoryList extends React.Component {
 
     getMemories() {
 
-        const uuid = (this.googleAuth.getCurrentUser()) ? this.googleAuth.getCurrentUser().uid : ''
+        const userId = (this.googleAuth.getCurrentUser()) ? this.googleAuth.getCurrentUser().uid : ''
 
         this.unsubscribe =
             getFirebase().collection('memories')
-                .where('owner', 'array-contains', uuid)
+                .where('owner', 'array-contains', userId)
                 .onSnapshot((qs) => {
                     const result = []
                     qs.forEach(

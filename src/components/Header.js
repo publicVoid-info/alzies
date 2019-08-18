@@ -33,17 +33,19 @@ const useStyles = makeStyles((theme) => (
       backgroundColor: theme.palette.primary.main,
       border: `1.5px solid ${theme.palette.secondary.main}`,
       borderRadius: '10px',
-      paddingTop: '3px',
-      paddingBottom: '3px',
       paddingLeft: '10px',
       cursor: 'pointer',
       textTransform: 'uppercase',
+      lineHeight: '2.5rem',
+      margin: '0px',
     },
     userIcon: {
       color: theme.palette.secondary.main,
       backgroundColor: theme.palette.primary.main,
       paddingTop: '5px',
       paddingBottom: '5px',
+      paddingRight: '10px',
+      paddingLeft: '10px',
     },
     appBar: {
       color: theme.palette.secondary.main,
@@ -90,17 +92,6 @@ function Header(props) {
     }
   }
 
-  const handleSignIn = () => {
-
-    if (!googleAuth.getCurrentUser()) {
-
-      signInState.start()
-
-      googleAuth.signIn()
-
-    }
-  }
-
   const handleSignOut = () => {
 
     googleAuth.signOut().then(() => {
@@ -137,17 +128,13 @@ function Header(props) {
 
             <Grid item>
               {(googleAuth.getCurrentUser())
-                ?
+                &&
                 <h5 className={classes.userButton} onClick={handleSignOut}>
                   {googleAuth.getCurrentUser().displayName}
                   <IconButton className={classes.userIcon}>
                     <LogoutIcon />
                   </IconButton>
                 </h5>
-                :
-                <IconButton className={classes.userIcon} onClick={handleSignIn}>
-                  <LogoutIcon />
-                </IconButton>
               }
             </Grid>
           </Grid>

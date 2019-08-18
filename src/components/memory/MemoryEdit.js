@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { getFirebase } from '../../firebaseManager'
+import { getFirebase, GoogleAuth } from '../../firebaseManager'
 import uuidv4 from 'uuid/v4'
 import Editor from '../quill/Editor'
 
@@ -36,13 +36,17 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
+const googleAuth = new GoogleAuth()
+
 export default function MemoryEdit(props) {
 
     const classes = useStyles()
 
-    const [memory, setMemory] = React.useState({ id: '', headline: '', content: '' })
+    const [memory, setMemory] = React.useState({ owner: [], id: '', headline: '', content: '' })
     const [editorText, setEditorText] = React.useState('')
     const [message, setMessage] = React.useState('')
+
+    const userId = (googleAuth.getCurrentUser()) ? googleAuth.getCurrentUser().uid : ''
 
     const getMemory = (id) => {
 
@@ -76,9 +80,8 @@ export default function MemoryEdit(props) {
 
     const handleClickSave = () => () => {
 
-        if (memory.id === '') {
-            memory.id = uuidv4()
-        }
+        if (memory.id === '') { memory.id = uuidv4() }
+        if (memory.owner.length === 0) { memory.owner.push(userId) }
 
         getFirebase().collection('memories').doc(memory.id).set(memory)
             .then(function () {
@@ -118,7 +121,7 @@ export default function MemoryEdit(props) {
                     }
                 </Container>
                 <Fab onClick={handleClickSave}
-                    color="primary"
+                    color="secondary"
                     label="Edit">
                     <SaveIcon />
                 </Fab>
