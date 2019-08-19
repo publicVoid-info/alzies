@@ -39,7 +39,6 @@ export default class FindUsersDialog extends React.Component {
                     userList: result
                 })
             })
-        console.log('getusers')
     }
 
     handleToggle = () => {
@@ -61,6 +60,11 @@ export default class FindUsersDialog extends React.Component {
     handleSelect = (user) => {
 
         this.props.onSelectUser(user)
+
+        this.setState({
+            open: false,
+        })
+
 
     }
 
@@ -93,8 +97,8 @@ export default class FindUsersDialog extends React.Component {
                                     {this.state.userList.map((value, index) => {
                                         return (
                                             <MenuItem
-                                                key={index}
-                                                onClick={this.handleClose}>
+                                                key={value.uid}
+                                                onClick={() => this.handleSelect(value)}>
                                                 {value.displayName}
                                             </MenuItem>
                                         )
