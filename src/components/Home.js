@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { getFirebaseAuth } from '../firebaseManager'
 
 import MemoryList from './memory/MemoryList'
 import Header from './Header'
@@ -9,7 +10,17 @@ import Container from '@material-ui/core/Container'
 
 export default function Home(props) {
 
+  const currentUser = getFirebaseAuth().currentUser
+
+  useEffect(() => {
+
+    if (!currentUser) { props.history.push('/') }
+
+
+  }, [currentUser, props.history])
+
   return (
+
     <React.Fragment>
       <nav >
         <Header />

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { GoogleAuth } from '../firebaseManager'
+import { GoogleAuth, getFirebaseAuth } from '../firebaseManager'
 import SignInManager from '../signInManager'
 
 import Header from './Header'
@@ -26,15 +26,20 @@ const signInState = new SignInManager()
 export default function Welcome(props) {
 
     const classes = useStyles()
+    const currentUser = getFirebaseAuth().currentUser
+
+    useEffect(() => {
+
+        if (currentUser) { props.history.push('/home') }
+
+    }, [currentUser, props.history])
 
     const handleSignIn = () => {
 
-        if (!googleAuth.getCurrentUser()) {
+        signInState.start()
 
-            signInState.start()
+        googleAuth.signIn()
 
-            googleAuth.signIn()
-        }
     }
 
     return (

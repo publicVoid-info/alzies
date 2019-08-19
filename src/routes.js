@@ -6,7 +6,7 @@ import Welcome from './components/Welcome'
 import MemoryEdit from './components/memory/MemoryEdit'
 import NoMatch from './components/NoMatch'
 
-export default (props) => (
+export default () => (
     <BrowserRouter>
         <Switch>
             <Route exact path='/' component={Welcome} />
