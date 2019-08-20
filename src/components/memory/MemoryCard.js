@@ -100,6 +100,7 @@ function MemoryCard(props) {
       <CardContent className={classes.cardContent} autoCorrect="false" >
         <Typography variant="body1" component="div">
           <Editor
+            height="auto"
             theme="bubble"
             text={memory.content}
             readOnly={true}

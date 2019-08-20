@@ -91,8 +91,10 @@ export default function MemoryEdit(props) {
     }
 
     return (
-        <nav >
-            <Header />
+        <React.Fragment>
+            <nav >
+                <Header />
+            </nav>
             <main>
                 <Container maxWidth="xl">
                     <Card className={classes.card} elevation={4} >
@@ -124,6 +126,6 @@ export default function MemoryEdit(props) {
                     <SaveIcon />
                 </Fab>
             </main>
-        </nav>
+        </React.Fragment>
     )
 }

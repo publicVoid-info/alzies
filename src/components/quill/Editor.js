@@ -7,16 +7,19 @@ import 'react-quill/dist/quill.snow.css'
 import 'react-quill/dist/quill.bubble.css'
 import 'react-quill/dist/quill.core.css'
 
-const useStyles = makeStyles(theme => ({
-    quill: {
-        color: theme.palette.text.primary,
-        '& a': {
-            color: theme.palette.text.primary
-        }
-    }
-}))
-
 function Editor(props) {
+
+    const useStyles = makeStyles(theme => ({
+        quill: {
+            color: theme.palette.text.primary,
+            '& a': {
+                color: theme.palette.text.primary
+            },
+            '& .ql-container': {
+                height: props.height,
+            }
+        },
+    }))
 
     const classes = useStyles()
 
