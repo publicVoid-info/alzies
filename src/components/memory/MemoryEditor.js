@@ -94,7 +94,7 @@ export default function FullScreenDialog(props) {
                         <TextField
                             className={classes.title}
                             id="standard-name"
-                            label="Headline"
+                            label="Título"
                             value={memory.headline}
                             onChange={handleChange('headline')}
                             required
