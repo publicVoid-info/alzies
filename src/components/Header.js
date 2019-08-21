@@ -5,14 +5,12 @@ import { GoogleAuth } from '../firebaseManager'
 import SignInManager from '../signInManager'
 
 import AppBar from '@material-ui/core/AppBar'
+import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
-import IconButton from '@material-ui/core/IconButton'
-import LogoutIcon from '@material-ui/icons/PowerSettingsNew'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import AlziesIcon from '../icons/Alzies'
-
 
 const useStyles = makeStyles((theme) => (
   {
@@ -28,32 +26,16 @@ const useStyles = makeStyles((theme) => (
       textDecoration: 'none',
       color: 'inherit'
     },
-    userButton: {
-      color: theme.palette.secondary.main,
-      backgroundColor: theme.palette.primary.main,
-      border: `1.5px solid ${theme.palette.secondary.main}`,
-      borderRadius: '10px',
-      paddingLeft: '10px',
-      cursor: 'pointer',
-      textTransform: 'uppercase',
-      lineHeight: '2.5rem',
-      margin: '0px',
-    },
-    userIcon: {
-      color: theme.palette.secondary.main,
-      backgroundColor: theme.palette.primary.main,
-      paddingTop: '5px',
-      paddingBottom: '5px',
-      paddingRight: '10px',
-      paddingLeft: '10px',
-    },
     appBar: {
       color: theme.palette.secondary.main,
       backgroundColor: theme.palette.primary.main,
       outline: `1px solid ${theme.palette.secondary.main}`,
       marginBottom: '10px',
     },
-
+    bigAvatar: {
+      float: 'left',
+      cursor: 'pointer',
+    },
   }
 ))
 
@@ -126,16 +108,13 @@ function Header(props) {
               </Typography>
               </Link>
             </Grid>
-
             <Grid item>
-              {(googleAuth.getCurrentUser())
-                &&
-                <h5 className={classes.userButton} onClick={handleSignOut}>
-                  {googleAuth.getCurrentUser().displayName}
-                  <IconButton className={classes.userIcon}>
-                    <LogoutIcon />
-                  </IconButton>
-                </h5>
+              {(googleAuth.getCurrentUser()) &&
+                <Avatar
+                  alt={googleAuth.getCurrentUser().displayName}
+                  src={googleAuth.getCurrentUser().photoURL}
+                  className={classes.bigAvatar}
+                  onClick={handleSignOut} />
               }
             </Grid>
           </Grid>
