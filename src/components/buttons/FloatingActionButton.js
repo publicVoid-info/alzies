@@ -22,9 +22,9 @@ export default function FloatingActionButton(props) {
                 className={classes.fab}
                 color={props.color}
                 aria-label={props.label}
-                onClick={(props.onClick) ? props.onClick() : null}>
+                onClick={(props.onClick)}>
                 {props.children}
             </Fab>
         </React.Fragment>
-    );
+    )
 }
