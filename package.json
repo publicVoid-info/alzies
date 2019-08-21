@@ -44,7 +44,6 @@
       "src/**/*.{js,jsx,ts,tsx}",
       "!**/node_modules/"
     ],
-    "collectCoverage": "true",
     "coverageThreshold": {
       "global": {
         "branches": 90,
