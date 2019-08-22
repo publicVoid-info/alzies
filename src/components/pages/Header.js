@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link, withRouter } from 'react-router-dom'
-import { GoogleAuth } from '../firebaseManager'
-import SignInManager from '../signInManager'
+import { Link } from 'react-router-dom'
+import AuthContext from '../../context/authContext'
+import SignInManager from '../../helpers/signInManager'
 
 import AppBar from '@material-ui/core/AppBar'
 import Avatar from '@material-ui/core/Avatar'
@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
-import AlziesIcon from '../icons/Alzies'
+import AlziesIcon from '../../icons/Alzies'
 
 const useStyles = makeStyles((theme) => (
   {
@@ -39,66 +39,32 @@ const useStyles = makeStyles((theme) => (
   }
 ))
 
-const googleAuth = new GoogleAuth()
-const signInState = new SignInManager()
-
 function Header(props) {
 
-  let idInterval = null
   const classes = useStyles()
+  const currentUser = useContext(AuthContext)
 
-  const timer = () => {
+  const progressoSignin = () => {
 
-    if (googleAuth.getCurrentUser()) return
+    const signInState = new SignInManager()
 
     if (signInState.getSignInState().request) {
-
-      idInterval = setInterval(() => {
-
-        if (signInState.getSignInState().request) {
-
-          signInState.logRedirect()
-          googleAuth.getRedirectResult()
-
-        }
-
-        if (googleAuth.getAuth().currentUser) {
-
-          signInState.finish()
-          clearInterval(idInterval)
-          googleAuth.registerCurrentUser()
-          props.history.push('/home')
-
-        }
-
-      }, 2000)
+      return <LinearProgress color="secondary" />
+    } else {
+      return null
     }
   }
-
-  const handleSignOut = () => {
-
-    googleAuth.signOut().then(() => {
-
-      signInState.reset()
-
-      props.history.push('/')
-    })
-  }
-
-  useEffect(() => {
-    timer()
-  })
 
   return (
     <React.Fragment>
       <AppBar className={classes.appBar} position="sticky" elevation={12} >
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
-            <Link className={classes.link} to={(googleAuth.getCurrentUser()) ? "/home" : "/"}>
+            <Link className={classes.link} to={"/"}>
               <AlziesIcon className={classes.alziesIcon} />
             </Link>
             <Grid item xs>
-              <Link className={classes.link} to={(googleAuth.getCurrentUser()) ? "/home" : "/"}>
+              <Link className={classes.link} to={"/"}>
                 <Typography
                   className={classes.alzies}
                   color="textSecondary"
@@ -109,20 +75,20 @@ function Header(props) {
               </Link>
             </Grid>
             <Grid item>
-              {(googleAuth.getCurrentUser()) &&
+              {(currentUser) &&
                 <Avatar
-                  alt={googleAuth.getCurrentUser().displayName}
-                  src={googleAuth.getCurrentUser().photoURL}
+                  alt={currentUser.displayName}
+                  src={currentUser.photoURL}
                   className={classes.bigAvatar}
-                  onClick={handleSignOut} />
+                  onClick={props.handleSignOut} />
               }
             </Grid>
           </Grid>
         </Toolbar>
-        {(signInState.getSignInState().request) ? <LinearProgress color="secondary" /> : null}
+        {progressoSignin()}
       </AppBar>
     </React.Fragment >
-  );
+  )
 }
 
-export default withRouter(Header)
+export default Header

@@ -1,5 +1,6 @@
 import React from 'react'
-import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
+import { getFirestore } from '../../helpers/firebaseManager'
+import AuthContext from '../../context/authContext'
 
 import Grow from '@material-ui/core/Grow'
 import Paper from '@material-ui/core/Paper'
@@ -23,13 +24,15 @@ export default class FindUsersDialog extends React.Component {
 
     getUsers = () => {
 
+        const currentUser = this.context
+
         getFirestore().collection('users')
             .get()
             .then((qs) => {
                 const result = []
                 qs.forEach(
                     (doc) => {
-                        if (getFirebaseAuth().currentUser.uid !== doc.id) {
+                        if (currentUser.uid !== doc.id) {
                             result.push({ id: doc.id, ...doc.data() })
                         }
                     }
@@ -112,3 +115,5 @@ export default class FindUsersDialog extends React.Component {
         )
     }
 }
+
+FindUsersDialog.contextType = AuthContext

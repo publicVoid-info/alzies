@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { withRouter } from 'react-router-dom'
-import { getFirestore } from '../../firebaseManager'
+import { getFirestore } from '../../helpers/firebaseManager'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -75,9 +74,6 @@ function MemoryCard(props) {
     }
 
     getFirestore().collection('memories').doc(memory.id).set(newMemory)
-      .then(function () {
-        props.history.push('/home')
-      })
   }
 
   const handleMemoryEdit = () => {
@@ -125,5 +121,5 @@ function MemoryCard(props) {
   )
 }
 
-export default withRouter(MemoryCard)
+export default MemoryCard
 

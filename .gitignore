@@ -22,4 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# configs do vscode
 .vscode
+
+# cache local do firebase
+.firebase

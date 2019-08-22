@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
+import { getFirestore } from '../../helpers/firebaseManager'
+import AuthContext from '../../context/authContext'
 import uuidv4 from 'uuid/v4'
 
 import Button from '@material-ui/core/Button'
@@ -30,14 +31,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-export default function FullScreenDialog(props) {
+export default function MemoryEditor(props) {
 
     const classes = useStyles();
     const [open, setOpen] = React.useState(true)
     const [memory, setMemory] = React.useState({ owner: [], id: '', headline: '', content: '' })
     const [editorText, setEditorText] = React.useState('')
+    const currentUser = useContext(AuthContext)
 
-    const userId = (getFirebaseAuth().currentUser) ? getFirebaseAuth().currentUser.uid : ''
+    const userId = (currentUser) ? currentUser.uid : ''
 
     const getMemory = (id) => {
 
@@ -74,13 +76,13 @@ export default function FullScreenDialog(props) {
 
         getFirestore().collection('memories').doc(memory.id).set(memory)
             .then(function () {
-                props.history.push('/home')
+                props.history.push('/')
             })
     }
 
     function handleClose() {
         setOpen(false);
-        props.history.push('/home')
+        props.history.push('/')
     }
 
     return (

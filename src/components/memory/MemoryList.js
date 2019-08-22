@@ -1,5 +1,6 @@
 import React from 'react'
-import { getFirestore, getFirebaseAuth } from '../../firebaseManager'
+import { getFirestore } from '../../helpers/firebaseManager'
+import AuthContext from '../../context/authContext'
 
 import MemoryCard from './MemoryCard'
 
@@ -16,7 +17,9 @@ class MemoryList extends React.Component {
 
     getMemories() {
 
-        const userId = (getFirebaseAuth().currentUser) ? getFirebaseAuth().currentUser.uid : ''
+        const currentUser = this.context
+
+        const userId = (currentUser) ? currentUser.uid : ''
 
         this.unsubscribe =
             getFirestore().collection('memories')
@@ -50,10 +53,17 @@ class MemoryList extends React.Component {
     render() {
         return (
             <React.Fragment>
-                {this.state.memoryList.map(m => <MemoryCard key={m.id} memory={m} />)}
+                {this.state.memoryList.map(m =>
+                    <MemoryCard
+                        key={m.id}
+                        memory={m}
+                        history={this.props.history} />
+                )}
             </React.Fragment>
         )
     }
 }
+
+MemoryList.contextType = AuthContext
 
 export default MemoryList

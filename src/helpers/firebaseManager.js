@@ -21,10 +21,6 @@ function getFirestore() {
     return firebase.firestore()
 }
 
-function getFirebaseAuth() {
-    return firebase.auth()
-}
-
 class GoogleAuth {
     constructor() {
         this._auth = firebase.auth()
@@ -72,7 +68,7 @@ class GoogleAuth {
     }
 }
 
-export { getFirestore, getFirebaseAuth, GoogleAuth }
+export { getFirestore, GoogleAuth }
 
 
 
