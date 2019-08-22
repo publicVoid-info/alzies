@@ -28,17 +28,15 @@ jobs:
 
       - run: npm install
 
+      - run: npm install --save-dev firebase-tools      
+
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm test
-
-      - run: npm run build
-
-      - run: mkdir -p repo
+      - run: npm test      
 
       - store_artifacts: # special step to save test results as as artifact
           # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
@@ -47,3 +45,10 @@ jobs:
                 
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test-results.xml
+
+      # build
+      - run: npm run build
+
+      - run:
+             name: Deploy Master to Firebase
+             command: ./node_modules/.bin/firebase deploy --token=$1/q6lNV04k3_Cf0bohNGg35CC2aZw3bR-f3qGWq47PmaOCOn-JCHi-nmMl5c4Pfaxl
