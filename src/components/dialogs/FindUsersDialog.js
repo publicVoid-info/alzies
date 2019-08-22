@@ -71,7 +71,7 @@ export default class FindUsersDialog extends React.Component {
 
     }
 
-    componentWillMount() {
+    componentDidMount() {
 
         this.getUsers()
 
