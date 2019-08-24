@@ -11,6 +11,8 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import AlziesIcon from '../../icons/Alzies'
+import Button from '@material-ui/core/Button'
+import GetAppIcon from '@material-ui/icons/GetApp'
 
 const useStyles = makeStyles((theme) => (
   {
@@ -36,8 +38,33 @@ const useStyles = makeStyles((theme) => (
       float: 'left',
       cursor: 'pointer',
     },
+    installButton: {
+      display: 'none',
+      // inline- flex;
+    }
   }
 ))
+
+let installPromptEvent
+
+window.addEventListener('beforeinstallprompt', (event) => {
+
+  document.querySelector('#install-app').style.display = 'inline-flex'
+
+  installPromptEvent = event
+  // Prevent Chrome <= 67 from automatically showing the prompt
+  event.preventDefault()
+})
+
+const handleInstallApp = () => {
+
+  installPromptEvent.prompt()
+  installPromptEvent.userChoice.then((choice) => {
+    // Clear the saved prompt since it can't be used again
+    installPromptEvent = null
+    document.querySelector('#install-app').style.display = 'none'
+  })
+}
 
 function Header(props) {
 
@@ -75,6 +102,15 @@ function Header(props) {
               </Link>
             </Grid>
             <Grid item>
+              <Button
+                id="install-app"
+                className={classes.installButton}
+                variant="text"
+                color="secondary"
+                onClick={handleInstallApp}>
+                <GetAppIcon />
+                Get App
+              </Button>
               {(currentUser) &&
                 <Avatar
                   alt={currentUser.displayName}
