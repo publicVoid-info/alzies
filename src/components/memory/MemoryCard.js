@@ -20,10 +20,14 @@ const useStyles = makeStyles((theme) => (
       float: 'left',
       margin: '10px',
       minWidth: '280px',
+      textAlign: 'left',
+      overflow: 'auto',
+      width: '100%',
+      height: '100%',
     },
     '@media (max-width: 340px)': {
       card: {
-        maxWidth: '280px',
+        maxWidth: '260px',
       },
     },
     cardHeader: {
@@ -56,8 +60,8 @@ const useStyles = makeStyles((theme) => (
 function MemoryCard(props) {
 
   const { memory, history } = props
-
   const classes = useStyles()
+
 
   const handleDeleteClick = () => {
 
@@ -68,12 +72,15 @@ function MemoryCard(props) {
 
   const handleSelectUser = (user) => {
 
-    const newMemory = {
-      ...memory,
-      owner: [...memory.owner, user.uid]
-    }
+    if (memory.owner.indexOf(user.uid) === -1) {
 
-    getFirestore().collection('memories').doc(memory.id).set(newMemory)
+      const newMemory = {
+        ...memory,
+        owner: [...memory.owner, user.uid]
+      }
+
+      getFirestore().collection('memories').doc(memory.id).set(newMemory)
+    }
   }
 
   const handleMemoryEdit = () => {
@@ -122,4 +129,3 @@ function MemoryCard(props) {
 }
 
 export default MemoryCard
-

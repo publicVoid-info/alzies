@@ -65,7 +65,7 @@ export default function Home(props) {
 
   return (
 
-    <Container className={classes.container} maxWidth="xl">
+    <Container className={classes.container} maxWidth="md">
       {verificaSignIn()}
     </Container>
 

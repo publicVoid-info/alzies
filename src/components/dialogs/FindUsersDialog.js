@@ -9,6 +9,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import ShareIcon from '@material-ui/icons/Share'
 import IconButton from '@material-ui/core/IconButton'
+import { ClickAwayListener } from '@material-ui/core'
 
 export default class FindUsersDialog extends React.Component {
     constructor(props) {
@@ -95,18 +96,19 @@ export default class FindUsersDialog extends React.Component {
                             style={{ transformOrigin: placement === 'bottom ' ? 'center bottom' : 'center top' }}
                         >
                             <Paper id="menu-list-grow">
-
-                                <MenuList>
-                                    {this.state.userList.map((value, index) => {
-                                        return (
-                                            <MenuItem
-                                                key={value.uid}
-                                                onClick={() => this.handleSelect(value)}>
-                                                {value.displayName}
-                                            </MenuItem>
-                                        )
-                                    })}
-                                </MenuList>
+                                <ClickAwayListener onClickAway={this.handleClose}>
+                                    <MenuList>
+                                        {this.state.userList.map((value, index) => {
+                                            return (
+                                                <MenuItem
+                                                    key={value.uid}
+                                                    onClick={() => this.handleSelect(value)}>
+                                                    {value.displayName}
+                                                </MenuItem>
+                                            )
+                                        })}
+                                    </MenuList>
+                                </ClickAwayListener>
                             </Paper>
                         </Grow>
                     )}
