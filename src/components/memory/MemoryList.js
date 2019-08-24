@@ -80,7 +80,15 @@ class MemoryList extends React.Component {
                     getFirestore().collection('memoryPosition')
                         .doc(userId)
                         .get()
-                        .then((doc) => this.sortMemories(result, doc.data()))
+                        .then((doc) =>
+                            this.sortMemories(result,
+                                (doc.exists)
+                                    ?
+                                    doc.data()
+                                    :
+                                    { memoryId: [] }
+                            )
+                        )
                 })
     }
 
@@ -94,7 +102,7 @@ class MemoryList extends React.Component {
                 ...m,
                 indexSort:
                     (posicaoEncontrada === -1)
-                        ? posicoes.length
+                        ? posicoes.memoryId.length
                         : posicaoEncontrada
             }
 
