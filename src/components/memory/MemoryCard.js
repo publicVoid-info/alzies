@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { getFirestore } from '../../helpers/firebaseManager'
 
@@ -13,6 +13,7 @@ import Editor from '../quill/Editor'
 import Divider from '@material-ui/core/Divider'
 import DeleteCardDialog from '../dialogs/DeleteCardDialog'
 import FindUserDialog from '../dialogs/FindUsersDialog'
+import AuthContext from '../../context/authContext';
 
 const useStyles = makeStyles((theme) => (
   {
@@ -61,12 +62,14 @@ function MemoryCard(props) {
 
   const { memory, history } = props
   const classes = useStyles()
+  const currentUser = useContext(AuthContext)
 
 
   const handleDeleteClick = () => {
 
     if (!memory.id) { return }
 
+    getFirestore().collection('memoryPosition').doc(currentUser.uid).delete()
     getFirestore().collection('memories').doc(memory.id).delete()
   }
 

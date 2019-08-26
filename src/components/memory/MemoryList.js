@@ -94,6 +94,11 @@ class MemoryList extends React.Component {
 
     sortMemories(memoryList, posicoes) {
 
+        //caso venha vazio, é primeira vez, inicializa
+        if (posicoes.memoryId.length === 0) {
+            memoryList.forEach((v, i) => posicoes.memoryId.push(v.id))
+        }
+
         const sortedResult = memoryList.map((m) => {
 
             const posicaoEncontrada = posicoes.memoryId.findIndex((id) => id === m.id)
