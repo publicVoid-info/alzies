@@ -7,11 +7,11 @@ cache:
 script:
   - yarn build
   - yarn test
-# deploy:
-#   provider: firebase
-#   skip_cleanup: true
-#   firebase_token: $TOKEN
-#   keep_history: true
-#   on:
-#     branch: master
-#   local_dir: ./build
+deploy:
+  provider: firebase
+  skip_cleanup: true
+  firebase_token: $FIREBASE_TOKEN
+  keep_history: true
+  on:
+    branch: master
+  local_dir: ./build

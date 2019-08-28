@@ -10,5 +10,7 @@ xit('renders without crashing', () => {
         height="75vh"
         onChange={() => { return null }}
         text={"texto"}
-        readOnly={false} />, div)
+        readOnly={false} />, div);
+
+    ReactDOM.unmountComponentAtNode(div);
 })

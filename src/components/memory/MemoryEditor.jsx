@@ -78,9 +78,9 @@ export default function MemoryEditor(props) {
 
         getFirestore().collection('memories').doc(memory.id).set(memory)
             .then(function () {
-                props.history.push('/')
+                props.history.push('/');
             })
-            .catch()
+            .catch();
     }
 
     function handleClose() {

@@ -113,7 +113,7 @@ class HomeContent extends Component {
           memoryList: memoryList
         })
       )
-      .catch()
+      .catch();
   }
 
   componentDidMount() {

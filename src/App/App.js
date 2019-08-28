@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { getFirebase } from '../helpers/firebase';
+import { getFirebase, getFirestore } from '../helpers/firebase';
 import { AuthContext } from '../store/store';
 
 import validate from 'validate.js';
@@ -154,8 +154,11 @@ class App extends Component {
       },
       () => {
         auth.createUserWithEmailAndPassword(emailAddress, password)
-          .then(() => {
+          .then((r) => {
             this.closeSignUpDialog(() => {
+
+              this.registerUser(r);
+
               this.openWelcomeDialog();
             })
           })
@@ -232,6 +235,9 @@ class App extends Component {
         auth.signInWithPopup(provider)
           .then((r) => {
             this.closeSignUpDialog(() => {
+
+              this.registerUser(r);
+
               this.closeSignInDialog(() => {
                 this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
               })
@@ -975,6 +981,21 @@ class App extends Component {
         }
       });
   }
+
+  registerUser(r) {
+
+    if (!r.additionalUserInfo) return;
+
+    if (r.additionalUserInfo.isNewUser) {
+      return getFirestore().collection('users')
+        .doc(r.user.uid)
+        .set({
+          displayName: r.user.displayName,
+          email: r.user.email,
+          uid: r.user.uid,
+        });
+    };
+  };
 
   componentWillUnmount() {
     this._isMounted = false;

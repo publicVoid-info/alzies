@@ -101,6 +101,7 @@ function MemoryCard(props) {
         props.openSnackbar('Card deleted')
         closeDeleteCardDialog();
       })
+      .catch(error => props.openSnackbar(error));
   }
 
   const handleSelectUser = (user) => {
@@ -116,6 +117,7 @@ function MemoryCard(props) {
         .doc(memory.id)
         .set(newMemory)
         .then(() => props.openSnackbar('Card shared'))
+        .catch(error => props.openSnackbar(error));
     }
   }
 
@@ -124,6 +126,7 @@ function MemoryCard(props) {
   }
 
   return (
+
     <Card
       className={classes.card}
       elevation={8}
