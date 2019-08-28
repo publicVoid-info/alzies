@@ -12,7 +12,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Container from '@material-ui/core/Container';
 
 import EmptyState from './EmptyState';
-import MemoryList from '../components/Memory/MemoryList';
+import MemoryList from '../components/memory/MemoryList';
 
 const styles = (theme) => ({
   emptyStateIcon: {
@@ -113,7 +113,7 @@ class HomeContent extends Component {
           memoryList: memoryList
         })
       )
-      .catch()
+      .catch();
   }
 
   componentDidMount() {

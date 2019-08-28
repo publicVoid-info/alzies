@@ -12,7 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import Editor from '../Editor/Editor';
+import Editor from '../editor/Editor';
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -78,9 +78,9 @@ export default function MemoryEditor(props) {
 
         getFirestore().collection('memories').doc(memory.id).set(memory)
             .then(function () {
-                props.history.push('/')
+                props.history.push('/');
             })
-            .catch()
+            .catch();
     }
 
     function handleClose() {

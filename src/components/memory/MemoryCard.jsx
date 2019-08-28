@@ -15,7 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Editor from '../Editor/Editor';
+import Editor from '../editor/Editor';
 import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => (
@@ -101,6 +101,7 @@ function MemoryCard(props) {
         props.openSnackbar('Card deleted')
         closeDeleteCardDialog();
       })
+      .catch(error => props.openSnackbar(error));
   }
 
   const handleSelectUser = (user) => {
@@ -116,6 +117,7 @@ function MemoryCard(props) {
         .doc(memory.id)
         .set(newMemory)
         .then(() => props.openSnackbar('Card shared'))
+        .catch(error => props.openSnackbar(error));
     }
   }
 
@@ -124,6 +126,7 @@ function MemoryCard(props) {
   }
 
   return (
+
     <Card
       className={classes.card}
       elevation={8}

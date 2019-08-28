@@ -18,8 +18,8 @@ import AppearanceTab from '../layout/AppearanceTab';
 
 const styles = (theme) => ({
   tabs: {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 });
 
 class SettingsDialog extends Component {

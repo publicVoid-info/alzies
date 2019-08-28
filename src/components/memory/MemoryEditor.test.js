@@ -8,5 +8,7 @@ it('renders without crashing', () => {
 
     ReactDOM.render(< BrowserRouter >
         < Route exact path={`/memory/${123}`} component={MemoryEditor} />
-    </BrowserRouter >, div)
+    </BrowserRouter >, div);
+
+    ReactDOM.unmountComponentAtNode(div);
 })

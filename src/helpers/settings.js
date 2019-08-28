@@ -27,12 +27,12 @@ const settings = {
 
   theme: {
     primaryColor: {
-      name: 'deepOrange',
-      import: blue
+      name: 'red',
+      import: red
     },
     secondaryColor: {
-      name: 'blueGray',
-      import: red
+      name: 'gray',
+      import: gray
     },
     type: 'dark'
   },
