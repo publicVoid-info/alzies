@@ -31,7 +31,7 @@ jobs:
       - run: mkdir -p ~/repo/coverage/lcov-report
 
       - store_test_results:
-        path: ~/repo/coverage/lcov-report
+            path: ~/repo/coverage/lcov-report
 
       # build
       - run: yarn build
