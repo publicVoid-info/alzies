@@ -26,9 +26,9 @@ function Editor(props) {
                 border: '0px',
             },
         },
-    }))
+    }));
 
-    const classes = useStyles()
+    const classes = useStyles();
 
     return (
         <div id="#quill" className={classes.quill}>
@@ -84,4 +84,4 @@ Editor.propTypes = {
     placeholder: PropTypes.string,
 }
 
-export default Editor
+export default Editor;
