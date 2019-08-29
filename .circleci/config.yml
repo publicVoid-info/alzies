@@ -15,8 +15,12 @@ jobs:
       - checkout
       # Download and cache dependencies
       - restore_cache:
+<<<<<<< HEAD
           keys: 
                 - 'v1-yarn-{{ checksum "yarn.lock" }}'
+=======
+          key: 'v1-yarn-{{ checksum "yarn.lock" }}'
+>>>>>>> master
                 # fallback to using the latest cache if no exact match is found
                 - v1-yarn-
       - run: yarn install
