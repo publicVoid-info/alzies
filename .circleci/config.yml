@@ -26,13 +26,12 @@ jobs:
           paths:
             - ./node_modules
 
-      - run: yarn test
+      - run: yarn test --coverage
 
-      - run: mkdir -p ~/repo/tests      
+      - run: mkdir -p ~/repo/coverage/lcov-report
 
-      - run:          
-        - store_test_results:
-          path: ~/repo/tests
+      - store_test_results:
+        path: ~/repo/coverage/lcov-report
 
       # build
       - run: yarn build
