@@ -42,5 +42,8 @@
   "main": "index.js",
   "repository": "https://github.com/DonOctavioDelFlores/alzies.git",
   "author": "Rodrigo <rodrigo.pires.net@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "firebase-tools": "^7.3.0"
+  }
 }
