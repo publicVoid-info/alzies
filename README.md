@@ -1,4 +1,6 @@
-# Glorious Alzies
+[![CircleCI](https://circleci.com/gh/DonOctavioDelFlores/alzies/tree/master.svg?style=svg)](https://circleci.com/gh/DonOctavioDelFlores/alzies/tree/master)
+
+# Alzies
 
 Notebook app
 
