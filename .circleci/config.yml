@@ -27,12 +27,12 @@ jobs:
       - run: yarn test
 
       - store_test_results:
-          path: /circleci/report.xml
+          path: /repo/report.xml
       - store_artifacts:
-          path: /circleci/
+          path: /repo/
           destination: scan-test-results
       - store_artifacts:
-          path: /circleci/
+          path: /repo/
           destination: scan-logs
 
       # build
