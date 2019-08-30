@@ -76,10 +76,16 @@ class HomeContent extends Component {
 
     const userId = this.props.user.uid;
 
+    //limpa o listener anterior
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+
     this.unsubscribe =
       getFirestore().collection('memories')
         .where('owner', 'array-contains', userId)
         .onSnapshot((qs) => {
+
           const result = [];
 
           qs.forEach((doc) => result.push({ id: doc.id, ...doc.data() }));
@@ -118,7 +124,14 @@ class HomeContent extends Component {
 
   componentDidMount() {
 
-    if (this.props.isSignedIn) {
+    if (this.props.isSignedIn && this.props.user) {
+      this.getMemories();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+
+    if (this.props.isSignedIn && this.props.user && this.state.memoryList.length === 0) {
       this.getMemories();
     }
   }
@@ -131,6 +144,7 @@ class HomeContent extends Component {
   }
 
   render() {
+
     // Styling
     const { classes } = this.props;
 

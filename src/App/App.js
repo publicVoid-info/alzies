@@ -45,10 +45,12 @@ let theme = createMuiTheme({
 })
 
 class App extends Component {
-  _isMounted = false;
+
 
   constructor(props) {
     super(props);
+
+    this._isMounted = false;
 
     this.state = {
       primaryColor: settings.theme.primaryColor.name,
@@ -970,10 +972,13 @@ class App extends Component {
       this.updateTheme(theme);
     }
 
+    const self = this;
+
     this.removeAuthObserver =
       firebase.auth().onAuthStateChanged((user) => {
-        if (this._isMounted) {
-          this.setState({
+        if (self._isMounted) {
+
+          self.setState({
             isAuthReady: true,
             isSignedIn: !!user,
             user
