@@ -133,32 +133,48 @@ class HomeContent extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 
+    //caso nao esteja logado, zera o memorylist, para nao aparecer qd troca usuario
+    if (!this.props.isSignedIn || !this.props.user) {
+      if (this.state.memoryList.length > 0) {
+        this.setState({
+          memoryList: []
+        });
+
+        return;
+      }
+    }
+
     const searchInput = this.props.searchInput.toUpperCase();
 
+    //se o prop de pesquisa for diferente do estado, filtra
     if (prevProps.searchInput !== this.props.searchInput) {
 
-      if (searchInput.length > -1) {
-        const filteredList =
-          this.state.memoryList.filter((value) => {
-            return value.headline.toUpperCase().indexOf(searchInput) > -1;
-          });
+      this.filtroSearch(searchInput);
 
-        this.setState({
-          memoryList: filteredList
+      return;
+    }
+
+    if (this.props.isSignedIn && this.props.user) {
+      if (searchInput.length === 0 && this.state.memoryList.length === 0) {
+        this.getMemories();
+      }
+    }
+  }
+
+  filtroSearch(searchInput) {
+
+    //caso o input seja length 0, significa q acabou de limpar a pesquisa, carrega os caboclos originais
+    if (searchInput.length > 0) {
+      const filteredList =
+        this.state.memoryList.filter((value) => {
+          return value.headline.toUpperCase().indexOf(searchInput) > -1;
         });
-      }
+
+      this.setState({
+        memoryList: filteredList
+      });
     } else {
-      if (this.props.isSignedIn && this.props.user) {
-        if (searchInput.length === 0 && this.state.memoryList.length === 0) {
-          this.getMemories();
-        }
-      } else {
-        if (this.state.memoryList.length > 0) {
-          this.setState({
-            memoryList: []
-          });
-        }
-      }
+      this.getMemories();
     }
   }
 
