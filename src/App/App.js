@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { getFirebase, getFirestore } from '../helpers/firebase';
-import { AuthContext } from '../store/store';
+import { AuthContext, initialState } from '../store/store';
 
 import validate from 'validate.js';
 import readingTime from 'reading-time';
@@ -51,82 +51,8 @@ class App extends Component {
 
     this._isMounted = false;
 
-    this.state = {
-      primaryColor: settings.theme.primaryColor.name,
-      secondaryColor: settings.theme.secondaryColor.name,
-      type: settings.theme.type,
+    this.state = initialState;
 
-      isAuthReady: false,
-      isPerformingAuthAction: false,
-      isVerifyingEmailAddress: false,
-      isSignedIn: false,
-
-      user: null,
-      avatar: '',
-      displayName: '',
-      emailAddress: '',
-
-      searchInput: '',
-
-      signUpDialog: {
-        open: false
-      },
-
-      signInDialog: {
-        open: false
-      },
-
-      resetPasswordDialog: {
-        open: false
-      },
-
-      welcomeDialog: {
-        open: false
-      },
-
-      drawer: {
-        open: false
-      },
-
-      settingsDialog: {
-        open: false
-      },
-
-      addAvatarDialog: {
-        open: false,
-        errors: null
-      },
-
-      changeAvatarDialog: {
-        open: false,
-        errors: null
-      },
-
-      addDisplayNameDialog: {
-        open: false,
-        errors: null
-      },
-
-      changeDisplayNameDialog: {
-        open: false,
-        errors: null
-      },
-
-      addEmailAddressDialog: {
-        open: false,
-        errors: null
-      },
-
-      signOutDialog: {
-        open: false
-      },
-
-      snackbar: {
-        autoHideDuration: 0,
-        message: '',
-        open: false
-      }
-    }
   }
 
   signUp = (emailAddress, password, passwordConfirmation) => {
