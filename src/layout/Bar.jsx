@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { withStyles } from '@material-ui/core/styles';
+import { fade, withStyles } from '@material-ui/core/styles';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,18 +12,60 @@ import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
-import AlziesIcon from '../icons/Alzies';
+import MenuIcon from '@material-ui/icons/Menu';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
 
 import PersonIcon from '@material-ui/icons/Person';
 
 const styles = (theme) => ({
+  titulo: {
+    flexGrow: '1',
+    marginRight: theme.spacing(2),
+  },
   signButton: {
     marginRight: theme.spacing(1),
   },
-  alziesIcon: {
-    width: '24px',
-    height: '24px',
-    margin: '5px',
+  menuButton: {
+    marginRight: theme.spacing(1),
+  },
+  search: {
+    flexGrow: '1',
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    width: theme.spacing(7),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 7),
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: 120,
+      '&:focus': {
+        width: 200,
+      },
+    },
   },
 });
 
@@ -71,7 +113,7 @@ class Bar extends Component {
     const { classes } = this.props;
 
     // Properties
-    const { title, isPerformingAuthAction, isSignedIn, user } = this.props;
+    const { isPerformingAuthAction, isSignedIn, user } = this.props;
 
     // Events
     const { onSignUpClick, onSignInClick } = this.props;
@@ -81,11 +123,36 @@ class Bar extends Component {
     return (
       <AppBar color="primary" position="static">
         <Toolbar variant="regular">
-          <AlziesIcon className={classes.alziesIcon} />
-          <Typography style={{ flexGrow: 1 }} color="inherit" variant="h5">{title}</Typography>
+          <IconButton
+            className={classes.menuButton}
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={this.props.onMenuClick}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            className={classes.titulo}
+            color="inherit"
+            variant="h5">Alzies</Typography>
 
           {isSignedIn &&
             <React.Fragment>
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                  inputProps={{ 'aria-label': 'search' }}
+                  onInput={this.props.onSearchInput}
+                />
+              </div>
               <IconButton color="inherit" disabled={isPerformingAuthAction} onClick={this.openMenu}>
                 {user.photoURL ? <Avatar alt="Avatar" src={user.photoURL} /> : <PersonIcon />}
               </IconButton>
@@ -133,12 +200,13 @@ class Bar extends Component {
 Bar.propTypes = {
   classes: PropTypes.object.isRequired,
 
-  title: PropTypes.string.isRequired,
   isPerformingAuthAction: PropTypes.bool.isRequired,
   isSignedIn: PropTypes.bool.isRequired,
 
   onSettingsClick: PropTypes.func.isRequired,
-  onSignOutClick: PropTypes.func.isRequired
+  onSignOutClick: PropTypes.func.isRequired,
+
+  onMenuClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Bar);

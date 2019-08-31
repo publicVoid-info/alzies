@@ -41,10 +41,10 @@ const useStyles = makeStyles((theme) => (
         textTransform: 'uppercase',
       },
       '&:hover': {
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.secondary.light,
       },
       '&:focus': {
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.secondary.light,
       },
     },
     cardAction: {

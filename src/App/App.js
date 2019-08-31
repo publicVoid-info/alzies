@@ -46,7 +46,6 @@ let theme = createMuiTheme({
 
 class App extends Component {
 
-
   constructor(props) {
     super(props);
 
@@ -67,6 +66,8 @@ class App extends Component {
       displayName: '',
       emailAddress: '',
 
+      searchInput: '',
+
       signUpDialog: {
         open: false
       },
@@ -80,6 +81,10 @@ class App extends Component {
       },
 
       welcomeDialog: {
+        open: false
+      },
+
+      drawer: {
         open: false
       },
 
@@ -784,6 +789,14 @@ class App extends Component {
     });
   };
 
+  toggleDrawer = () => {
+    this.setState({
+      drawer: {
+        open: !this.state.drawer.open
+      }
+    });
+  };
+
   openSettingsDialog = () => {
     this.setState({
       settingsDialog: {
@@ -942,6 +955,10 @@ class App extends Component {
     this.setState({ emailAddress });
   };
 
+  handleSearchInput = (e) => {
+    this.setState({ searchInput: e.target.value });
+  }
+
   openSnackbar = (message) => {
     this.setState({
       snackbar: {
@@ -1009,6 +1026,7 @@ class App extends Component {
   }
 
   render() {
+
     const {
       primaryColor,
       secondaryColor,
@@ -1028,6 +1046,7 @@ class App extends Component {
       signInDialog,
       resetPasswordDialog,
       welcomeDialog,
+      drawer,
       settingsDialog,
       addAvatarDialog,
       changeAvatarDialog,
@@ -1040,327 +1059,336 @@ class App extends Component {
     const { snackbar } = this.state;
 
     return (
-      <Router>
+      < Router >
         <AuthContext.Provider value={this.state.user}>
           <MuiThemeProvider theme={theme}>
-            <div style={{ minHeight: '100vh', backgroundColor: theme.palette.type === 'dark' ? '#303030' : '#fafafa' }}>
-              {!isAuthReady &&
-                <LaunchScreen />
-              }
+            <header>
+              <Bar
+                isSignedIn={isSignedIn}
+                isPerformingAuthAction={isPerformingAuthAction}
 
-              {isAuthReady &&
-                <React.Fragment>
-                  <Bar
-                    title={settings.title}
+                user={user}
 
-                    isSignedIn={isSignedIn}
-                    isPerformingAuthAction={isPerformingAuthAction}
+                onSignUpClick={this.openSignUpDialog}
+                onSignInClick={this.openSignInDialog}
 
-                    user={user}
+                onSettingsClick={this.openSettingsDialog}
+                onSignOutClick={this.openSignOutDialog}
 
-                    onSignUpClick={this.openSignUpDialog}
-                    onSignInClick={this.openSignInDialog}
+                onMenuClick={this.toggleDrawer}
 
-                    onSettingsClick={this.openSettingsDialog}
-                    onSignOutClick={this.openSignOutDialog}
-                  />
+                onSearchInput={this.handleSearchInput}
+              />
+            </header>
+            <main>
 
-                  <Switch>
-                    <Route exact path="/" render={
-                      () => (
-                        <HomeContent
+              <div style={{ minHeight: '100vh', backgroundColor: theme.palette.type === 'dark' ? '#303030' : '#fafafa' }}>
+                {!isAuthReady &&
+                  <LaunchScreen />
+                }
+
+                {isAuthReady &&
+                  <React.Fragment>
+                    <Switch>
+                      <Route exact path="/" render={
+                        () => (
+                          <HomeContent
+                            user={user}
+                            isSignedIn={isSignedIn}
+                            title={settings.title}
+                            drawerOpen={drawer.open}
+                            onToggleDrawer={this.toggleDrawer}
+                            searchInput={this.state.searchInput}
+                          />)
+                      } />
+                      <Route exact path="/memory/:id" component={MemoryEditor} />
+                      <Route component={NotFoundContent} />
+                    </Switch>
+
+                    {isSignedIn &&
+                      <React.Fragment>
+                        <WelcomeDialog
+                          open={welcomeDialog.open}
+
+                          title={settings.title}
                           user={user}
-                          isSignedIn={isSignedIn}
-                          title={settings.title} />)
-                    } />
-                    <Route exact path="/memory/:id" component={MemoryEditor} />
-                    <Route component={NotFoundContent} />
-                  </Switch>
+                          isPerformingAuthAction={isPerformingAuthAction}
 
-                  {isSignedIn &&
-                    <React.Fragment>
+                          onClose={this.closeWelcomeDialog}
 
-                      <WelcomeDialog
-                        open={welcomeDialog.open}
+                          onCancelClick={this.closeWelcomeDialog}
+                          onVerifyClick={() => {
+                            this.verifyEmailAddress(() => {
+                              this.closeWelcomeDialog()
+                            })
+                          }}
+                        />
 
-                        title={settings.title}
-                        user={user}
-                        isPerformingAuthAction={isPerformingAuthAction}
+                        <SettingsDialog
+                          open={settingsDialog.open}
 
-                        onClose={this.closeWelcomeDialog}
+                          user={user}
+                          isPerformingAuthAction={isPerformingAuthAction}
+                          isVerifyingEmailAddress={isVerifyingEmailAddress}
+                          colors={colors}
+                          primaryColor={primaryColor}
+                          secondaryColor={secondaryColor}
+                          type={type}
+                          defaultTheme={settings.theme}
 
-                        onCancelClick={this.closeWelcomeDialog}
-                        onVerifyClick={() => {
-                          this.verifyEmailAddress(() => {
-                            this.closeWelcomeDialog()
-                          })
-                        }}
-                      />
+                          onClose={this.closeSettingsDialog}
+                          onAddAvatarClick={this.openAddAvatarDialog}
+                          onChangeAvatarClick={this.openChangeAvatarDialog}
+                          onAddDisplayNameClick={this.openAddDisplayNameDialog}
+                          onChangeDisplayNameClick={this.openChangeDisplayNameDialog}
+                          onAddEmailAddressClick={this.openAddEmailAddressDialog}
+                          onVerifyEmailAddressClick={this.verifyEmailAddress}
+                          onPrimaryColorChange={this.changePrimaryColor}
+                          onSecondaryColorChange={this.changeSecondaryColor}
+                          onTypeChange={this.changeType}
+                          onResetClick={this.resetTheme}
+                        />
 
-                      <SettingsDialog
-                        open={settingsDialog.open}
+                        <InputDialog
+                          open={addAvatarDialog.open}
 
-                        user={user}
-                        isPerformingAuthAction={isPerformingAuthAction}
-                        isVerifyingEmailAddress={isVerifyingEmailAddress}
-                        colors={colors}
-                        primaryColor={primaryColor}
-                        secondaryColor={secondaryColor}
-                        type={type}
-                        defaultTheme={settings.theme}
+                          title="Add avatar"
+                          contentText="Your avatar is used to represent you. It's visible to other users and can be changed any time."
+                          textField={
+                            <TextField
+                              autoComplete="photo"
+                              autoFocus
+                              error={!!(addAvatarDialog.errors && addAvatarDialog.errors.avatar)}
+                              fullWidth
+                              helperText={(addAvatarDialog.errors && addAvatarDialog.errors.avatar) ? addAvatarDialog.errors.avatar[0] : ''}
+                              margin="normal"
+                              onChange={this.handleAvatarChange}
+                              placeholder="Avatar URL"
+                              required
+                              type="url"
+                              value={avatar}
+                            />
+                          }
+                          okText="Add"
+                          disableOkButton={!avatar || isPerformingAuthAction}
+                          highlightOkButton
 
-                        onClose={this.closeSettingsDialog}
-                        onAddAvatarClick={this.openAddAvatarDialog}
-                        onChangeAvatarClick={this.openChangeAvatarDialog}
-                        onAddDisplayNameClick={this.openAddDisplayNameDialog}
-                        onChangeDisplayNameClick={this.openChangeDisplayNameDialog}
-                        onAddEmailAddressClick={this.openAddEmailAddressDialog}
-                        onVerifyEmailAddressClick={this.verifyEmailAddress}
-                        onPrimaryColorChange={this.changePrimaryColor}
-                        onSecondaryColorChange={this.changeSecondaryColor}
-                        onTypeChange={this.changeType}
-                        onResetClick={this.resetTheme}
-                      />
+                          onClose={this.closeAddAvatarDialog}
+                          onExited={() => {
+                            this.setState({
+                              avatar: ''
+                            });
+                          }}
 
-                      <InputDialog
-                        open={addAvatarDialog.open}
+                          onCancelClick={this.closeAddAvatarDialog}
+                          onOkClick={this.addAvatar}
+                        />
 
-                        title="Add avatar"
-                        contentText="Your avatar is used to represent you. It's visible to other users and can be changed any time."
-                        textField={
-                          <TextField
-                            autoComplete="photo"
-                            autoFocus
-                            error={!!(addAvatarDialog.errors && addAvatarDialog.errors.avatar)}
-                            fullWidth
-                            helperText={(addAvatarDialog.errors && addAvatarDialog.errors.avatar) ? addAvatarDialog.errors.avatar[0] : ''}
-                            margin="normal"
-                            onChange={this.handleAvatarChange}
-                            placeholder="Avatar URL"
-                            required
-                            type="url"
-                            value={avatar}
-                          />
-                        }
-                        okText="Add"
-                        disableOkButton={!avatar || isPerformingAuthAction}
-                        highlightOkButton
+                        <InputDialog
+                          open={changeAvatarDialog.open}
 
-                        onClose={this.closeAddAvatarDialog}
-                        onExited={() => {
-                          this.setState({
-                            avatar: ''
-                          });
-                        }}
+                          title="Change avatar"
+                          contentText="Your avatar is used to represent you. It's visible to other users and can be changed any time."
+                          textField={
+                            <TextField
+                              autoComplete="photo"
+                              autoFocus
+                              error={!!(changeAvatarDialog.errors && changeAvatarDialog.errors.avatar)}
+                              fullWidth
+                              helperText={(changeAvatarDialog.errors && changeAvatarDialog.errors.avatar) ? changeAvatarDialog.errors.avatar[0] : ''}
+                              margin="normal"
+                              onChange={this.handleAvatarChange}
+                              placeholder={user.photoURL}
+                              required
+                              type="url"
+                              value={avatar}
+                            />
+                          }
+                          okText="Change"
+                          disableOkButton={!avatar || isPerformingAuthAction}
+                          highlightOkButton
 
-                        onCancelClick={this.closeAddAvatarDialog}
-                        onOkClick={this.addAvatar}
-                      />
+                          onClose={this.closeChangeAvatarDialog}
+                          onExited={() => {
+                            this.setState({
+                              avatar: ''
+                            });
+                          }}
 
-                      <InputDialog
-                        open={changeAvatarDialog.open}
+                          onCancelClick={this.closeChangeAvatarDialog}
+                          onOkClick={this.changeAvatar}
+                        />
 
-                        title="Change avatar"
-                        contentText="Your avatar is used to represent you. It's visible to other users and can be changed any time."
-                        textField={
-                          <TextField
-                            autoComplete="photo"
-                            autoFocus
-                            error={!!(changeAvatarDialog.errors && changeAvatarDialog.errors.avatar)}
-                            fullWidth
-                            helperText={(changeAvatarDialog.errors && changeAvatarDialog.errors.avatar) ? changeAvatarDialog.errors.avatar[0] : ''}
-                            margin="normal"
-                            onChange={this.handleAvatarChange}
-                            placeholder={user.photoURL}
-                            required
-                            type="url"
-                            value={avatar}
-                          />
-                        }
-                        okText="Change"
-                        disableOkButton={!avatar || isPerformingAuthAction}
-                        highlightOkButton
+                        <InputDialog
+                          open={addDisplayNameDialog.open}
 
-                        onClose={this.closeChangeAvatarDialog}
-                        onExited={() => {
-                          this.setState({
-                            avatar: ''
-                          });
-                        }}
+                          title="Add display name"
+                          contentText="Your display name is used to represent you. It's visible to other users and can be changed any time."
+                          textField={
+                            <TextField
+                              autoComplete="name"
+                              autoFocus
+                              error={!!(addDisplayNameDialog.errors && addDisplayNameDialog.errors.displayName)}
+                              fullWidth
+                              helperText={(addDisplayNameDialog.errors && addDisplayNameDialog.errors.displayName) ? addDisplayNameDialog.errors.displayName[0] : ''}
+                              margin="normal"
+                              onChange={this.handleDisplayNameChange}
+                              placeholder="Display name"
+                              required
+                              type="text"
+                              value={displayName}
+                            />
+                          }
+                          okText="Add"
+                          disableOkButton={!displayName || isPerformingAuthAction}
+                          highlightOkButton
 
-                        onCancelClick={this.closeChangeAvatarDialog}
-                        onOkClick={this.changeAvatar}
-                      />
+                          onClose={this.closeAddDisplayNameDialog}
+                          onExited={() => {
+                            this.setState({
+                              displayName: ''
+                            });
+                          }}
 
-                      <InputDialog
-                        open={addDisplayNameDialog.open}
+                          onCancelClick={this.closeAddDisplayNameDialog}
+                          onOkClick={this.addDisplayName}
+                        />
 
-                        title="Add display name"
-                        contentText="Your display name is used to represent you. It's visible to other users and can be changed any time."
-                        textField={
-                          <TextField
-                            autoComplete="name"
-                            autoFocus
-                            error={!!(addDisplayNameDialog.errors && addDisplayNameDialog.errors.displayName)}
-                            fullWidth
-                            helperText={(addDisplayNameDialog.errors && addDisplayNameDialog.errors.displayName) ? addDisplayNameDialog.errors.displayName[0] : ''}
-                            margin="normal"
-                            onChange={this.handleDisplayNameChange}
-                            placeholder="Display name"
-                            required
-                            type="text"
-                            value={displayName}
-                          />
-                        }
-                        okText="Add"
-                        disableOkButton={!displayName || isPerformingAuthAction}
-                        highlightOkButton
+                        <InputDialog
+                          open={changeDisplayNameDialog.open}
 
-                        onClose={this.closeAddDisplayNameDialog}
-                        onExited={() => {
-                          this.setState({
-                            displayName: ''
-                          });
-                        }}
+                          title="Change display name"
+                          contentText="Your display name is used to represent you. It's visible to other users and can be changed any time."
+                          textField={
+                            <TextField
+                              autoComplete="name"
+                              autoFocus
+                              error={!!(changeDisplayNameDialog.errors && changeDisplayNameDialog.errors.displayName)}
+                              fullWidth
+                              helperText={(changeDisplayNameDialog.errors && changeDisplayNameDialog.errors.displayName) ? changeDisplayNameDialog.errors.displayName[0] : ''}
+                              margin="normal"
+                              onChange={this.handleDisplayNameChange}
+                              placeholder={user.displayName}
+                              required
+                              type="text"
+                              value={displayName}
+                            />
+                          }
+                          okText="Change"
+                          disableOkButton={!displayName || isPerformingAuthAction}
+                          highlightOkButton
 
-                        onCancelClick={this.closeAddDisplayNameDialog}
-                        onOkClick={this.addDisplayName}
-                      />
+                          onClose={this.closeChangeDisplayNameDialog}
+                          onExited={() => {
+                            this.setState({
+                              displayName: ''
+                            });
+                          }}
 
-                      <InputDialog
-                        open={changeDisplayNameDialog.open}
+                          onCancelClick={this.closeChangeDisplayNameDialog}
+                          onOkClick={this.changeDisplayName}
+                        />
 
-                        title="Change display name"
-                        contentText="Your display name is used to represent you. It's visible to other users and can be changed any time."
-                        textField={
-                          <TextField
-                            autoComplete="name"
-                            autoFocus
-                            error={!!(changeDisplayNameDialog.errors && changeDisplayNameDialog.errors.displayName)}
-                            fullWidth
-                            helperText={(changeDisplayNameDialog.errors && changeDisplayNameDialog.errors.displayName) ? changeDisplayNameDialog.errors.displayName[0] : ''}
-                            margin="normal"
-                            onChange={this.handleDisplayNameChange}
-                            placeholder={user.displayName}
-                            required
-                            type="text"
-                            value={displayName}
-                          />
-                        }
-                        okText="Change"
-                        disableOkButton={!displayName || isPerformingAuthAction}
-                        highlightOkButton
+                        <InputDialog
+                          open={addEmailAddressDialog.open}
 
-                        onClose={this.closeChangeDisplayNameDialog}
-                        onExited={() => {
-                          this.setState({
-                            displayName: ''
-                          });
-                        }}
+                          title="Add e-mail address"
+                          contentText="Your e-mail address is used to identify you. It's not visible to other users and can be changed any time."
+                          textField={
+                            <TextField
+                              autoComplete="email"
+                              autoFocus
+                              error={!!(addEmailAddressDialog.errors && addEmailAddressDialog.errors.emailAddress)}
+                              fullWidth
+                              helperText={(addEmailAddressDialog.errors && addEmailAddressDialog.errors.emailAddress) ? addEmailAddressDialog.errors.emailAddress[0] : ''}
+                              margin="normal"
+                              onChange={this.handleEmailAddressChange}
+                              placeholder="E-mail address"
+                              required
+                              type="email"
+                              value={emailAddress}
+                            />
+                          }
+                          okText="Add"
+                          disableOkButton={!emailAddress || isPerformingAuthAction}
+                          highlightOkButton
 
-                        onCancelClick={this.closeChangeDisplayNameDialog}
-                        onOkClick={this.changeDisplayName}
-                      />
+                          onClose={this.closeAddEmailAddressDialog}
+                          onExited={() => {
+                            this.setState({
+                              emailAddress: ''
+                            });
+                          }}
 
-                      <InputDialog
-                        open={addEmailAddressDialog.open}
+                          onCancelClick={this.closeAddEmailAddressDialog}
+                          onOkClick={this.addEmailAddress}
+                        />
 
-                        title="Add e-mail address"
-                        contentText="Your e-mail address is used to identify you. It's not visible to other users and can be changed any time."
-                        textField={
-                          <TextField
-                            autoComplete="email"
-                            autoFocus
-                            error={!!(addEmailAddressDialog.errors && addEmailAddressDialog.errors.emailAddress)}
-                            fullWidth
-                            helperText={(addEmailAddressDialog.errors && addEmailAddressDialog.errors.emailAddress) ? addEmailAddressDialog.errors.emailAddress[0] : ''}
-                            margin="normal"
-                            onChange={this.handleEmailAddressChange}
-                            placeholder="E-mail address"
-                            required
-                            type="email"
-                            value={emailAddress}
-                          />
-                        }
-                        okText="Add"
-                        disableOkButton={!emailAddress || isPerformingAuthAction}
-                        highlightOkButton
+                        <ConfirmationDialog
+                          open={signOutDialog.open}
 
-                        onClose={this.closeAddEmailAddressDialog}
-                        onExited={() => {
-                          this.setState({
-                            emailAddress: ''
-                          });
-                        }}
+                          title="Sign out?"
+                          contentText="While signed out you are unable to manage your profile and conduct other activities that require you to be signed in."
+                          okText="Sign Out"
+                          disableOkButton={isPerformingAuthAction}
+                          highlightOkButton
 
-                        onCancelClick={this.closeAddEmailAddressDialog}
-                        onOkClick={this.addEmailAddress}
-                      />
+                          onClose={this.closeSignOutDialog}
+                          onCancelClick={this.closeSignOutDialog}
+                          onOkClick={this.signOut}
+                        />
+                      </React.Fragment>
+                    }
 
-                      <ConfirmationDialog
-                        open={signOutDialog.open}
+                    {!isSignedIn &&
+                      <React.Fragment>
+                        <SignUpDialog
+                          open={signUpDialog.open}
 
-                        title="Sign out?"
-                        contentText="While signed out you are unable to manage your profile and conduct other activities that require you to be signed in."
-                        okText="Sign Out"
-                        disableOkButton={isPerformingAuthAction}
-                        highlightOkButton
+                          isPerformingAuthAction={isPerformingAuthAction}
 
-                        onClose={this.closeSignOutDialog}
-                        onCancelClick={this.closeSignOutDialog}
-                        onOkClick={this.signOut}
-                      />
-                    </React.Fragment>
-                  }
+                          signUp={this.signUp}
 
-                  {!isSignedIn &&
-                    <React.Fragment>
-                      <SignUpDialog
-                        open={signUpDialog.open}
+                          onClose={this.closeSignUpDialog}
+                          onAuthProviderClick={this.signInWithProvider}
+                        />
 
-                        isPerformingAuthAction={isPerformingAuthAction}
+                        <SignInDialog
+                          open={signInDialog.open}
 
-                        signUp={this.signUp}
+                          isPerformingAuthAction={isPerformingAuthAction}
 
-                        onClose={this.closeSignUpDialog}
-                        onAuthProviderClick={this.signInWithProvider}
-                      />
+                          signIn={this.signIn}
 
-                      <SignInDialog
-                        open={signInDialog.open}
+                          onClose={this.closeSignInDialog}
+                          onAuthProviderClick={this.signInWithProvider}
+                          onResetPasswordClick={this.openResetPasswordDialog}
+                        />
+                        <ResetPasswordDialog
+                          open={resetPasswordDialog.open}
 
-                        isPerformingAuthAction={isPerformingAuthAction}
+                          isPerformingAuthAction={isPerformingAuthAction}
 
-                        signIn={this.signIn}
+                          resetPassword={this.resetPassword}
 
-                        onClose={this.closeSignInDialog}
-                        onAuthProviderClick={this.signInWithProvider}
-                        onResetPasswordClick={this.openResetPasswordDialog}
-                      />
-                      <ResetPasswordDialog
-                        open={resetPasswordDialog.open}
+                          onClose={this.closeResetPasswordDialog}
+                        />
+                      </React.Fragment>
+                    }
 
-                        isPerformingAuthAction={isPerformingAuthAction}
-
-                        resetPassword={this.resetPassword}
-
-                        onClose={this.closeResetPasswordDialog}
-                      />
-                    </React.Fragment>
-                  }
-
-                  <Snackbar
-                    autoHideDuration={snackbar.autoHideDuration}
-                    message={snackbar.message}
-                    open={snackbar.open}
-                    onClose={this.closeSnackbar}
-                  />
-                </React.Fragment>
-              }
-            </div>
+                    <Snackbar
+                      autoHideDuration={snackbar.autoHideDuration}
+                      message={snackbar.message}
+                      open={snackbar.open}
+                      onClose={this.closeSnackbar}
+                    />
+                  </React.Fragment>
+                }
+              </div>
+            </main>
           </MuiThemeProvider>
         </AuthContext.Provider>
-      </Router>
+      </Router >
     );
   }
 }

@@ -13,25 +13,27 @@ import Container from '@material-ui/core/Container';
 
 import EmptyState from './EmptyState';
 import MemoryList from '../components/memory/MemoryList';
+import Drawer from '../layout/Drawer';
 
 const styles = (theme) => ({
   emptyStateIcon: {
     fontSize: theme.spacing(12)
   },
-
   button: {
     marginTop: theme.spacing(1)
   },
-
   buttonIcon: {
     marginRight: theme.spacing(1)
   },
-
   fab: {
     margin: theme.spacing(1),
     position: 'fixed',
     bottom: 0,
     right: theme.spacing(2),
+  },
+  container: {
+    // display: 'flex',
+    // flexDirection: 'row-reverse',
   },
 });
 
@@ -131,8 +133,32 @@ class HomeContent extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 
-    if (this.props.isSignedIn && this.props.user && this.state.memoryList.length === 0) {
-      this.getMemories();
+    const searchInput = this.props.searchInput.toUpperCase();
+
+    if (prevProps.searchInput !== this.props.searchInput) {
+
+      if (searchInput.length > -1) {
+        const filteredList =
+          this.state.memoryList.filter((value) => {
+            return value.headline.toUpperCase().indexOf(searchInput) > -1;
+          });
+
+        this.setState({
+          memoryList: filteredList
+        });
+      }
+    } else {
+      if (this.props.isSignedIn && this.props.user) {
+        if (searchInput.length === 0 && this.state.memoryList.length === 0) {
+          this.getMemories();
+        }
+      } else {
+        if (this.state.memoryList.length > 0) {
+          this.setState({
+            memoryList: []
+          });
+        }
+      }
     }
   }
 
@@ -175,12 +201,19 @@ class HomeContent extends Component {
     return (user)
       ?
       <React.Fragment>
-        <Container maxWidth="lg">
+
+        <Drawer
+          open={this.props.drawerOpen}
+          elevation="16"
+          onToggleDrawer={this.props.onToggleDrawer}
+        />
+        <Container className={classes.container} maxWidth="md">
           <MemoryList
             classes={this.props.classes}
             memoryList={this.state.memoryList}
             onUpdateList={this.handleUpdateList} />
         </Container>
+
         <Link to="/memory/add">
           <Fab className={classes.fab} color="primary" label="Add">
             <AddIcon />
@@ -201,7 +234,6 @@ class HomeContent extends Component {
 HomeContent.propTypes = {
   classes: PropTypes.object.isRequired,
   isSignedIn: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired
 };
 
 export default withStyles(styles)(HomeContent);
