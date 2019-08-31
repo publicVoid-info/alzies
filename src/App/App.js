@@ -715,14 +715,6 @@ class App extends Component {
     });
   };
 
-  toggleDrawer = () => {
-    this.setState({
-      drawer: {
-        open: !this.state.drawer.open
-      }
-    });
-  };
-
   openSettingsDialog = () => {
     this.setState({
       settingsDialog: {
@@ -972,7 +964,6 @@ class App extends Component {
       signInDialog,
       resetPasswordDialog,
       welcomeDialog,
-      drawer,
       settingsDialog,
       addAvatarDialog,
       changeAvatarDialog,
@@ -1001,8 +992,6 @@ class App extends Component {
                 onSettingsClick={this.openSettingsDialog}
                 onSignOutClick={this.openSignOutDialog}
 
-                onMenuClick={this.toggleDrawer}
-
                 onSearchInput={this.handleSearchInput}
               />
             </header>
@@ -1022,8 +1011,6 @@ class App extends Component {
                             user={user}
                             isSignedIn={isSignedIn}
                             title={settings.title}
-                            drawerOpen={drawer.open}
-                            onToggleDrawer={this.toggleDrawer}
                             searchInput={this.state.searchInput}
                           />)
                       } />

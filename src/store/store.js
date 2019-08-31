@@ -1,9 +1,7 @@
 import React from 'react';
 import settings from '../helpers/settings';
-
-export const AuthContext = React.createContext({
-    user: null
-});
+import { createStore } from 'redux';
+import appReducer from './reducers';
 
 export const initialState = {
     primaryColor: settings.theme.primaryColor.name,
@@ -81,6 +79,12 @@ export const initialState = {
         open: false
     }
 }
+
+export default createStore(appReducer);
+
+export const AuthContext = React.createContext({
+    user: null
+});
 
 // export const appReducer = (state = initialState, action) => {
 //     switch (action.type) {

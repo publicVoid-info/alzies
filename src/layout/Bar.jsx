@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
 import { fade, withStyles } from '@material-ui/core/styles';
+import { toggleDrawer } from '../store/actions';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -108,6 +108,10 @@ class Bar extends Component {
     this.props.onSignOutClick();
   };
 
+  handleToggleDrawer = () => {
+    this.props.toggleDrawer(!this.props.drawer.open);
+  }
+
   render() {
     // Styling
     const { classes } = this.props;
@@ -128,7 +132,7 @@ class Bar extends Component {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={this.props.onMenuClick}
+            onClick={this.handleToggleDrawer}
           >
             <MenuIcon />
           </IconButton>
@@ -205,8 +209,11 @@ Bar.propTypes = {
 
   onSettingsClick: PropTypes.func.isRequired,
   onSignOutClick: PropTypes.func.isRequired,
-
-  onMenuClick: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(Bar);
+const mapStateToProps = (state) => {
+  const drawer = state;
+  return drawer;
+}
+
+export default connect(mapStateToProps, { toggleDrawer })(withStyles(styles)(Bar));

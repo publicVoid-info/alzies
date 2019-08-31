@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { getFirestore } from '../helpers/firebase';
+import { toggleDrawer } from '../store/actions';
 
 import Fab from '@material-ui/core/Fab';
 import CodeIcon from '@material-ui/icons/Code';
@@ -157,6 +159,7 @@ class HomeContent extends Component {
     if (this.props.isSignedIn && this.props.user) {
       if (searchInput.length === 0 && this.state.memoryList.length === 0) {
         this.getMemories();
+        return;
       }
     }
   }
@@ -183,6 +186,10 @@ class HomeContent extends Component {
     if (this.unsubscribe) {
       this.unsubscribe();
     }
+  }
+
+  handleToggleDrawer = () => {
+    this.props.toggleDrawer(!this.props.drawer.open);
   }
 
   render() {
@@ -219,9 +226,9 @@ class HomeContent extends Component {
       <React.Fragment>
 
         <Drawer
-          open={this.props.drawerOpen}
+          open={this.props.drawer.open}
           elevation="16"
-          onToggleDrawer={this.props.onToggleDrawer}
+          onToggleDrawer={this.handleToggleDrawer}
         />
         <Container className={classes.container} maxWidth="md">
           <MemoryList
@@ -252,4 +259,9 @@ HomeContent.propTypes = {
   isSignedIn: PropTypes.bool.isRequired,
 };
 
-export default withStyles(styles)(HomeContent);
+const mapStateToProps = (state) => {
+  const drawer = state;
+  return drawer;
+}
+
+export default connect(mapStateToProps, { toggleDrawer })(withStyles(styles)(HomeContent));
