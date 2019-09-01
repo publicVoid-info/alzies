@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { openSignInDialog } from '../store/actions';
+import { getFirebase } from '../helpers/firebase';
 import PropTypes from 'prop-types';
 import validate from 'validate.js';
+
+import {
+  closeSignInDialog,
+  openSnackbar,
+} from '../store/actions';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -27,6 +32,7 @@ class SignInDialog extends Component {
   constructor(props) {
     super(props);
 
+    this.firebase = getFirebase();
     this.state = initialState;
   }
 
@@ -51,7 +57,15 @@ class SignInDialog extends Component {
       this.setState({
         errors: null
       }, () => {
-        this.props.signIn(emailAddress, password);
+        this.firebase.auth().signInWithEmailAndPassword(emailAddress, password)
+          .then((r) => {
+            this.props.closeSignInDialog(() => {
+              this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
+            })
+          })
+          .catch((reason) => {
+            this.props.openSnackbar(reason.message);
+          })
       });
     }
   };
@@ -84,21 +98,17 @@ class SignInDialog extends Component {
     this.setState({ password });
   };
 
-  handleSignInClick = () => {
-    this.signIn();
-  };
-
   render() {
 
     // Events
-    const { onClose, onAuthProviderClick, onResetPasswordClick } = this.props;
+    const { onAuthProviderClick, onResetPasswordClick } = this.props;
 
     const { emailAddress, password, errors } = this.state;
 
     return (
       <Dialog
         open={this.props.signInDialog.open}
-        onClose={onClose}
+        onClose={this.props.closeSignInDialog}
         onExited={this.handleExited}
         onKeyPress={this.handleKeyPress}>
         <DialogTitle>
@@ -143,9 +153,9 @@ class SignInDialog extends Component {
         </DialogContent>
 
         <DialogActions>
-          <Button color="primary" onClick={onClose}>Cancel</Button>
+          <Button color="primary" onClick={this.props.closeSignInDialog}>Cancel</Button>
           <Button color="primary" variant="outlined" onClick={onResetPasswordClick}>Reset Password</Button>
-          <Button color="primary" disabled={(!emailAddress || !password)} variant="contained" onClick={this.handleSignInClick}>Sign In</Button>
+          <Button color="primary" disabled={(!emailAddress || !password)} variant="contained" onClick={this.signIn}>Sign In</Button>
         </DialogActions>
       </Dialog>
     );
@@ -153,7 +163,6 @@ class SignInDialog extends Component {
 }
 
 SignInDialog.propTypes = {
-  onClose: PropTypes.func.isRequired,
   onAuthProviderClick: PropTypes.func.isRequired,
   onResetPasswordClick: PropTypes.func.isRequired
 };
@@ -163,4 +172,8 @@ const mapStateToProps = (state) => {
   return storeState;
 }
 
-export default connect(mapStateToProps, { openSignInDialog })(SignInDialog);
+export default connect(mapStateToProps,
+  {
+    closeSignInDialog,
+    openSnackbar
+  })(SignInDialog);

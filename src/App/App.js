@@ -4,10 +4,14 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { getFirebase, getFirestore } from '../helpers/firebase';
 import { AuthContext, initialState } from '../store/store';
-import { closeSignInDialog } from '../store/actions';
+
+import {
+  closeSignInDialog,
+  openSnackbar,
+  closeSnackbar
+} from '../store/actions';
 
 import validate from 'validate.js';
-import readingTime from 'reading-time';
 
 import TextField from '@material-ui/core/TextField';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -48,10 +52,10 @@ class App extends Component {
     this.firebase = getFirebase();
 
     this.state = initialState;
-
   }
 
   signUp = (emailAddress, password, passwordConfirmation) => {
+
     if (this.state.isSignedIn) {
       return;
     }
@@ -87,49 +91,13 @@ class App extends Component {
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
 
   }
 
-  signIn = (emailAddress, password) => {
-
-    if (this.state.isSignedIn) {
-      return;
-    }
-
-    if (!emailAddress || !password) {
-      return;
-    }
-
-    const errors = validate(
-      {
-        emailAddress: emailAddress,
-        password: password,
-      },
-      {
-        emailAddress: constraints.emailAddress,
-        password: constraints.password
-      }
-    )
-
-    if (errors) {
-      return;
-    }
-
-    this.firebase.auth().signInWithEmailAndPassword(emailAddress, password)
-      .then((r) => {
-        this.props.closeSignInDialog(() => {
-          this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
-        })
-      })
-      .catch((reason) => {
-        this.openSnackbar(reason.message);
-
-      })
-  };
-
   signInWithProvider = (provider) => {
+
     if (this.state.isSignedIn) {
       return;
     }
@@ -145,16 +113,17 @@ class App extends Component {
           this.registerUser(r);
 
           this.props.closeSignInDialog(() => {
-            this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
+            this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
           })
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
   resetPassword = (emailAddress) => {
+
     if (this.state.isSignedIn) {
       return;
     }
@@ -178,11 +147,11 @@ class App extends Component {
     this.firebase.auth().sendPasswordResetEmail(emailAddress)
       .then(() => {
         this.closeResetPasswordDialog(() => {
-          this.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
+          this.props.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
@@ -220,11 +189,11 @@ class App extends Component {
     user.updateProfile({ photoURL: avatar })
       .then(() => {
         this.closeAddAvatarDialog(() => {
-          this.openSnackbar('Avatar added');
+          this.props.openSnackbar('Avatar added');
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
@@ -256,7 +225,7 @@ class App extends Component {
     }
 
     if (user.photoURL === avatar) {
-      this.openSnackbar('Avatar already being used');
+      this.props.openSnackbar('Avatar already being used');
 
       return;
     }
@@ -264,11 +233,11 @@ class App extends Component {
     user.updateProfile({ photoURL: avatar })
       .then(() => {
         this.closeChangeAvatarDialog(() => {
-          this.openSnackbar('Avatar changed');
+          this.props.openSnackbar('Avatar changed');
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
@@ -306,11 +275,11 @@ class App extends Component {
     user.updateProfile({ displayName })
       .then(() => {
         this.closeAddDisplayNameDialog(() => {
-          this.openSnackbar('Display name added');
+          this.props.openSnackbar('Display name added');
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
@@ -342,7 +311,7 @@ class App extends Component {
     }
 
     if (displayName === user.displayName) {
-      this.openSnackbar(`Display name is already ${displayName}`);
+      this.props.openSnackbar(`Display name is already ${displayName}`);
 
       return;
     }
@@ -350,11 +319,11 @@ class App extends Component {
     user.updateProfile({ displayName })
       .then(() => {
         this.closeChangeDisplayNameDialog(() => {
-          this.openSnackbar('Display name changed');
+          this.props.openSnackbar('Display name changed');
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   }
 
@@ -392,11 +361,11 @@ class App extends Component {
     user.updateEmail(emailAddress)
       .then(() => {
         this.closeAddEmailAddressDialog(() => {
-          this.openSnackbar('E-mail address added');
+          this.props.openSnackbar('E-mail address added');
         })
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   };
 
@@ -412,7 +381,7 @@ class App extends Component {
         this.setState({
           isVerifyingEmailAddress: true
         }, () => {
-          this.openSnackbar(`Verification e-mail sent to ${user.email}`);
+          this.props.openSnackbar(`Verification e-mail sent to ${user.email}`);
 
           if (callback && typeof callback === 'function') {
             callback();
@@ -420,11 +389,12 @@ class App extends Component {
         });
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   };
 
   signOut = () => {
+
     if (!this.state.isSignedIn) {
       return;
     }
@@ -432,11 +402,11 @@ class App extends Component {
     this.firebase.auth().signOut()
       .then(() => {
         this.closeSignOutDialog(() => {
-          this.openSnackbar('Signed out');
+          this.props.openSnackbar('Signed out');
         });
       })
       .catch((reason) => {
-        this.openSnackbar(reason.message);
+        this.props.openSnackbar(reason.message);
       })
   };
 
@@ -490,7 +460,7 @@ class App extends Component {
       secondaryColor: settings.theme.secondaryColor.name,
       type: settings.theme.type
     }, true, () => {
-      this.openSnackbar('Settings reset');
+      this.props.openSnackbar('Settings reset');
     });
   };
 
@@ -740,27 +710,6 @@ class App extends Component {
     this.setState({ searchInput: e.target.value });
   }
 
-  openSnackbar = (message) => {
-    this.setState({
-      snackbar: {
-        autoHideDuration: readingTime(message).time * 2,
-        message,
-        open: true
-      }
-    });
-  };
-
-  closeSnackbar = (clearMessage = false) => {
-    const { snackbar } = this.state;
-
-    this.setState({
-      snackbar: {
-        message: clearMessage ? '' : snackbar.message,
-        open: false
-      }
-    });
-  };
-
   componentDidMount() {
     this._isMounted = true;
 
@@ -833,8 +782,6 @@ class App extends Component {
       addEmailAddressDialog,
       signOutDialog
     } = this.state;
-
-    const { snackbar } = this.state;
 
     return (
       < Router >
@@ -1120,8 +1067,6 @@ class App extends Component {
                         />
 
                         <SignInDialog
-                          signIn={this.signIn}
-                          onClose={this.props.closeSignInDialog}
                           onAuthProviderClick={this.signInWithProvider}
                           onResetPasswordClick={this.openResetPasswordDialog}
                         />
@@ -1134,10 +1079,10 @@ class App extends Component {
                     }
 
                     <Snackbar
-                      autoHideDuration={snackbar.autoHideDuration}
-                      message={snackbar.message}
-                      open={snackbar.open}
-                      onClose={this.closeSnackbar}
+                      autoHideDuration={this.props.snackbar.autoHideDuration}
+                      message={this.props.snackbar.message}
+                      open={this.props.snackbar.open}
+                      onClose={this.props.closeSnackbar}
                     />
                   </React.Fragment>
                 }
@@ -1155,4 +1100,8 @@ const mapStateToProps = (state) => {
   return storeState;
 }
 
-export default connect(mapStateToProps, { closeSignInDialog })(App);
+export default connect(mapStateToProps, {
+  closeSignInDialog,
+  openSnackbar,
+  closeSnackbar
+})(App);

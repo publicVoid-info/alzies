@@ -63,12 +63,6 @@ export const initialState = {
     signOutDialog: {
         open: false
     },
-
-    snackbar: {
-        autoHideDuration: 0,
-        message: '',
-        open: false
-    }
 }
 
 export default createStore(appReducer);

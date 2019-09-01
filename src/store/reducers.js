@@ -8,6 +8,11 @@ const initState = {
     signInDialog: {
         open: false
     },
+    snackbar: {
+        autoHideDuration: 0,
+        message: '',
+        open: false
+    },
 }
 
 
@@ -26,6 +31,14 @@ function appReducer(state = initState, action) {
                 ...state,
                 signInDialog: {
                     open: action.payload
+                }
+            }
+        case actionTypes.SNACKBAR_OPEN:
+        case actionTypes.SNACKBAR_CLOSE:
+            return {
+                ...state,
+                snackbar: {
+                    ...action.payload
                 }
             }
 
