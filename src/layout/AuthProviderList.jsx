@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { getFirebase } from '../helpers/firebase';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import firebase from 'firebase/app';
-
-import { withStyles } from '@material-ui/core/styles';
+import {
+  closeSignUpDialog,
+  registerUser,
+  closeSignInDialog,
+  openSnackbar,
+} from '../store/actions';
 
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
@@ -57,17 +62,38 @@ const styles = (theme) => ({
 });
 
 class AuthProviderList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.firebase = getFirebase();
+    this.registerUser = registerUser;
+  }
+
+  handleProviderClick = () => {
+
+    this.firebase.auth().signInWithPopup(new this.firebase.auth.GoogleAuthProvider())
+      .then((r) => {
+        this.props.closeSignUpDialog(() => {
+          this.registerUser(r);
+          this.props.closeSignInDialog(() => {
+            this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
+          });
+        });
+      })
+      .catch((reason) => {
+        this.props.openSnackbar(reason.message);
+      });
+  };
+
+
   render() {
     // Styling
     const { classes } = this.props;
 
-    // Events
-    const { onAuthProviderClick } = this.props;
-
     return (
       <React.Fragment>
         <DialogActions className={classes.dialogActions}>
-          <Button className={classes.google} variant="contained" onClick={() => onAuthProviderClick(new firebase.auth.GoogleAuthProvider())}>
+          <Button className={classes.google} variant="contained" onClick={this.handleProviderClick}>
             <GoogleIcon className={classes.icon} />
             Google
             </Button>
@@ -79,8 +105,16 @@ class AuthProviderList extends Component {
 
 AuthProviderList.propTypes = {
   classes: PropTypes.object.isRequired,
-
-  onAuthProviderClick: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(AuthProviderList);
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps,
+  {
+    closeSignUpDialog,
+    closeSignInDialog,
+    openSnackbar,
+  })(withStyles(styles)(AuthProviderList));

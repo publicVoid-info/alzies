@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fade, withStyles } from '@material-ui/core/styles';
-import { toggleDrawer, openSignInDialog } from '../store/actions';
+import {
+  toggleDrawer,
+  openSignInDialog,
+  openSignUpDialog
+} from '../store/actions';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -113,7 +117,11 @@ class Bar extends Component {
   }
 
   handleSignInClick = () => {
-    this.props.openSignInDialog(!this.props.signInDialog.open);
+    this.props.openSignInDialog(true);
+  }
+
+  handleSignUpClick = () => {
+    this.props.openSignUpDialog(true);
   }
 
   render() {
@@ -122,9 +130,6 @@ class Bar extends Component {
 
     // Properties
     const { isSignedIn, user } = this.props;
-
-    // Events
-    const { onSignUpClick } = this.props;
 
     const { menu } = this.state;
 
@@ -187,7 +192,7 @@ class Bar extends Component {
                 className={classes.signButton}
                 color="primary"
                 variant="contained"
-                onClick={onSignUpClick}>
+                onClick={this.handleSignUpClick}>
                 Sign Up</Button>
               <Button
                 className={classes.signButton}
@@ -217,4 +222,8 @@ const mapStateToProps = (state) => {
   return storeState;
 }
 
-export default connect(mapStateToProps, { toggleDrawer, openSignInDialog })(withStyles(styles)(Bar));
+export default connect(mapStateToProps, {
+  toggleDrawer,
+  openSignInDialog,
+  openSignUpDialog,
+})(withStyles(styles)(Bar));

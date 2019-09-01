@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import {
+  closeWelcomeDialog,
+  openSnackbar,
+} from '../store/actions';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -24,20 +29,14 @@ class WelcomeDialog extends Component {
   };
 
   render() {
-    // Dialog Properties
-    const { open } = this.props;
-
     // Custom Properties
     const { title } = this.props;
 
-    // Dialog Events
-    const { onClose } = this.props;
-
     // Custom Events
-    const { onCancelClick, onVerifyClick } = this.props;
+    const { onVerifyClick } = this.props;
 
     return (
-      <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
+      <Dialog open={this.props.welcomeDialog.open} onClose={this.props.closeWelcomeDialog} onKeyPress={this.handleKeyPress}>
         <DialogTitle>
           Welcome to {title}!
         </DialogTitle>
@@ -50,7 +49,7 @@ class WelcomeDialog extends Component {
         </DialogContent>
 
         <DialogActions>
-          <Button color="primary" onClick={onCancelClick}>Cancel</Button>
+          <Button color="primary" onClick={this.props.closeWelcomeDialog}>Cancel</Button>
           <Button color="primary" variant="contained" onClick={onVerifyClick}>Verify</Button>
         </DialogActions>
       </Dialog>
@@ -59,11 +58,17 @@ class WelcomeDialog extends Component {
 }
 
 WelcomeDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onCancelClick: PropTypes.func.isRequired,
   onVerifyClick: PropTypes.func.isRequired
 };
 
-export default WelcomeDialog;
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps,
+  {
+    closeWelcomeDialog,
+    openSnackbar,
+  })(WelcomeDialog);

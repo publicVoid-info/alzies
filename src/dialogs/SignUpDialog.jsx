@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
+import { getFirebase } from '../helpers/firebase';
+import { connect } from 'react-redux';
 import validate from 'validate.js';
+
+import {
+  closeSignUpDialog,
+  openSnackbar,
+  registerUser,
+  openWelcomeDialog,
+} from '../store/actions';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -28,17 +35,21 @@ class SignUpDialog extends Component {
   constructor(props) {
     super(props);
 
+    this.firebase = getFirebase();
+    this.registerUser = registerUser;
     this.state = initialState;
   }
 
-  signUp = () => {
+  handleSignUp = () => {
     const { emailAddress, password, passwordConfirmation } = this.state;
 
-    const errors = validate({
-      emailAddress: emailAddress,
-      password: password,
-      passwordConfirmation: passwordConfirmation
-    }, {
+    const errors = validate(
+      {
+        emailAddress: emailAddress,
+        password: password,
+        passwordConfirmation: passwordConfirmation
+      },
+      {
         emailAddress: constraints.emailAddress,
         password: constraints.password,
         passwordConfirmation: constraints.passwordConfirmation
@@ -50,7 +61,18 @@ class SignUpDialog extends Component {
       this.setState({
         errors: null
       }, () => {
-        this.props.signUp(emailAddress, password, passwordConfirmation);
+        this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
+          .then((r) => {
+            this.props.closeSignUpDialog(() => {
+
+              this.registerUser(r);
+
+              this.props.openWelcomeDialog();
+            })
+          })
+          .catch((reason) => {
+            this.props.openSnackbar(reason.message);
+          })
       });
     }
   };
@@ -89,23 +111,14 @@ class SignUpDialog extends Component {
     this.setState({ passwordConfirmation });
   };
 
-  handleSignUpClick = () => {
-    this.signUp();
-  };
-
   render() {
-    // Properties
-    const { open } = this.props;
-
-    // Events
-    const { onClose, onAuthProviderClick } = this.props;
 
     const { emailAddress, password, passwordConfirmation, errors } = this.state;
 
     return (
       <Dialog
-        open={open}
-        onClose={onClose}
+        open={this.props.signUpDialog.open}
+        onClose={this.props.closeSignUpDialog}
         onExited={this.handleExited}
         onKeyPress={this.handleKeyPress}>
         <DialogTitle>
@@ -117,7 +130,7 @@ class SignUpDialog extends Component {
             Create an account to access features that are unavailable to users who haven't signed up.
           </DialogContentText>
 
-          <AuthProviderList onAuthProviderClick={onAuthProviderClick} />
+          <AuthProviderList />
 
           <form>
             <TextField
@@ -162,19 +175,22 @@ class SignUpDialog extends Component {
         </DialogContent>
 
         <DialogActions>
-          <Button color="primary" onClick={onClose}>Cancel</Button>
-          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUpClick}>Sign Up</Button>
+          <Button color="primary" onClick={this.props.closeSignUpDialog}>Cancel</Button>
+          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.signUp}>Sign Up</Button>
         </DialogActions>
       </Dialog>
     );
   }
 }
 
-SignUpDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  signUp: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onAuthProviderClick: PropTypes.func.isRequired
-};
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
 
-export default SignUpDialog;
+export default connect(mapStateToProps,
+  {
+    closeSignUpDialog,
+    openSnackbar,
+    openWelcomeDialog,
+  })(SignUpDialog);

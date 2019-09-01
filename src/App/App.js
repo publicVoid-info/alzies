@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { getFirebase, getFirestore } from '../helpers/firebase';
+import { getFirebase } from '../helpers/firebase';
 import { AuthContext, initialState } from '../store/store';
 
 import {
+  closeWelcomeDialog,
   closeSignInDialog,
+  closeSignUpDialog,
   openSnackbar,
-  closeSnackbar
+  closeSnackbar,
+  registerUser,
 } from '../store/actions';
 
 import validate from 'validate.js';
@@ -50,76 +53,9 @@ class App extends Component {
 
     this._isMounted = false;
     this.firebase = getFirebase();
+    this.registerUser = registerUser;
 
     this.state = initialState;
-  }
-
-  signUp = (emailAddress, password, passwordConfirmation) => {
-
-    if (this.state.isSignedIn) {
-      return;
-    }
-
-    if (!emailAddress || !password || !passwordConfirmation) {
-      return;
-    }
-
-    const errors = validate(
-      {
-        emailAddress: emailAddress,
-        password: password,
-        passwordConfirmation: passwordConfirmation
-      },
-      {
-        emailAddress: constraints.emailAddress,
-        password: constraints.password,
-        passwordConfirmation: constraints.passwordConfirmation
-      }
-    )
-
-    if (errors) {
-      return;
-    }
-
-    this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
-      .then((r) => {
-        this.closeSignUpDialog(() => {
-
-          this.registerUser(r);
-
-          this.openWelcomeDialog();
-        })
-      })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      })
-
-  }
-
-  signInWithProvider = (provider) => {
-
-    if (this.state.isSignedIn) {
-      return;
-    }
-
-    if (!provider) {
-      return;
-    }
-
-    this.firebase.auth().signInWithPopup(provider)
-      .then((r) => {
-        this.closeSignUpDialog(() => {
-
-          this.registerUser(r);
-
-          this.props.closeSignInDialog(() => {
-            this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
-          })
-        })
-      })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      })
   }
 
   resetPassword = (emailAddress) => {
@@ -488,26 +424,6 @@ class App extends Component {
     });
   };
 
-  openSignUpDialog = () => {
-    this.setState({
-      signUpDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeSignUpDialog = (callback) => {
-    this.setState({
-      signUpDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
   openResetPasswordDialog = () => {
     this.setState({
       resetPasswordDialog: {
@@ -519,26 +435,6 @@ class App extends Component {
   closeResetPasswordDialog = (callback) => {
     this.setState({
       resetPasswordDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  openWelcomeDialog = () => {
-    this.setState({
-      welcomeDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeWelcomeDialog = (callback) => {
-    this.setState({
-      welcomeDialog: {
         open: false
       }
     }, () => {
@@ -734,21 +630,6 @@ class App extends Component {
       });
   }
 
-  registerUser(r) {
-
-    if (!r.additionalUserInfo) return;
-
-    if (r.additionalUserInfo.isNewUser) {
-      return getFirestore().collection('users')
-        .doc(r.user.uid)
-        .set({
-          displayName: r.user.displayName,
-          email: r.user.email,
-          uid: r.user.uid,
-        });
-    };
-  };
-
   componentWillUnmount() {
     this._isMounted = false;
 
@@ -771,9 +652,7 @@ class App extends Component {
     } = this.state;
 
     const {
-      signUpDialog,
       resetPasswordDialog,
-      welcomeDialog,
       settingsDialog,
       addAvatarDialog,
       changeAvatarDialog,
@@ -791,8 +670,6 @@ class App extends Component {
               <Bar
                 isSignedIn={isSignedIn}
                 user={user}
-
-                onSignUpClick={this.openSignUpDialog}
 
                 onSettingsClick={this.openSettingsDialog}
                 onSignOutClick={this.openSignOutDialog}
@@ -826,17 +703,12 @@ class App extends Component {
                     {isSignedIn &&
                       <React.Fragment>
                         <WelcomeDialog
-                          open={welcomeDialog.open}
-
                           title={settings.title}
                           user={user}
 
-                          onClose={this.closeWelcomeDialog}
-
-                          onCancelClick={this.closeWelcomeDialog}
                           onVerifyClick={() => {
                             this.verifyEmailAddress(() => {
-                              this.closeWelcomeDialog()
+                              this.props.closeWelcomeDialog()
                             })
                           }}
                         />
@@ -1057,17 +929,9 @@ class App extends Component {
 
                     {!isSignedIn &&
                       <React.Fragment>
-                        <SignUpDialog
-                          open={signUpDialog.open}
-
-                          signUp={this.signUp}
-
-                          onClose={this.closeSignUpDialog}
-                          onAuthProviderClick={this.signInWithProvider}
-                        />
+                        <SignUpDialog />
 
                         <SignInDialog
-                          onAuthProviderClick={this.signInWithProvider}
                           onResetPasswordClick={this.openResetPasswordDialog}
                         />
                         <ResetPasswordDialog
@@ -1101,7 +965,9 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
+  closeWelcomeDialog,
   closeSignInDialog,
+  closeSignUpDialog,
   openSnackbar,
   closeSnackbar
 })(App);

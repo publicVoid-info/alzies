@@ -101,7 +101,7 @@ class SignInDialog extends Component {
   render() {
 
     // Events
-    const { onAuthProviderClick, onResetPasswordClick } = this.props;
+    const { onResetPasswordClick } = this.props;
 
     const { emailAddress, password, errors } = this.state;
 
@@ -121,7 +121,7 @@ class SignInDialog extends Component {
             While you're signed in you can manage your account.
           </DialogContentText>
 
-          <AuthProviderList onAuthProviderClick={onAuthProviderClick} />
+          <AuthProviderList />
 
           <form>
             <TextField
@@ -163,7 +163,6 @@ class SignInDialog extends Component {
 }
 
 SignInDialog.propTypes = {
-  onAuthProviderClick: PropTypes.func.isRequired,
   onResetPasswordClick: PropTypes.func.isRequired
 };
 

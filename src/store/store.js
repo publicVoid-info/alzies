@@ -19,15 +19,7 @@ export const initialState = {
 
     searchInput: '',
 
-    signUpDialog: {
-        open: false
-    },
-
     resetPasswordDialog: {
-        open: false
-    },
-
-    welcomeDialog: {
         open: false
     },
 
