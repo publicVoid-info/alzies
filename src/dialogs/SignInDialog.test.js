@@ -11,11 +11,10 @@ it('renders without crashing', () => {
     (
       <SignInDialog
         open={false}
-        isPerformingAuthAction={false}
-        signIn={() => {}}
-        onClose={() => {}}
-        onAuthProviderClick={() => {}}
-        onResetPasswordClick={() => {}}
+        signIn={() => { }}
+        onClose={() => { }}
+        onAuthProviderClick={() => { }}
+        onResetPasswordClick={() => { }}
       />
     ),
     div

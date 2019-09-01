@@ -61,16 +61,13 @@ class AuthProviderList extends Component {
     // Styling
     const { classes } = this.props;
 
-    // Properties
-    const { isPerformingAuthAction } = this.props;
-
     // Events
     const { onAuthProviderClick } = this.props;
 
     return (
       <React.Fragment>
         <DialogActions className={classes.dialogActions}>
-          <Button className={classes.google} disabled={isPerformingAuthAction} variant="contained" onClick={() => onAuthProviderClick(new firebase.auth.GoogleAuthProvider())}>
+          <Button className={classes.google} variant="contained" onClick={() => onAuthProviderClick(new firebase.auth.GoogleAuthProvider())}>
             <GoogleIcon className={classes.icon} />
             Google
             </Button>
@@ -82,8 +79,6 @@ class AuthProviderList extends Component {
 
 AuthProviderList.propTypes = {
   classes: PropTypes.object.isRequired,
-
-  isPerformingAuthAction: PropTypes.bool,
 
   onAuthProviderClick: PropTypes.func.isRequired
 };

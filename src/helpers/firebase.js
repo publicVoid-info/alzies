@@ -6,7 +6,11 @@ import 'firebase/performance';
 import settings from './settings';
 
 // Initialize Firebase
-firebase.initializeApp(settings.credentials.firebase)
+firebase.initializeApp(settings.credentials.firebase);
+firebase.auth().useDeviceLanguage();
+
+// eslint-disable-next-line no-unused-vars
+const performance = firebase.performance();
 
 function getFirestore() {
     return firebase.firestore();

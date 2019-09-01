@@ -69,10 +69,8 @@ class SettingsDialog extends Component {
 
     // Properties
     const {
-      fullScreen,
       open,
       user,
-      isPerformingAuthAction,
       isVerifyingEmailAddress,
       colors,
       primaryColor,
@@ -108,7 +106,7 @@ class SettingsDialog extends Component {
     }
 
     return (
-      <Dialog fullScreen={fullScreen} open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
+      <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
         <DialogTitle>Settings</DialogTitle>
 
         <Tabs className={classes.tabs} indicatorColor="primary" textColor="primary" onChange={this.changeTab} value={selectedTab} variant="fullWidth">
@@ -120,7 +118,6 @@ class SettingsDialog extends Component {
           {selectedTab === 0 &&
             <AccountTab
               user={user}
-              isPerformingAuthAction={isPerformingAuthAction}
               isVerifyingEmailAddress={isVerifyingEmailAddress}
               onAddAvatarClick={onAddAvatarClick}
               onChangeAvatarClick={onChangeAvatarClick}
@@ -159,11 +156,9 @@ class SettingsDialog extends Component {
 SettingsDialog.propTypes = {
   classes: PropTypes.object.isRequired,
 
-  fullScreen: PropTypes.bool,
   open: PropTypes.bool.isRequired,
 
   user: PropTypes.object.isRequired,
-  isPerformingAuthAction: PropTypes.bool.isRequired,
   isVerifyingEmailAddress: PropTypes.bool.isRequired,
   colors: PropTypes.array.isRequired,
   primaryColor: PropTypes.string.isRequired,

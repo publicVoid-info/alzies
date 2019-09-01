@@ -9,7 +9,6 @@ export const initialState = {
     type: settings.theme.type,
 
     isAuthReady: false,
-    isPerformingAuthAction: false,
     isVerifyingEmailAddress: false,
     isSignedIn: false,
 
@@ -24,19 +23,11 @@ export const initialState = {
         open: false
     },
 
-    signInDialog: {
-        open: false
-    },
-
     resetPasswordDialog: {
         open: false
     },
 
     welcomeDialog: {
-        open: false
-    },
-
-    drawer: {
         open: false
     },
 

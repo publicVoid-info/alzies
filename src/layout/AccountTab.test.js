@@ -16,14 +16,13 @@ it('renders without crashing', () => {
     (
       <AccountTab
         user={user}
-        isPerformingAuthAction={false}
         isVerifyingEmailAddress={false}
-        onAddAvatarClick={() => {}}
-        onChangeAvatarClick={() => {}}
-        onAddDisplayNameClick={() => {}}
-        onChangeDisplayNameClick={() => {}}
-        onAddEmailAddressClick={() => {}}
-        onVerifyEmailAddressClick={() => {}}
+        onAddAvatarClick={() => { }}
+        onChangeAvatarClick={() => { }}
+        onAddDisplayNameClick={() => { }}
+        onChangeDisplayNameClick={() => { }}
+        onAddEmailAddressClick={() => { }}
+        onVerifyEmailAddressClick={() => { }}
       />
     ),
     div

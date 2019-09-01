@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { openSignInDialog } from '../store/actions';
 import PropTypes from 'prop-types';
-
 import validate from 'validate.js';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -13,7 +14,6 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import constraints from '../helpers/constraints';
-
 import AuthProviderList from '../layout/AuthProviderList';
 
 const initialState = {
@@ -31,15 +31,19 @@ class SignInDialog extends Component {
   }
 
   signIn = () => {
+
     const { emailAddress, password } = this.state;
 
-    const errors = validate({
-      emailAddress: emailAddress,
-      password: password
-    }, {
+    const errors = validate(
+      {
+        emailAddress: emailAddress,
+        password: password
+      },
+      {
         emailAddress: constraints.emailAddress,
         password: constraints.password
-      });
+      }
+    );
 
     if (errors) {
       this.setState({ errors });
@@ -85,8 +89,6 @@ class SignInDialog extends Component {
   };
 
   render() {
-    // Properties
-    const { fullScreen, open, isPerformingAuthAction } = this.props;
 
     // Events
     const { onClose, onAuthProviderClick, onResetPasswordClick } = this.props;
@@ -94,7 +96,11 @@ class SignInDialog extends Component {
     const { emailAddress, password, errors } = this.state;
 
     return (
-      <Dialog fullScreen={fullScreen} open={open} onClose={onClose} onExited={this.handleExited} onKeyPress={this.handleKeyPress}>
+      <Dialog
+        open={this.props.signInDialog.open}
+        onClose={onClose}
+        onExited={this.handleExited}
+        onKeyPress={this.handleKeyPress}>
         <DialogTitle>
           Sign in to your account
         </DialogTitle>
@@ -105,7 +111,7 @@ class SignInDialog extends Component {
             While you're signed in you can manage your account.
           </DialogContentText>
 
-          <AuthProviderList isPerformingAuthAction={isPerformingAuthAction} onAuthProviderClick={onAuthProviderClick} />
+          <AuthProviderList onAuthProviderClick={onAuthProviderClick} />
 
           <form>
             <TextField
@@ -138,8 +144,8 @@ class SignInDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={onClose}>Cancel</Button>
-          <Button color="primary" disabled={isPerformingAuthAction} variant="outlined" onClick={onResetPasswordClick}>Reset Password</Button>
-          <Button color="primary" disabled={(!emailAddress || !password) || isPerformingAuthAction} variant="contained" onClick={this.handleSignInClick}>Sign In</Button>
+          <Button color="primary" variant="outlined" onClick={onResetPasswordClick}>Reset Password</Button>
+          <Button color="primary" disabled={(!emailAddress || !password)} variant="contained" onClick={this.handleSignInClick}>Sign In</Button>
         </DialogActions>
       </Dialog>
     );
@@ -147,16 +153,14 @@ class SignInDialog extends Component {
 }
 
 SignInDialog.propTypes = {
-  fullScreen: PropTypes.bool,
-  open: PropTypes.bool.isRequired,
-
-  isPerformingAuthAction: PropTypes.bool.isRequired,
-
-  signIn: PropTypes.func.isRequired,
-
   onClose: PropTypes.func.isRequired,
   onAuthProviderClick: PropTypes.func.isRequired,
   onResetPasswordClick: PropTypes.func.isRequired
 };
 
-export default SignInDialog;
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps, { openSignInDialog })(SignInDialog);

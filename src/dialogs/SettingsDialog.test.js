@@ -12,23 +12,22 @@ it('renders without crashing', () => {
       <SettingsDialog
         open={false}
         user={{}}
-        isPerformingAuthAction={false}
         isVerifyingEmailAddress={false}
         colors={[]}
         primaryColor=""
         secondaryColor=""
         type=""
-        onClose={() => {}}
-        onAddAvatarClick={() => {}}
-        onChangeAvatarClick={() => {}}
-        onAddDisplayNameClick={() => {}}
-        onChangeDisplayNameClick={() => {}}
-        onAddEmailAddressClick={() => {}}
-        onVerifyEmailAddressClick={() => {}}
-        onPrimaryColorChange={() => {}}
-        onSecondaryColorChange={() => {}}
-        onTypeChange={() => {}}
-        onResetClick={() => {}}
+        onClose={() => { }}
+        onAddAvatarClick={() => { }}
+        onChangeAvatarClick={() => { }}
+        onAddDisplayNameClick={() => { }}
+        onChangeDisplayNameClick={() => { }}
+        onAddEmailAddressClick={() => { }}
+        onVerifyEmailAddressClick={() => { }}
+        onPrimaryColorChange={() => { }}
+        onSecondaryColorChange={() => { }}
+        onTypeChange={() => { }}
+        onResetClick={() => { }}
       />
     ),
     div

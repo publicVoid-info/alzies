@@ -1,8 +1,11 @@
-import { TOGGLE_DRAWER } from './actions';
+import { actionTypes } from './actions';
 // import { initialState } from './store';
 
 const initState = {
     drawer: {
+        open: false
+    },
+    signInDialog: {
         open: false
     },
 }
@@ -10,10 +13,18 @@ const initState = {
 
 function appReducer(state = initState, action) {
     switch (action.type) {
-        case TOGGLE_DRAWER:
+        case actionTypes.TOGGLE_DRAWER:
             return {
                 ...state,
                 drawer: {
+                    open: action.payload
+                }
+            }
+        case actionTypes.SIGNIN_OPEN:
+        case actionTypes.SIGNIN_CLOSE:
+            return {
+                ...state,
+                signInDialog: {
                     open: action.payload
                 }
             }

@@ -80,7 +80,7 @@ class AccountTab extends Component {
     const { classes } = this.props;
 
     // Properties
-    const { user, isPerformingAuthAction, isVerifyingEmailAddress } = this.props;
+    const { user, isVerifyingEmailAddress } = this.props;
 
     // Events
     const { onAddAvatarClick, onChangeAvatarClick, onAddDisplayNameClick, onChangeDisplayNameClick, onAddEmailAddressClick } = this.props;
@@ -91,7 +91,7 @@ class AccountTab extends Component {
 
     return (
       <React.Fragment>
-        <Profile user={user} isPerformingAuthAction={isPerformingAuthAction} extraTopMargin onChangeAvatarClick={onChangeAvatarClick} />
+        <Profile user={user} extraTopMargin onChangeAvatarClick={onChangeAvatarClick} />
 
         <DialogContentText classes={{ root: classes.root }} className={isUserComplete && classes.dialogContentTextUserComplete}>
           Here's some info about your account. You can manage your account through the tabs.
@@ -109,7 +109,7 @@ class AccountTab extends Component {
               <ListItemText primary="You don't have an avatar. Add one!" />
 
               <ListItemSecondaryAction>
-                <Button color="primary" disabled={isPerformingAuthAction} variant="contained" onClick={onAddAvatarClick}>Add</Button>
+                <Button color="primary" variant="contained" onClick={onAddAvatarClick}>Add</Button>
               </ListItemSecondaryAction>
             </ListItem>
           }
@@ -126,7 +126,7 @@ class AccountTab extends Component {
 
               <ListItemSecondaryAction>
                 <Tooltip title="Change">
-                  <IconButton disabled={isPerformingAuthAction} onClick={onChangeDisplayNameClick}>
+                  <IconButton onClick={onChangeDisplayNameClick}>
                     <EditIcon />
                   </IconButton>
                 </Tooltip>
@@ -145,7 +145,7 @@ class AccountTab extends Component {
               <ListItemText primary="You don't have a display name. Add one!" />
 
               <ListItemSecondaryAction>
-                <Button color="primary" disabled={isPerformingAuthAction} variant="contained" onClick={onAddDisplayNameClick}>Add</Button>
+                <Button color="primary" variant="contained" onClick={onAddDisplayNameClick}>Add</Button>
               </ListItemSecondaryAction>
             </ListItem>
           }
@@ -172,7 +172,7 @@ class AccountTab extends Component {
               {!user.emailVerified &&
                 <ListItemSecondaryAction>
                   {isVerifyingEmailAddress && <CircularProgress />}
-                  {!isVerifyingEmailAddress && <Button color="primary" disabled={isPerformingAuthAction} variant="contained" onClick={this.openVerifyEmailAddressDialog}>Verify</Button>}
+                  {!isVerifyingEmailAddress && <Button color="primary" variant="contained" onClick={this.openVerifyEmailAddressDialog}>Verify</Button>}
                 </ListItemSecondaryAction>
               }
             </ListItem>
@@ -189,7 +189,7 @@ class AccountTab extends Component {
               <ListItemText primary="You don't have an e-mail address. Add one!" />
 
               <ListItemSecondaryAction>
-                <Button color="primary" disabled={isPerformingAuthAction} variant="contained" onClick={onAddEmailAddressClick}>Add</Button>
+                <Button color="primary" variant="contained" onClick={onAddEmailAddressClick}>Add</Button>
               </ListItemSecondaryAction>
             </ListItem>
           }
@@ -225,7 +225,6 @@ class AccountTab extends Component {
           title="Send verification e-mail?"
           contentText="An e-mail will be sent to your e-mail address containing instructions on how to verify your e-mail address."
           okText="Send"
-          disableOkButton={isPerformingAuthAction}
           highlightOkButton
 
           onClose={this.closeVerifyEmailAddressDialog}
@@ -242,7 +241,6 @@ AccountTab.propTypes = {
   classes: PropTypes.object.isRequired,
 
   user: PropTypes.object.isRequired,
-  isPerformingAuthAction: PropTypes.bool.isRequired,
   isVerifyingEmailAddress: PropTypes.bool.isRequired,
 
   onAddAvatarClick: PropTypes.func.isRequired,

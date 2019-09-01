@@ -11,9 +11,8 @@ it('renders without crashing', () => {
     (
       <ResetPasswordDialog
         open={false}
-        isPerformingAuthAction={false}
-        resetPassword={() => {}}
-        onClose={() => {}}
+        resetPassword={() => { }}
+        onClose={() => { }}
       />
     ),
     div

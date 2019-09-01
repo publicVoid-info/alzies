@@ -25,10 +25,10 @@ class WelcomeDialog extends Component {
 
   render() {
     // Dialog Properties
-    const { fullScreen, open } = this.props;
+    const { open } = this.props;
 
     // Custom Properties
-    const { title, isPerformingAuthAction } = this.props;
+    const { title } = this.props;
 
     // Dialog Events
     const { onClose } = this.props;
@@ -37,7 +37,7 @@ class WelcomeDialog extends Component {
     const { onCancelClick, onVerifyClick } = this.props;
 
     return (
-      <Dialog fullScreen={fullScreen} open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
+      <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
         <DialogTitle>
           Welcome to {title}!
         </DialogTitle>
@@ -51,7 +51,7 @@ class WelcomeDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={onCancelClick}>Cancel</Button>
-          <Button color="primary" disabled={isPerformingAuthAction} variant="contained" onClick={onVerifyClick}>Verify</Button>
+          <Button color="primary" variant="contained" onClick={onVerifyClick}>Verify</Button>
         </DialogActions>
       </Dialog>
     );
@@ -59,14 +59,9 @@ class WelcomeDialog extends Component {
 }
 
 WelcomeDialog.propTypes = {
-  fullScreen: PropTypes.bool,
   open: PropTypes.bool.isRequired,
-
   title: PropTypes.string.isRequired,
-  isPerformingAuthAction: PropTypes.bool.isRequired,
-
   onClose: PropTypes.func.isRequired,
-
   onCancelClick: PropTypes.func.isRequired,
   onVerifyClick: PropTypes.func.isRequired
 };

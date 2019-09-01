@@ -78,7 +78,7 @@ class ResetPasswordDialog extends Component {
 
   render() {
     // Properties
-    const { open, isPerformingAuthAction } = this.props;
+    const { open } = this.props;
 
     // Events
     const { onClose } = this.props;
@@ -115,7 +115,7 @@ class ResetPasswordDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={onClose}>Cancel</Button>
-          <Button color="primary" disabled={!emailAddress || isPerformingAuthAction} variant="contained" onClick={this.handleResetPasswordClick}>Reset Password</Button>
+          <Button color="primary" disabled={!emailAddress} variant="contained" onClick={this.handleResetPasswordClick}>Reset Password</Button>
         </DialogActions>
       </Dialog>
     );
@@ -124,11 +124,7 @@ class ResetPasswordDialog extends Component {
 
 ResetPasswordDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-
-  isPerformingAuthAction: PropTypes.bool.isRequired,
-
   resetPassword: PropTypes.func.isRequired,
-
   onClose: PropTypes.func.isRequired
 };
 

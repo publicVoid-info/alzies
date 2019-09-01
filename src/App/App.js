@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { getFirebase, getFirestore } from '../helpers/firebase';
 import { AuthContext, initialState } from '../store/store';
+import { closeSignInDialog } from '../store/actions';
 
 import validate from 'validate.js';
 import readingTime from 'reading-time';
@@ -29,13 +31,6 @@ import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 
 import MemoryEditor from '../components/memory/MemoryEditor';
 
-const firebase = getFirebase()
-const auth = firebase.auth();
-// eslint-disable-next-line no-unused-vars
-const performance = firebase.performance();
-
-auth.useDeviceLanguage();
-
 let theme = createMuiTheme({
   palette: {
     primary: settings.theme.primaryColor.import,
@@ -50,6 +45,7 @@ class App extends Component {
     super(props);
 
     this._isMounted = false;
+    this.firebase = getFirebase();
 
     this.state = initialState;
 
@@ -81,33 +77,23 @@ class App extends Component {
       return;
     }
 
-    this.setState(
-      {
-        isPerformingAuthAction: true
-      },
-      () => {
-        auth.createUserWithEmailAndPassword(emailAddress, password)
-          .then((r) => {
-            this.closeSignUpDialog(() => {
+    this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
+      .then((r) => {
+        this.closeSignUpDialog(() => {
 
-              this.registerUser(r);
+          this.registerUser(r);
 
-              this.openWelcomeDialog();
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+          this.openWelcomeDialog();
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
+
   }
 
   signIn = (emailAddress, password) => {
+
     if (this.state.isSignedIn) {
       return;
     }
@@ -131,26 +117,17 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        auth.signInWithEmailAndPassword(emailAddress, password)
-          .then((r) => {
-            this.closeSignInDialog(() => {
-              this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          }).finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
-  }
+    this.firebase.auth().signInWithEmailAndPassword(emailAddress, password)
+      .then((r) => {
+        this.props.closeSignInDialog(() => {
+          this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+
+      })
+  };
 
   signInWithProvider = (provider) => {
     if (this.state.isSignedIn) {
@@ -161,31 +138,20 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        auth.signInWithPopup(provider)
-          .then((r) => {
-            this.closeSignUpDialog(() => {
+    this.firebase.auth().signInWithPopup(provider)
+      .then((r) => {
+        this.closeSignUpDialog(() => {
 
-              this.registerUser(r);
+          this.registerUser(r);
 
-              this.closeSignInDialog(() => {
-                this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
-              })
-            })
+          this.props.closeSignInDialog(() => {
+            this.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
           })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   resetPassword = (emailAddress) => {
@@ -209,26 +175,15 @@ class App extends Component {
       return
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        auth.sendPasswordResetEmail(emailAddress)
-          .then(() => {
-            this.closeResetPasswordDialog(() => {
-              this.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+    this.firebase.auth().sendPasswordResetEmail(emailAddress)
+      .then(() => {
+        this.closeResetPasswordDialog(() => {
+          this.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   addAvatar = () => {
@@ -262,26 +217,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        user.updateProfile({ photoURL: avatar })
-          .then(() => {
-            this.closeAddAvatarDialog(() => {
-              this.openSnackbar('Avatar added');
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+    user.updateProfile({ photoURL: avatar })
+      .then(() => {
+        this.closeAddAvatarDialog(() => {
+          this.openSnackbar('Avatar added');
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   changeAvatar = () => {
@@ -317,26 +261,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        user.updateProfile({ photoURL: avatar })
-          .then(() => {
-            this.closeChangeAvatarDialog(() => {
-              this.openSnackbar('Avatar changed');
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+    user.updateProfile({ photoURL: avatar })
+      .then(() => {
+        this.closeChangeAvatarDialog(() => {
+          this.openSnackbar('Avatar changed');
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   addDisplayName = () => {
@@ -370,26 +303,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        user.updateProfile({ displayName })
-          .then(() => {
-            this.closeAddDisplayNameDialog(() => {
-              this.openSnackbar('Display name added');
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+    user.updateProfile({ displayName })
+      .then(() => {
+        this.closeAddDisplayNameDialog(() => {
+          this.openSnackbar('Display name added');
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   changeDisplayName = () => {
@@ -425,26 +347,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        user.updateProfile({ displayName })
-          .then(() => {
-            this.closeChangeDisplayNameDialog(() => {
-              this.openSnackbar('Display name changed');
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            })
-          })
-      }
-    )
+    user.updateProfile({ displayName })
+      .then(() => {
+        this.closeChangeDisplayNameDialog(() => {
+          this.openSnackbar('Display name changed');
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   }
 
   addEmailAddress = () => {
@@ -478,25 +389,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    },
-      () => {
-        user.updateEmail(emailAddress)
-          .then(() => {
-            this.closeAddEmailAddressDialog(() => {
-              this.openSnackbar('E-mail address added');
-            })
-          })
-          .catch((reason) => {
-            this.openSnackbar(reason.message);
-          })
-          .finally(() => {
-            this.setState({
-              isPerformingAuthAction: false
-            });
-          });
-      });
+    user.updateEmail(emailAddress)
+      .then(() => {
+        this.closeAddEmailAddressDialog(() => {
+          this.openSnackbar('E-mail address added');
+        })
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   };
 
   verifyEmailAddress = (callback) => {
@@ -506,30 +407,21 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    }, () => {
-      user.sendEmailVerification()
-        .then(() => {
-          this.setState({
-            isVerifyingEmailAddress: true
-          }, () => {
-            this.openSnackbar(`Verification e-mail sent to ${user.email}`);
+    user.sendEmailVerification()
+      .then(() => {
+        this.setState({
+          isVerifyingEmailAddress: true
+        }, () => {
+          this.openSnackbar(`Verification e-mail sent to ${user.email}`);
 
-            if (callback && typeof callback === 'function') {
-              callback();
-            }
-          });
-        })
-        .catch((reason) => {
-          this.openSnackbar(reason.message);
-        })
-        .finally(() => {
-          this.setState({
-            isPerformingAuthAction: false
-          });
+          if (callback && typeof callback === 'function') {
+            callback();
+          }
         });
-    });
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   };
 
   signOut = () => {
@@ -537,24 +429,15 @@ class App extends Component {
       return;
     }
 
-    this.setState({
-      isPerformingAuthAction: true
-    }, () => {
-      auth.signOut()
-        .then(() => {
-          this.closeSignOutDialog(() => {
-            this.openSnackbar('Signed out');
-          });
-        })
-        .catch((reason) => {
-          this.openSnackbar(reason.message);
-        })
-        .finally(() => {
-          this.setState({
-            isPerformingAuthAction: false
-          });
+    this.firebase.auth().signOut()
+      .then(() => {
+        this.closeSignOutDialog(() => {
+          this.openSnackbar('Signed out');
         });
-    });
+      })
+      .catch((reason) => {
+        this.openSnackbar(reason.message);
+      })
   };
 
   updateTheme = (palette, removeLocalStorage, callback) => {
@@ -646,26 +529,6 @@ class App extends Component {
   closeSignUpDialog = (callback) => {
     this.setState({
       signUpDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  openSignInDialog = () => {
-    this.setState({
-      signInDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeSignInDialog = (callback) => {
-    this.setState({
-      signInDialog: {
         open: false
       }
     }, () => {
@@ -910,7 +773,7 @@ class App extends Component {
     const self = this;
 
     this.removeAuthObserver =
-      firebase.auth().onAuthStateChanged((user) => {
+      self.firebase.auth().onAuthStateChanged((user) => {
         if (self._isMounted) {
 
           self.setState({
@@ -950,7 +813,6 @@ class App extends Component {
       secondaryColor,
       type,
       isAuthReady,
-      isPerformingAuthAction,
       isVerifyingEmailAddress,
       isSignedIn,
       user,
@@ -961,7 +823,6 @@ class App extends Component {
 
     const {
       signUpDialog,
-      signInDialog,
       resetPasswordDialog,
       welcomeDialog,
       settingsDialog,
@@ -982,12 +843,9 @@ class App extends Component {
             <header>
               <Bar
                 isSignedIn={isSignedIn}
-                isPerformingAuthAction={isPerformingAuthAction}
-
                 user={user}
 
                 onSignUpClick={this.openSignUpDialog}
-                onSignInClick={this.openSignInDialog}
 
                 onSettingsClick={this.openSettingsDialog}
                 onSignOutClick={this.openSignOutDialog}
@@ -1025,7 +883,6 @@ class App extends Component {
 
                           title={settings.title}
                           user={user}
-                          isPerformingAuthAction={isPerformingAuthAction}
 
                           onClose={this.closeWelcomeDialog}
 
@@ -1041,7 +898,6 @@ class App extends Component {
                           open={settingsDialog.open}
 
                           user={user}
-                          isPerformingAuthAction={isPerformingAuthAction}
                           isVerifyingEmailAddress={isVerifyingEmailAddress}
                           colors={colors}
                           primaryColor={primaryColor}
@@ -1083,7 +939,7 @@ class App extends Component {
                             />
                           }
                           okText="Add"
-                          disableOkButton={!avatar || isPerformingAuthAction}
+                          disableOkButton={!avatar}
                           highlightOkButton
 
                           onClose={this.closeAddAvatarDialog}
@@ -1118,7 +974,7 @@ class App extends Component {
                             />
                           }
                           okText="Change"
-                          disableOkButton={!avatar || isPerformingAuthAction}
+                          disableOkButton={!avatar}
                           highlightOkButton
 
                           onClose={this.closeChangeAvatarDialog}
@@ -1153,7 +1009,7 @@ class App extends Component {
                             />
                           }
                           okText="Add"
-                          disableOkButton={!displayName || isPerformingAuthAction}
+                          disableOkButton={!displayName}
                           highlightOkButton
 
                           onClose={this.closeAddDisplayNameDialog}
@@ -1188,7 +1044,7 @@ class App extends Component {
                             />
                           }
                           okText="Change"
-                          disableOkButton={!displayName || isPerformingAuthAction}
+                          disableOkButton={!displayName}
                           highlightOkButton
 
                           onClose={this.closeChangeDisplayNameDialog}
@@ -1223,7 +1079,7 @@ class App extends Component {
                             />
                           }
                           okText="Add"
-                          disableOkButton={!emailAddress || isPerformingAuthAction}
+                          disableOkButton={!emailAddress}
                           highlightOkButton
 
                           onClose={this.closeAddEmailAddressDialog}
@@ -1243,7 +1099,6 @@ class App extends Component {
                           title="Sign out?"
                           contentText="While signed out you are unable to manage your profile and conduct other activities that require you to be signed in."
                           okText="Sign Out"
-                          disableOkButton={isPerformingAuthAction}
                           highlightOkButton
 
                           onClose={this.closeSignOutDialog}
@@ -1258,8 +1113,6 @@ class App extends Component {
                         <SignUpDialog
                           open={signUpDialog.open}
 
-                          isPerformingAuthAction={isPerformingAuthAction}
-
                           signUp={this.signUp}
 
                           onClose={this.closeSignUpDialog}
@@ -1267,23 +1120,14 @@ class App extends Component {
                         />
 
                         <SignInDialog
-                          open={signInDialog.open}
-
-                          isPerformingAuthAction={isPerformingAuthAction}
-
                           signIn={this.signIn}
-
-                          onClose={this.closeSignInDialog}
+                          onClose={this.props.closeSignInDialog}
                           onAuthProviderClick={this.signInWithProvider}
                           onResetPasswordClick={this.openResetPasswordDialog}
                         />
                         <ResetPasswordDialog
                           open={resetPasswordDialog.open}
-
-                          isPerformingAuthAction={isPerformingAuthAction}
-
                           resetPassword={this.resetPassword}
-
                           onClose={this.closeResetPasswordDialog}
                         />
                       </React.Fragment>
@@ -1306,4 +1150,9 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps, { closeSignInDialog })(App);

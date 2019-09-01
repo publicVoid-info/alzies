@@ -53,7 +53,7 @@ class Profile extends Component {
     const { classes } = this.props;
 
     // Properties
-    const { user, isPerformingAuthAction } = this.props;
+    const { user } = this.props;
 
     // Events
     const { onChangeAvatarClick } = this.props;
@@ -69,7 +69,7 @@ class Profile extends Component {
 
           {onChangeAvatarClick &&
             <Tooltip title="Change avatar">
-              <Fab className={classes.changeAvatar} color="primary" disabled={isPerformingAuthAction} size="small" onClick={onChangeAvatarClick}>
+              <Fab className={classes.changeAvatar} color="primary" size="small" onClick={onChangeAvatarClick}>
                 <EditIcon />
               </Fab>
             </Tooltip>
@@ -89,7 +89,6 @@ Profile.propTypes = {
   classes: PropTypes.object.isRequired,
 
   user: PropTypes.object.isRequired,
-  isPerformingAuthAction: PropTypes.bool,
 
   onChangeAvatarClick: PropTypes.func
 };

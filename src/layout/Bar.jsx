@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fade, withStyles } from '@material-ui/core/styles';
-import { toggleDrawer } from '../store/actions';
+import { toggleDrawer, openSignInDialog } from '../store/actions';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -112,15 +112,19 @@ class Bar extends Component {
     this.props.toggleDrawer(!this.props.drawer.open);
   }
 
+  handleSignInClick = () => {
+    this.props.openSignInDialog(!this.props.signInDialog.open);
+  }
+
   render() {
     // Styling
     const { classes } = this.props;
 
     // Properties
-    const { isPerformingAuthAction, isSignedIn, user } = this.props;
+    const { isSignedIn, user } = this.props;
 
     // Events
-    const { onSignUpClick, onSignInClick } = this.props;
+    const { onSignUpClick } = this.props;
 
     const { menu } = this.state;
 
@@ -157,7 +161,7 @@ class Bar extends Component {
                   onInput={this.props.onSearchInput}
                 />
               </div>
-              <IconButton color="inherit" disabled={isPerformingAuthAction} onClick={this.openMenu}>
+              <IconButton color="inherit" onClick={this.openMenu}>
                 {user.photoURL ? <Avatar alt="Avatar" src={user.photoURL} /> : <PersonIcon />}
               </IconButton>
 
@@ -171,8 +175,8 @@ class Bar extends Component {
                   horizontal: 'center',
                 }}
               >
-                <MenuItem disabled={isPerformingAuthAction} onClick={this.handleSettingsClick}>Settings</MenuItem>
-                <MenuItem disabled={isPerformingAuthAction} onClick={this.handleSignOutClick}>Sign out</MenuItem>
+                <MenuItem onClick={this.handleSettingsClick}>Settings</MenuItem>
+                <MenuItem onClick={this.handleSignOutClick}>Sign out</MenuItem>
               </Popover>
             </React.Fragment>
           }
@@ -182,16 +186,14 @@ class Bar extends Component {
               <Button
                 className={classes.signButton}
                 color="primary"
-                disabled={isPerformingAuthAction}
                 variant="contained"
                 onClick={onSignUpClick}>
                 Sign Up</Button>
               <Button
                 className={classes.signButton}
                 color="secondary"
-                disabled={isPerformingAuthAction}
                 variant="contained"
-                onClick={onSignInClick}>
+                onClick={this.handleSignInClick}>
                 Sign In</Button>
             </React.Fragment>
           }
@@ -204,7 +206,6 @@ class Bar extends Component {
 Bar.propTypes = {
   classes: PropTypes.object.isRequired,
 
-  isPerformingAuthAction: PropTypes.bool.isRequired,
   isSignedIn: PropTypes.bool.isRequired,
 
   onSettingsClick: PropTypes.func.isRequired,
@@ -212,8 +213,8 @@ Bar.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const drawer = state;
-  return drawer;
+  const storeState = state;
+  return storeState;
 }
 
-export default connect(mapStateToProps, { toggleDrawer })(withStyles(styles)(Bar));
+export default connect(mapStateToProps, { toggleDrawer, openSignInDialog })(withStyles(styles)(Bar));

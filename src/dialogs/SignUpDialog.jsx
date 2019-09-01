@@ -95,7 +95,7 @@ class SignUpDialog extends Component {
 
   render() {
     // Properties
-    const { fullScreen, open, isPerformingAuthAction } = this.props;
+    const { open } = this.props;
 
     // Events
     const { onClose, onAuthProviderClick } = this.props;
@@ -103,7 +103,11 @@ class SignUpDialog extends Component {
     const { emailAddress, password, passwordConfirmation, errors } = this.state;
 
     return (
-      <Dialog fullScreen={fullScreen} open={open} onClose={onClose} onExited={this.handleExited} onKeyPress={this.handleKeyPress}>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        onExited={this.handleExited}
+        onKeyPress={this.handleKeyPress}>
         <DialogTitle>
           Sign up for an account
         </DialogTitle>
@@ -113,7 +117,7 @@ class SignUpDialog extends Component {
             Create an account to access features that are unavailable to users who haven't signed up.
           </DialogContentText>
 
-          <AuthProviderList isPerformingAuthAction={isPerformingAuthAction} onAuthProviderClick={onAuthProviderClick} />
+          <AuthProviderList onAuthProviderClick={onAuthProviderClick} />
 
           <form>
             <TextField
@@ -159,7 +163,7 @@ class SignUpDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={onClose}>Cancel</Button>
-          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation) || isPerformingAuthAction} variant="contained" onClick={this.handleSignUpClick}>Sign Up</Button>
+          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUpClick}>Sign Up</Button>
         </DialogActions>
       </Dialog>
     );
@@ -167,13 +171,8 @@ class SignUpDialog extends Component {
 }
 
 SignUpDialog.propTypes = {
-  fullScreen: PropTypes.bool,
   open: PropTypes.bool.isRequired,
-
-  isPerformingAuthAction: PropTypes.bool.isRequired,
-
   signUp: PropTypes.func.isRequired,
-
   onClose: PropTypes.func.isRequired,
   onAuthProviderClick: PropTypes.func.isRequired
 };
