@@ -12,7 +12,6 @@ it('renders without crashing', () => {
       <SettingsDialog
         open={false}
         user={{}}
-        isVerifyingEmailAddress={false}
         colors={[]}
         primaryColor=""
         secondaryColor=""
@@ -23,7 +22,6 @@ it('renders without crashing', () => {
         onAddDisplayNameClick={() => { }}
         onChangeDisplayNameClick={() => { }}
         onAddEmailAddressClick={() => { }}
-        onVerifyEmailAddressClick={() => { }}
         onPrimaryColorChange={() => { }}
         onSecondaryColorChange={() => { }}
         onTypeChange={() => { }}

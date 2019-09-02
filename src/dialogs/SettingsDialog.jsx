@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-
-import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -70,8 +68,6 @@ class SettingsDialog extends Component {
     // Properties
     const {
       open,
-      user,
-      isVerifyingEmailAddress,
       colors,
       primaryColor,
       secondaryColor,
@@ -82,12 +78,6 @@ class SettingsDialog extends Component {
     // Events
     const {
       onClose,
-      onAddAvatarClick,
-      onChangeAvatarClick,
-      onAddDisplayNameClick,
-      onChangeDisplayNameClick,
-      onAddEmailAddressClick,
-      onVerifyEmailAddressClick,
       onPrimaryColorChange,
       onSecondaryColorChange,
       onTypeChange
@@ -109,23 +99,21 @@ class SettingsDialog extends Component {
       <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
         <DialogTitle>Settings</DialogTitle>
 
-        <Tabs className={classes.tabs} indicatorColor="primary" textColor="primary" onChange={this.changeTab} value={selectedTab} variant="fullWidth">
+        <Tabs
+          className={classes.tabs}
+          indicatorColor="primary"
+          textColor="primary"
+          onChange={this.changeTab}
+          value={selectedTab}
+          variant="fullWidth">
+
           <Tab label="Account" />
           <Tab label="Appearance" />
         </Tabs>
 
         <DialogContent>
           {selectedTab === 0 &&
-            <AccountTab
-              user={user}
-              isVerifyingEmailAddress={isVerifyingEmailAddress}
-              onAddAvatarClick={onAddAvatarClick}
-              onChangeAvatarClick={onChangeAvatarClick}
-              onAddDisplayNameClick={onAddDisplayNameClick}
-              onChangeDisplayNameClick={onChangeDisplayNameClick}
-              onAddEmailAddressClick={onAddEmailAddressClick}
-              onVerifyEmailAddressClick={onVerifyEmailAddressClick}
-            />
+            <AccountTab />
           }
 
           {selectedTab === 1 &&
@@ -158,20 +146,13 @@ SettingsDialog.propTypes = {
 
   open: PropTypes.bool.isRequired,
 
-  user: PropTypes.object.isRequired,
-  isVerifyingEmailAddress: PropTypes.bool.isRequired,
   colors: PropTypes.array.isRequired,
   primaryColor: PropTypes.string.isRequired,
   secondaryColor: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
 
   onClose: PropTypes.func.isRequired,
-  onAddAvatarClick: PropTypes.func.isRequired,
-  onChangeAvatarClick: PropTypes.func.isRequired,
-  onAddDisplayNameClick: PropTypes.func.isRequired,
-  onChangeDisplayNameClick: PropTypes.func.isRequired,
-  onAddEmailAddressClick: PropTypes.func.isRequired,
-  onVerifyEmailAddressClick: PropTypes.func.isRequired,
+
   onPrimaryColorChange: PropTypes.func.isRequired,
   onSecondaryColorChange: PropTypes.func.isRequired,
   onTypeChange: PropTypes.func.isRequired,

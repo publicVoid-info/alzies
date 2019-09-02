@@ -127,10 +127,6 @@ class Bar extends Component {
   render() {
     // Styling
     const { classes } = this.props;
-
-    // Properties
-    const { isSignedIn, user } = this.props;
-
     const { menu } = this.state;
 
     return (
@@ -150,7 +146,7 @@ class Bar extends Component {
             color="inherit"
             variant="h5">Alzies</Typography>
 
-          {isSignedIn &&
+          {this.props.isSignedIn &&
             <React.Fragment>
               <div className={classes.search}>
                 <div className={classes.searchIcon}>
@@ -167,7 +163,7 @@ class Bar extends Component {
                 />
               </div>
               <IconButton color="inherit" onClick={this.openMenu}>
-                {user.photoURL ? <Avatar alt="Avatar" src={user.photoURL} /> : <PersonIcon />}
+                {this.props.user && this.props.user.photoURL ? <Avatar alt="Avatar" src={this.props.user.photoURL} /> : <PersonIcon />}
               </IconButton>
 
               <Popover anchorEl={menu.anchorEl} open={Boolean(menu.anchorEl)} onClose={this.closeMenu}
@@ -186,7 +182,7 @@ class Bar extends Component {
             </React.Fragment>
           }
 
-          {!isSignedIn &&
+          {!this.props.isSignedIn &&
             <React.Fragment>
               <Button
                 className={classes.signButton}
@@ -210,8 +206,6 @@ class Bar extends Component {
 
 Bar.propTypes = {
   classes: PropTypes.object.isRequired,
-
-  isSignedIn: PropTypes.bool.isRequired,
 
   onSettingsClick: PropTypes.func.isRequired,
   onSignOutClick: PropTypes.func.isRequired,

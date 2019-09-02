@@ -4,6 +4,10 @@ import readingTime from 'reading-time';
 import { getFirestore } from '../helpers/firebase';
 
 export const actionTypes = {
+    SET_USER: 'SET_USER',
+    SET_AUTHREADY: 'SET_AUTHREADY',
+    SET_VERIFYEMAIL: 'SET_VERIFYEMAIL',
+    SET_SIGNEDIN: 'SET_SIGNEDIN',
     TOGGLE_DRAWER: 'TOGGLE_DRAWER',
     SIGNIN_OPEN: 'SIGNIN_OPEN',
     SIGNIN_CLOSE: 'SIGNIN_CLOSE',
@@ -14,6 +18,34 @@ export const actionTypes = {
     WELCOME_OPEN: 'WELCOME_OPEN',
     WELCOME_CLOSE: 'WELCOME_CLOSE',
 }
+
+export const setUser = (user) => {
+    return {
+        type: actionTypes.SET_USER,
+        payload: user
+    };
+};
+
+export const setAuthReady = (value) => {
+    return {
+        type: actionTypes.SET_AUTHREADY,
+        payload: value
+    };
+};
+
+export const setVerifyEmail = (value) => {
+    return {
+        type: actionTypes.SET_VERIFYEMAIL,
+        payload: value
+    };
+};
+
+export const setSignedIn = (value) => {
+    return {
+        type: actionTypes.SET_SIGNEDIN,
+        payload: value
+    };
+};
 
 export const toggleDrawer = (open) => {
     return {
@@ -113,4 +145,17 @@ export const registerUser = (r) => {
                 uid: r.user.uid,
             });
     };
+};
+
+export const verifyEmailAddress = (user, callback) => {
+
+    user.sendEmailVerification()
+        .then(() => {
+            if (callback && typeof callback === 'function') {
+                callback();
+            }
+        })
+        .catch((reason) => {
+
+        })
 };

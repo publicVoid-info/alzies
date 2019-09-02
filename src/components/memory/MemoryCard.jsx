@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { getFirestore } from '../../helpers/firebase';
-import { AuthContext } from '../../store/store';
 import { withRouter } from 'react-router-dom';
 
 import InputDialog from '../../dialogs/InputDialog';
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => (
 
 function MemoryCard(props) {
 
-  const { memory } = props;
+  const { memory, user } = props;
   const classes = useStyles();
 
   const initialState = {
@@ -68,8 +68,7 @@ function MemoryCard(props) {
     },
   };
 
-  const [state, setState] = useState(initialState)
-  const user = useContext(AuthContext)
+  const [state, setState] = useState(initialState);
 
   const openDeleteCardDialog = () => {
     setState({
@@ -178,4 +177,9 @@ function MemoryCard(props) {
   )
 }
 
-export default withRouter(MemoryCard);
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps, {})(withRouter(MemoryCard));

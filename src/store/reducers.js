@@ -2,6 +2,12 @@ import { actionTypes } from './actions';
 // import { initialState } from './store';
 
 const initState = {
+    user: null,
+
+    isAuthReady: false,
+    isVerifyingEmailAddress: false,
+    isSignedIn: false,
+
     drawer: {
         open: false
     },
@@ -21,9 +27,28 @@ const initState = {
     },
 }
 
-
 function appReducer(state = initState, action) {
     switch (action.type) {
+        case actionTypes.SET_USER:
+            return {
+                ...state,
+                user: action.payload
+            }
+        case actionTypes.SET_AUTHREADY:
+            return {
+                ...state,
+                isAuthReady: action.payload
+            }
+        case actionTypes.SET_SIGNEDIN:
+            return {
+                ...state,
+                isSignedIn: action.payload
+            }
+        case actionTypes.SET_VERIFYEMAIL:
+            return {
+                ...state,
+                isVerifyingEmailAddress: action.payload
+            }
         case actionTypes.TOGGLE_DRAWER:
             return {
                 ...state,

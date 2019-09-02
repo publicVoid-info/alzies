@@ -1,6 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { getFirestore } from '../helpers/firebase';
-import { AuthContext } from '../store/store';
 
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -11,7 +11,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import IconButton from '@material-ui/core/IconButton';
 import { ClickAwayListener } from '@material-ui/core';
 
-export default class FindUsersDialog extends React.Component {
+class FindUsersDialog extends React.Component {
     constructor(props) {
         super(props);
 
@@ -25,7 +25,7 @@ export default class FindUsersDialog extends React.Component {
 
     getUsers = () => {
 
-        const currentUser = this.context;
+        const currentUser = this.props.user;
 
         getFirestore().collection('users')
             .get()
@@ -117,4 +117,9 @@ export default class FindUsersDialog extends React.Component {
     }
 }
 
-FindUsersDialog.contextType = AuthContext;
+const mapStateToProps = (state) => {
+    const storeState = state;
+    return storeState;
+}
+
+export default connect(mapStateToProps, {})(FindUsersDialog);

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {
   closeWelcomeDialog,
   openSnackbar,
+  verifyEmailAddress,
 } from '../store/actions';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -16,6 +17,20 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 
 class WelcomeDialog extends Component {
+  constructor(props) {
+    super(props);
+
+    this.verifyEmailAddress = verifyEmailAddress;
+  }
+
+  handleVerifyClick = () => {
+    this.verifyEmailAddress(
+      this.props.user,
+      () => {
+        this.props.closeWelcomeDialog()
+      });
+  };
+
   handleKeyPress = (event) => {
     const key = event.key;
 
@@ -36,7 +51,11 @@ class WelcomeDialog extends Component {
     const { onVerifyClick } = this.props;
 
     return (
-      <Dialog open={this.props.welcomeDialog.open} onClose={this.props.closeWelcomeDialog} onKeyPress={this.handleKeyPress}>
+      <Dialog
+        open={this.props.welcomeDialog.open}
+        onClose={this.props.closeWelcomeDialog}
+        onKeyPress={this.handleKeyPress}>
+
         <DialogTitle>
           Welcome to {title}!
         </DialogTitle>
@@ -59,7 +78,6 @@ class WelcomeDialog extends Component {
 
 WelcomeDialog.propTypes = {
   title: PropTypes.string.isRequired,
-  onVerifyClick: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => {
