@@ -4,11 +4,14 @@ import readingTime from 'reading-time';
 import { getFirestore } from '../helpers/firebase';
 
 export const actionTypes = {
+    SET_SEARCHINPUT: 'SET_SEARCHINPUT',
     SET_USER: 'SET_USER',
     SET_AUTHREADY: 'SET_AUTHREADY',
     SET_VERIFYEMAIL: 'SET_VERIFYEMAIL',
     SET_SIGNEDIN: 'SET_SIGNEDIN',
     TOGGLE_DRAWER: 'TOGGLE_DRAWER',
+    SETTINGS_OPEN: 'SETTINGS_OPEN',
+    SETTINGS_CLOSE: 'SETTINGS_CLOSE',
     SIGNIN_OPEN: 'SIGNIN_OPEN',
     SIGNIN_CLOSE: 'SIGNIN_CLOSE',
     SIGNUP_OPEN: 'SIGNUP_OPEN',
@@ -18,6 +21,13 @@ export const actionTypes = {
     WELCOME_OPEN: 'WELCOME_OPEN',
     WELCOME_CLOSE: 'WELCOME_CLOSE',
 }
+
+export const setSearchInput = (input) => {
+    return {
+        type: actionTypes.SET_SEARCHINPUT,
+        payload: input
+    };
+};
 
 export const setUser = (user) => {
     return {
@@ -84,6 +94,23 @@ export const closeSignUpDialog = (callback) => {
 
     return {
         type: actionTypes.SIGNUP_CLOSE,
+        payload: false,
+    };
+};
+
+export const openSettingsDialog = () => {
+    return {
+        type: actionTypes.SETTINGS_OPEN,
+        payload: true
+    };
+};
+
+export const closeSettingsDialog = (callback) => {
+
+    if (callback && typeof callback === 'function') callback();
+
+    return {
+        type: actionTypes.SETTINGS_CLOSE,
         payload: false,
     };
 };

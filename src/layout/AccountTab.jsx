@@ -253,7 +253,11 @@ class AccountTab extends Component {
               autoFocus
               error={(this.state.changeDisplayNameDialog.errors)}
               fullWidth
-              helperText={(this.state.changeDisplayNameDialog.errors)}
+              helperText={
+                (this.state.changeDisplayNameDialog.errors && this.state.changeDisplayNameDialog.errors.avatar)
+                  ? this.state.changeDisplayNameDialog.errors.avatar[0]
+                  : ''
+              }
               margin="normal"
               onChange={this.updateDisplayName}
               placeholder={(this.props.user) ? this.props.user.displayName : ''}

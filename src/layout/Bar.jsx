@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fade, withStyles } from '@material-ui/core/styles';
+import { getFirebase } from '../helpers/firebase';
 import {
+  setSearchInput,
   toggleDrawer,
   openSignInDialog,
-  openSignUpDialog
+  openSignUpDialog,
+  openSettingsDialog,
+  openSnackbar,
 } from '../store/actions';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -19,8 +23,9 @@ import Popover from '@material-ui/core/Popover';
 import MenuIcon from '@material-ui/icons/Menu';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-
 import PersonIcon from '@material-ui/icons/Person';
+
+import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 
 const styles = (theme) => ({
   titulo: {
@@ -77,7 +82,11 @@ class Bar extends Component {
   constructor(props) {
     super(props);
 
+    this.firebase = getFirebase();
     this.state = {
+      signOutDialog: {
+        open: false
+      },
       menu: {
         anchorEl: null
       }
@@ -104,12 +113,47 @@ class Bar extends Component {
 
   handleSettingsClick = () => {
     this.closeMenu();
-    this.props.onSettingsClick();
+    this.props.openSettingsDialog();
   };
 
   handleSignOutClick = () => {
+
     this.closeMenu();
-    this.props.onSignOutClick();
+    this.openSignOutDialog();
+  };
+
+  signOut = () => {
+
+    this.closeSignOutDialog(() => {
+      this.firebase.auth().signOut()
+        .then(() => {
+          this.props.openSnackbar('Signed out');
+        })
+        .catch((reason) => {
+          this.props.openSnackbar(reason.message);
+        });
+    });
+  };
+
+  openSignOutDialog() {
+
+    this.setState({
+      signOutDialog: {
+        open: true,
+      }
+    });
+  }
+
+  closeSignOutDialog = (callback) => {
+
+    this.setState({
+      signOutDialog: {
+        open: false,
+      }
+    },
+      () => {
+        if (callback && typeof callback === 'function') callback();
+      });
   };
 
   handleToggleDrawer = () => {
@@ -122,6 +166,10 @@ class Bar extends Component {
 
   handleSignUpClick = () => {
     this.props.openSignUpDialog(true);
+  }
+
+  handleSearchInput = (e) => {
+    this.props.setSearchInput(e.target.value);
   }
 
   render() {
@@ -159,11 +207,13 @@ class Bar extends Component {
                     input: classes.inputInput,
                   }}
                   inputProps={{ 'aria-label': 'search' }}
-                  onInput={this.props.onSearchInput}
+                  onInput={this.handleSearchInput}
                 />
               </div>
               <IconButton color="inherit" onClick={this.openMenu}>
-                {this.props.user && this.props.user.photoURL ? <Avatar alt="Avatar" src={this.props.user.photoURL} /> : <PersonIcon />}
+                {this.props.user && this.props.user.photoURL
+                  ? <Avatar alt="Avatar" src={this.props.user.photoURL} />
+                  : <PersonIcon />}
               </IconButton>
 
               <Popover anchorEl={menu.anchorEl} open={Boolean(menu.anchorEl)} onClose={this.closeMenu}
@@ -198,6 +248,19 @@ class Bar extends Component {
                 Sign In</Button>
             </React.Fragment>
           }
+
+          <ConfirmationDialog
+            open={this.state.signOutDialog.open}
+
+            title="Sign out?"
+            contentText="While signed out you are unable to manage your profile and conduct other activities that require you to be signed in."
+            okText="Sign Out"
+            highlightOkButton
+
+            onClose={this.closeSignOutDialog}
+            onCancelClick={this.closeSignOutDialog}
+            onOkClick={this.signOut}
+          />
         </Toolbar>
       </AppBar>
     );
@@ -206,9 +269,6 @@ class Bar extends Component {
 
 Bar.propTypes = {
   classes: PropTypes.object.isRequired,
-
-  onSettingsClick: PropTypes.func.isRequired,
-  onSignOutClick: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -217,7 +277,10 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {
+  setSearchInput,
   toggleDrawer,
   openSignInDialog,
   openSignUpDialog,
+  openSettingsDialog,
+  openSnackbar,
 })(withStyles(styles)(Bar));

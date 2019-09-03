@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
+import { openSnackbar } from '../store/actions';
 
 import validate from 'validate.js';
 import constraints from '../helpers/constraints';
@@ -159,9 +160,13 @@ class Profile extends Component {
               onChange={this.updateAvatarState}
               autoComplete="photo"
               autoFocus
-              error={(this.state.changeAvatarDialog.errors)}
+              error={Boolean(this.state.changeAvatarDialog.errors)}
               fullWidth
-              helperText={(this.state.changeAvatarDialog.errors)}
+              helperText={
+                (this.state.changeAvatarDialog.errors && this.state.changeAvatarDialog.errors.avatar)
+                  ? this.state.changeAvatarDialog.errors.avatar[0]
+                  : ''
+              }
               margin="normal"
               placeholder={(this.props.user) ? this.props.user.photoURL : ''}
               required
@@ -197,4 +202,4 @@ const mapStateToProps = (state) => {
   return storeState;
 }
 
-export default connect(mapStateToProps, {})(withStyles(styles)(Profile));
+export default connect(mapStateToProps, { openSnackbar })(withStyles(styles)(Profile));

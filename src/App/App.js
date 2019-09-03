@@ -33,7 +33,6 @@ import SignInDialog from '../dialogs/SignInDialog';
 import ResetPasswordDialog from '../dialogs/ResetPasswordDialog';
 import WelcomeDialog from '../dialogs/WelcomeDialog';
 import SettingsDialog from '../dialogs/SettingsDialog';
-import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 
 import MemoryEditor from '../components/memory/MemoryEditor';
 
@@ -89,23 +88,6 @@ class App extends Component {
         this.props.openSnackbar(reason.message);
       })
   }
-
-  signOut = () => {
-
-    if (!this.props.isSignedIn) {
-      return;
-    }
-
-    this.firebase.auth().signOut()
-      .then(() => {
-        this.closeSignOutDialog(() => {
-          this.props.openSnackbar('Signed out');
-        });
-      })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      })
-  };
 
   updateTheme = (palette, removeLocalStorage, callback) => {
     const { primaryColor, secondaryColor, type } = this.state;
@@ -205,68 +187,6 @@ class App extends Component {
     });
   };
 
-  openSettingsDialog = () => {
-    this.setState({
-      settingsDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeSettingsDialog = (callback) => {
-    this.setState({
-      settingsDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  openSignOutDialog = () => {
-    this.setState({
-      signOutDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeSignOutDialog = (callback) => {
-    this.setState({
-      signOutDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  handleAvatarChange = (event) => {
-    const avatar = event.target.value;
-
-    this.setState({ avatar });
-  };
-
-  handleDisplayNameChange = (event) => {
-    const displayName = event.target.value;
-
-    this.setState({ displayName });
-  };
-
-  handleEmailAddressChange = (event) => {
-    const emailAddress = event.target.value;
-
-    this.setState({ emailAddress });
-  };
-
-  handleSearchInput = (e) => {
-    this.setState({ searchInput: e.target.value });
-  }
-
   componentDidMount() {
     this._isMounted = true;
 
@@ -305,20 +225,13 @@ class App extends Component {
 
     const {
       resetPasswordDialog,
-      settingsDialog,
-      signOutDialog
     } = this.state;
 
     return (
       < Router >
         <MuiThemeProvider theme={theme}>
           <header>
-            <Bar
-              onSettingsClick={this.openSettingsDialog}
-              onSignOutClick={this.openSignOutDialog}
-
-              onSearchInput={this.handleSearchInput}
-            />
+            <Bar />
           </header>
           <main>
 
@@ -330,50 +243,26 @@ class App extends Component {
               {this.props.isAuthReady &&
                 <React.Fragment>
                   <Switch>
-                    <Route exact path="/" render={
-                      () => (
-                        <HomeContent
-                          title={settings.title}
-                          searchInput={this.state.searchInput}
-                        />)
-                    } />
+                    <Route exact path="/" component={HomeContent} />
                     <Route exact path="/memory/:id" component={MemoryEditor} />
                     <Route component={NotFoundContent} />
                   </Switch>
 
                   {this.props.isSignedIn &&
                     <React.Fragment>
-                      <WelcomeDialog
-                        title={settings.title}
-                      />
+                      <WelcomeDialog />
 
                       <SettingsDialog
-                        open={settingsDialog.open}
-
                         colors={colors}
                         primaryColor={primaryColor}
                         secondaryColor={secondaryColor}
                         type={type}
                         defaultTheme={settings.theme}
 
-                        onClose={this.closeSettingsDialog}
                         onPrimaryColorChange={this.changePrimaryColor}
                         onSecondaryColorChange={this.changeSecondaryColor}
                         onTypeChange={this.changeType}
                         onResetClick={this.resetTheme}
-                      />
-
-                      <ConfirmationDialog
-                        open={signOutDialog.open}
-
-                        title="Sign out?"
-                        contentText="While signed out you are unable to manage your profile and conduct other activities that require you to be signed in."
-                        okText="Sign Out"
-                        highlightOkButton
-
-                        onClose={this.closeSignOutDialog}
-                        onCancelClick={this.closeSignOutDialog}
-                        onOkClick={this.signOut}
                       />
                     </React.Fragment>
                   }

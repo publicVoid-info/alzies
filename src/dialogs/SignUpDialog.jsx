@@ -89,26 +89,12 @@ class SignUpDialog extends Component {
     }
 
     if (key === 'Enter') {
-      this.signUp();
+      this.handleSignUp();
     }
   };
 
-  handleEmailAddressChange = (event) => {
-    const emailAddress = event.target.value;
-
-    this.setState({ emailAddress });
-  };
-
-  handlePasswordChange = (event) => {
-    const password = event.target.value;
-
-    this.setState({ password });
-  };
-
-  handlePasswordConfirmationChange = (event) => {
-    const passwordConfirmation = event.target.value;
-
-    this.setState({ passwordConfirmation });
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
   };
 
   render() {
@@ -134,39 +120,42 @@ class SignUpDialog extends Component {
 
           <form>
             <TextField
+              name="emailAddress"
               autoComplete="email"
               error={!!(errors && errors.emailAddress)}
               fullWidth
               helperText={(errors && errors.emailAddress) ? errors.emailAddress[0] : ''}
               label="E-mail address"
               margin="normal"
-              onChange={this.handleEmailAddressChange}
+              onChange={this.handleChange}
               required
               type="email"
               value={emailAddress}
             />
 
             <TextField
+              name="password"
               autoComplete="new-password"
               error={!!(errors && errors.password)}
               fullWidth
               helperText={(errors && errors.password) ? errors.password[0] : ''}
               label="Password"
               margin="normal"
-              onChange={this.handlePasswordChange}
+              onChange={this.handleChange}
               required
               type="password"
               value={password}
             />
 
             <TextField
+              name="passwordConfirmation"
               autoComplete="password"
               error={!!(errors && errors.passwordConfirmation)}
               fullWidth
               helperText={(errors && errors.passwordConfirmation) ? errors.passwordConfirmation[0] : ''}
               label="Password confirmation"
               margin="normal"
-              onChange={this.handlePasswordConfirmationChange}
+              onChange={this.handleChange}
               required
               type="password"
               value={passwordConfirmation}
@@ -176,7 +165,7 @@ class SignUpDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={this.props.closeSignUpDialog}>Cancel</Button>
-          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.signUp}>Sign Up</Button>
+          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUp}>Sign Up</Button>
         </DialogActions>
       </Dialog>
     );

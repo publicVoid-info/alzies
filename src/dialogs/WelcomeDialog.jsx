@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import {
   closeWelcomeDialog,
   openSnackbar,
   verifyEmailAddress,
 } from '../store/actions';
+
+import settings from '../helpers/settings';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -27,6 +28,7 @@ class WelcomeDialog extends Component {
     this.verifyEmailAddress(
       this.props.user,
       () => {
+        this.props.openSnackbar('Verification email sent');
         this.props.closeWelcomeDialog()
       });
   };
@@ -39,17 +41,11 @@ class WelcomeDialog extends Component {
     }
 
     if (key === 'Enter') {
-      this.props.onOkClick();
+      this.handleVerifyClick();
     }
   };
 
   render() {
-    // Custom Properties
-    const { title } = this.props;
-
-    // Custom Events
-    const { onVerifyClick } = this.props;
-
     return (
       <Dialog
         open={this.props.welcomeDialog.open}
@@ -57,7 +53,7 @@ class WelcomeDialog extends Component {
         onKeyPress={this.handleKeyPress}>
 
         <DialogTitle>
-          Welcome to {title}!
+          Welcome to {settings.title}!
         </DialogTitle>
 
         <DialogContent>
@@ -69,16 +65,12 @@ class WelcomeDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={this.props.closeWelcomeDialog}>Cancel</Button>
-          <Button color="primary" variant="contained" onClick={onVerifyClick}>Verify</Button>
+          <Button color="primary" variant="contained" onClick={this.handleVerifyClick}>Verify</Button>
         </DialogActions>
       </Dialog>
     );
   }
 }
-
-WelcomeDialog.propTypes = {
-  title: PropTypes.string.isRequired,
-};
 
 const mapStateToProps = (state) => {
   const storeState = state;

@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 import { getFirestore } from '../helpers/firebase';
 import { toggleDrawer } from '../store/actions';
+import settings from '../helpers/settings';
 
 import Fab from '@material-ui/core/Fab';
 import CodeIcon from '@material-ui/icons/Code';
@@ -48,6 +49,10 @@ class HomeContent extends Component {
     this.state = {
       memoryList: []
     }
+  }
+
+  handleToggleDrawer = () => {
+    this.props.toggleDrawer(!this.props.drawer.open);
   }
 
   sortMemories(memoryList, posicoes) {
@@ -126,6 +131,23 @@ class HomeContent extends Component {
       .catch();
   }
 
+  filtroSearch(searchInput) {
+
+    //caso o input seja length 0, significa q acabou de limpar a pesquisa, carrega os caboclos originais
+    if (searchInput.length > 0) {
+      const filteredList =
+        this.state.memoryList.filter((value) => {
+          return value.headline.toUpperCase().indexOf(searchInput) > -1;
+        });
+
+      this.setState({
+        memoryList: filteredList
+      });
+    } else {
+      this.getMemories();
+    }
+  }
+
   componentDidMount() {
 
     if (this.props.isSignedIn && this.props.user) {
@@ -164,23 +186,6 @@ class HomeContent extends Component {
     }
   }
 
-  filtroSearch(searchInput) {
-
-    //caso o input seja length 0, significa q acabou de limpar a pesquisa, carrega os caboclos originais
-    if (searchInput.length > 0) {
-      const filteredList =
-        this.state.memoryList.filter((value) => {
-          return value.headline.toUpperCase().indexOf(searchInput) > -1;
-        });
-
-      this.setState({
-        memoryList: filteredList
-      });
-    } else {
-      this.getMemories();
-    }
-  }
-
   componentWillUnmount() {
 
     if (this.unsubscribe) {
@@ -188,23 +193,16 @@ class HomeContent extends Component {
     }
   }
 
-  handleToggleDrawer = () => {
-    this.props.toggleDrawer(!this.props.drawer.open);
-  }
-
   render() {
 
     // Styling
     const { classes } = this.props;
 
-    // Properties
-    const { isSignedIn, title, user } = this.props;
-
-    if (!isSignedIn) {
+    if (!this.props.isSignedIn) {
       return (
         <EmptyState
           icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
-          title={title}
+          title={settings.title}
           description="Não ofereço clareiras a razão, virem-se"
           button={
             <Fab
@@ -221,10 +219,9 @@ class HomeContent extends Component {
       )
     }
 
-    return (user)
+    return (this.props.user)
       ?
       <React.Fragment>
-
         <Drawer
           open={this.props.drawer.open}
           elevation="16"
@@ -256,12 +253,11 @@ class HomeContent extends Component {
 
 HomeContent.propTypes = {
   classes: PropTypes.object.isRequired,
-  isSignedIn: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state) => {
-  const drawer = state;
-  return drawer;
+  const storeState = state;
+  return storeState;
 }
 
 export default connect(mapStateToProps, { toggleDrawer })(withStyles(styles)(HomeContent));

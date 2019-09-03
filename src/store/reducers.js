@@ -4,6 +4,8 @@ import { actionTypes } from './actions';
 const initState = {
     user: null,
 
+    searchInput: '',
+
     isAuthReady: false,
     isVerifyingEmailAddress: false,
     isSignedIn: false,
@@ -17,18 +19,26 @@ const initState = {
     signUpDialog: {
         open: false
     },
+    welcomeDialog: {
+        open: false
+    },
+    settingsDialog: {
+        open: false
+    },
     snackbar: {
         autoHideDuration: 0,
         message: '',
-        open: false
-    },
-    welcomeDialog: {
         open: false
     },
 }
 
 function appReducer(state = initState, action) {
     switch (action.type) {
+        case actionTypes.SET_SEARCHINPUT:
+            return {
+                ...state,
+                searchInput: action.payload
+            }
         case actionTypes.SET_USER:
             return {
                 ...state,
@@ -77,6 +87,14 @@ function appReducer(state = initState, action) {
             return {
                 ...state,
                 welcomeDialog: {
+                    open: action.payload
+                }
+            }
+        case actionTypes.SETTINGS_OPEN:
+        case actionTypes.SETTINGS_CLOSE:
+            return {
+                ...state,
+                settingsDialog: {
                     open: action.payload
                 }
             }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { closeSettingsDialog } from '../store/actions';
 import PropTypes from 'prop-types';
 
 import Dialog from '@material-ui/core/Dialog';
@@ -37,7 +39,7 @@ class SettingsDialog extends Component {
     }
 
     if (key === 'Enter') {
-      this.props.onClose();
+      this.props.closeSettingsDialog();
     }
   };
 
@@ -67,7 +69,6 @@ class SettingsDialog extends Component {
 
     // Properties
     const {
-      open,
       colors,
       primaryColor,
       secondaryColor,
@@ -77,7 +78,6 @@ class SettingsDialog extends Component {
 
     // Events
     const {
-      onClose,
       onPrimaryColorChange,
       onSecondaryColorChange,
       onTypeChange
@@ -96,7 +96,7 @@ class SettingsDialog extends Component {
     }
 
     return (
-      <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
+      <Dialog open={this.props.settingsDialog.open} onClose={this.props.closeSettingsDialog} onKeyPress={this.handleKeyPress}>
         <DialogTitle>Settings</DialogTitle>
 
         <Tabs
@@ -144,14 +144,10 @@ class SettingsDialog extends Component {
 SettingsDialog.propTypes = {
   classes: PropTypes.object.isRequired,
 
-  open: PropTypes.bool.isRequired,
-
   colors: PropTypes.array.isRequired,
   primaryColor: PropTypes.string.isRequired,
   secondaryColor: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-
-  onClose: PropTypes.func.isRequired,
 
   onPrimaryColorChange: PropTypes.func.isRequired,
   onSecondaryColorChange: PropTypes.func.isRequired,
@@ -159,4 +155,11 @@ SettingsDialog.propTypes = {
   onResetClick: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(SettingsDialog);
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
+
+export default connect(mapStateToProps, {
+  closeSettingsDialog,
+})(withStyles(styles)(SettingsDialog));
