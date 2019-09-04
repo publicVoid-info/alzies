@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
         width: drawerWidth,
         position: 'absolute',
         zIndex: '2',
+        height: '90vh',
     },
 }));
 

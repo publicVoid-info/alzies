@@ -20,7 +20,6 @@ import HomeContent from '../layout/HomeContent';
 import NotFoundContent from '../layout/NotFoundContent';
 import LaunchScreen from '../layout/LaunchScreen';
 import Bar from '../layout/Bar';
-
 import MemoryEditor from '../components/memory/MemoryEditor';
 
 class App extends Component {
@@ -65,15 +64,9 @@ class App extends Component {
     return (
       < Router >
         <MuiThemeProvider theme={this.props.theme}>
-          <header>
-            <Bar />
-          </header>
           <main>
-            <div style={{
-              minHeight: '100vh',
-              backgroundColor: this.props.theme.palette.type === 'dark' ? '#303030' : '#fafafa'
-            }}>
-
+            <div style={{ minHeight: '100vh', backgroundColor: this.props.theme.palette.background.default }}>
+              <Bar />
               {!this.props.isAuthReady &&
                 <LaunchScreen />
               }
@@ -85,13 +78,13 @@ class App extends Component {
                   <Route component={NotFoundContent} />
                 </Switch>
               }
+              <Snackbar
+                autoHideDuration={this.props.snackbar.autoHideDuration}
+                message={this.props.snackbar.message}
+                open={this.props.snackbar.open}
+                onClose={this.props.closeSnackbar}
+              />
             </div>
-            <Snackbar
-              autoHideDuration={this.props.snackbar.autoHideDuration}
-              message={this.props.snackbar.message}
-              open={this.props.snackbar.open}
-              onClose={this.props.closeSnackbar}
-            />
           </main>
         </MuiThemeProvider>
       </Router >

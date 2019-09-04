@@ -222,7 +222,6 @@ class HomeContent extends Component {
       <React.Fragment>
         <Drawer
           open={this.props.drawer.open}
-          elevation="16"
           onToggleDrawer={this.handleToggleDrawer}
         />
         <Container className={classes.container} maxWidth="md">
@@ -240,7 +239,7 @@ class HomeContent extends Component {
       </React.Fragment>
       :
       (
-        < EmptyState
+        <EmptyState
           icon={< HomeIcon className={classes.emptyStateIcon} color="action" />}
           title="Home"
           description=""
