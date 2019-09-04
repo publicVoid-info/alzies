@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getFirebase } from '../helpers/firebase';
 
-import PropTypes from 'prop-types';
+import {
+  closeResetPasswordDialog,
+  openSnackbar,
+} from '../store/actions';
 
 import validate from 'validate.js';
+import constraints from '../helpers/constraints';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -12,8 +18,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
-import constraints from '../helpers/constraints';
 
 const initialState = {
   emailAddress: '',
@@ -25,17 +29,21 @@ class ResetPasswordDialog extends Component {
   constructor(props) {
     super(props);
 
+    this.firebase = getFirebase();
     this.state = initialState;
   }
 
   resetPassword = () => {
     const { emailAddress } = this.state;
 
-    const errors = validate({
-      emailAddress: emailAddress
-    }, {
+    const errors = validate(
+      {
+        emailAddress: emailAddress
+      },
+      {
         emailAddress: constraints.emailAddress
-      });
+      }
+    );
 
     if (errors) {
       this.setState({ errors });
@@ -43,9 +51,17 @@ class ResetPasswordDialog extends Component {
       this.setState({
         errors: null
       }, () => {
-        this.props.resetPassword(emailAddress);
+        this.firebase.auth().sendPasswordResetEmail(emailAddress)
+          .then(() => {
+            this.props.closeResetPasswordDialog(() => {
+              this.props.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
+            })
+          })
+          .catch((reason) => {
+            this.props.openSnackbar(reason.message);
+          });
       });
-    }
+    };
   };
 
   handleExited = () => {
@@ -77,16 +93,16 @@ class ResetPasswordDialog extends Component {
   };
 
   render() {
-    // Properties
-    const { open } = this.props;
-
-    // Events
-    const { onClose } = this.props;
 
     const { emailAddress, errors } = this.state;
 
     return (
-      <Dialog open={open} onClose={onClose} onExited={this.handleExited} onKeyPress={this.handleKeyPress}>
+      <Dialog
+        open={this.props.resetPasswordDialog.open}
+        onClose={this.props.closeResetPasswordDialog}
+        onExited={this.handleExited}
+        onKeyPress={this.handleKeyPress}>
+
         <DialogTitle>
           Reset your password
         </DialogTitle>
@@ -114,7 +130,7 @@ class ResetPasswordDialog extends Component {
         </DialogContent>
 
         <DialogActions>
-          <Button color="primary" onClick={onClose}>Cancel</Button>
+          <Button color="primary" onClick={this.props.closeResetPasswordDialog}>Cancel</Button>
           <Button color="primary" disabled={!emailAddress} variant="contained" onClick={this.handleResetPasswordClick}>Reset Password</Button>
         </DialogActions>
       </Dialog>
@@ -122,10 +138,13 @@ class ResetPasswordDialog extends Component {
   }
 }
 
-ResetPasswordDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  resetPassword: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
-};
+const mapStateToProps = (state) => {
+  const storeState = state;
+  return storeState;
+}
 
-export default ResetPasswordDialog;
+export default connect(mapStateToProps,
+  {
+    closeResetPasswordDialog,
+    openSnackbar
+  })(ResetPasswordDialog);

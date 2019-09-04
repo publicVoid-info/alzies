@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getFirebase } from '../helpers/firebase';
-import PropTypes from 'prop-types';
-import validate from 'validate.js';
 
 import {
+  openResetPasswordDialog,
   closeSignInDialog,
   openSnackbar,
 } from '../store/actions';
@@ -18,14 +17,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+import validate from 'validate.js';
 import constraints from '../helpers/constraints';
+
 import AuthProviderList from '../layout/AuthProviderList';
+import ResetPasswordDialog from '../dialogs/ResetPasswordDialog';
 
 const initialState = {
   emailAddress: '',
   password: '',
 
-  errors: null
+  errors: null,
 };
 
 class SignInDialog extends Component {
@@ -101,8 +103,6 @@ class SignInDialog extends Component {
   render() {
 
     // Events
-    const { onResetPasswordClick } = this.props;
-
     const { emailAddress, password, errors } = this.state;
 
     return (
@@ -154,17 +154,15 @@ class SignInDialog extends Component {
 
         <DialogActions>
           <Button color="primary" onClick={this.props.closeSignInDialog}>Cancel</Button>
-          <Button color="primary" variant="outlined" onClick={onResetPasswordClick}>Reset Password</Button>
+          <Button color="primary" variant="outlined" onClick={this.props.openResetPasswordDialog}>Reset Password</Button>
           <Button color="primary" disabled={(!emailAddress || !password)} variant="contained" onClick={this.signIn}>Sign In</Button>
         </DialogActions>
+
+        <ResetPasswordDialog />
       </Dialog>
     );
   }
 }
-
-SignInDialog.propTypes = {
-  onResetPasswordClick: PropTypes.func.isRequired
-};
 
 const mapStateToProps = (state) => {
   const storeState = state;
@@ -173,6 +171,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,
   {
+    openResetPasswordDialog,
     closeSignInDialog,
     openSnackbar
   })(SignInDialog);

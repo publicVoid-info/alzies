@@ -1,7 +1,23 @@
+import { createStore } from 'redux';
 import { actionTypes } from './actions';
-// import { initialState } from './store';
+import { createMuiTheme } from '@material-ui/core/styles';
+import settings from '../helpers/settings';
 
 const initState = {
+    theme: createMuiTheme({
+        palette: {
+            primary: settings.theme.primaryColor.import,
+            secondary: settings.theme.primaryColor.import,
+            type: settings.theme.type,
+        }
+    }),
+
+    palette: {
+        primaryColor: settings.theme.primaryColor.import,
+        secondaryColor: settings.theme.secondaryColor.import,
+        type: settings.theme.type,
+    },
+
     user: null,
 
     searchInput: '',
@@ -25,6 +41,9 @@ const initState = {
     settingsDialog: {
         open: false
     },
+    resetPasswordDialog: {
+        open: false
+    },
     snackbar: {
         autoHideDuration: 0,
         message: '',
@@ -34,6 +53,12 @@ const initState = {
 
 function appReducer(state = initState, action) {
     switch (action.type) {
+        case actionTypes.UPDATE_THEME:
+            return {
+                ...state,
+                theme: action.payload.theme,
+                palette: action.payload.palette,
+            }
         case actionTypes.SET_SEARCHINPUT:
             return {
                 ...state,
@@ -90,6 +115,14 @@ function appReducer(state = initState, action) {
                     open: action.payload
                 }
             }
+        case actionTypes.RESETPASSWORD_OPEN:
+        case actionTypes.RESETPASSWORD_CLOSE:
+            return {
+                ...state,
+                resetPasswordDialog: {
+                    open: action.payload
+                }
+            }
         case actionTypes.SETTINGS_OPEN:
         case actionTypes.SETTINGS_CLOSE:
             return {
@@ -112,4 +145,4 @@ function appReducer(state = initState, action) {
     }
 }
 
-export default appReducer;
+export default createStore(appReducer, initState);

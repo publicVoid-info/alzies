@@ -27,8 +27,8 @@ const settings = {
 
   theme: {
     primaryColor: {
-      name: 'red',
-      import: red
+      name: 'yellow',
+      import: yellow
     },
     secondaryColor: {
       name: 'gray',
@@ -50,4 +50,4 @@ const settings = {
   }
 }
 
-export default settings
+export default settings;

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { fade, withStyles } from '@material-ui/core/styles';
 import { getFirebase } from '../helpers/firebase';
+
 import {
   setSearchInput,
   toggleDrawer,
@@ -25,7 +26,10 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import PersonIcon from '@material-ui/icons/Person';
 
+import SignUpDialog from '../dialogs/SignUpDialog';
+import SignInDialog from '../dialogs/SignInDialog';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog';
+import SettingsDialog from '../dialogs/SettingsDialog';
 
 const styles = (theme) => ({
   titulo: {
@@ -246,6 +250,13 @@ class Bar extends Component {
                 variant="contained"
                 onClick={this.handleSignInClick}>
                 Sign In</Button>
+
+              {!this.props.isSignedIn &&
+                <React.Fragment>
+                  <SignUpDialog />
+                  <SignInDialog />
+                </React.Fragment>
+              }
             </React.Fragment>
           }
 
@@ -261,6 +272,8 @@ class Bar extends Component {
             onCancelClick={this.closeSignOutDialog}
             onOkClick={this.signOut}
           />
+
+          <SettingsDialog />
         </Toolbar>
       </AppBar>
     );

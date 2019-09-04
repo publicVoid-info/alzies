@@ -7,11 +7,9 @@ import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
 
 import AccountTab from '../layout/AccountTab';
 import AppearanceTab from '../layout/AppearanceTab';
@@ -55,45 +53,11 @@ class SettingsDialog extends Component {
     });
   };
 
-  handleResetClick = () => {
-    const { primaryColor, secondaryColor, type, defaultTheme } = this.props;
-
-    if (primaryColor !== defaultTheme.primaryColor || secondaryColor !== defaultTheme.secondaryColor || type !== defaultTheme.type) {
-      setTimeout(this.props.onResetClick, 137.5);
-    }
-  };
-
   render() {
     // Styling
     const { classes } = this.props;
 
-    // Properties
-    const {
-      colors,
-      primaryColor,
-      secondaryColor,
-      type,
-      defaultTheme
-    } = this.props;
-
-    // Events
-    const {
-      onPrimaryColorChange,
-      onSecondaryColorChange,
-      onTypeChange
-    } = this.props;
-
     const { selectedTab } = this.state;
-
-    let hasDeviatedFromDefaultSettings = false;
-
-    if (defaultTheme) {
-      hasDeviatedFromDefaultSettings = (
-        primaryColor !== defaultTheme.primaryColor.name ||
-        secondaryColor !== defaultTheme.secondaryColor.name ||
-        type !== defaultTheme.type
-      );
-    }
 
     return (
       <Dialog open={this.props.settingsDialog.open} onClose={this.props.closeSettingsDialog} onKeyPress={this.handleKeyPress}>
@@ -117,25 +81,9 @@ class SettingsDialog extends Component {
           }
 
           {selectedTab === 1 &&
-            <AppearanceTab
-              colors={colors}
-              primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              type={type}
-              onPrimaryColorChange={onPrimaryColorChange}
-              onSecondaryColorChange={onSecondaryColorChange}
-              onTypeChange={onTypeChange}
-            />
+            <AppearanceTab />
           }
         </DialogContent>
-
-        {(selectedTab === 1 && hasDeviatedFromDefaultSettings) &&
-          <React.Fragment>
-            <DialogActions>
-              <Button color="primary" variant="contained" onClick={this.handleResetClick}>Reset</Button>
-            </DialogActions>
-          </React.Fragment>
-        }
       </Dialog>
     );
   }
@@ -143,16 +91,6 @@ class SettingsDialog extends Component {
 
 SettingsDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-
-  colors: PropTypes.array.isRequired,
-  primaryColor: PropTypes.string.isRequired,
-  secondaryColor: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-
-  onPrimaryColorChange: PropTypes.func.isRequired,
-  onSecondaryColorChange: PropTypes.func.isRequired,
-  onTypeChange: PropTypes.func.isRequired,
-  onResetClick: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => {

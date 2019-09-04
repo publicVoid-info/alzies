@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { getFirebase } from '../helpers/firebase';
 import { connect } from 'react-redux';
-import validate from 'validate.js';
 
 import {
   closeSignUpDialog,
@@ -19,9 +18,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+import validate from 'validate.js';
 import constraints from '../helpers/constraints';
 
 import AuthProviderList from '../layout/AuthProviderList';
+import WelcomeDialog from '../dialogs/WelcomeDialog';
 
 const initialState = {
   emailAddress: '',
@@ -102,72 +103,75 @@ class SignUpDialog extends Component {
     const { emailAddress, password, passwordConfirmation, errors } = this.state;
 
     return (
-      <Dialog
-        open={this.props.signUpDialog.open}
-        onClose={this.props.closeSignUpDialog}
-        onExited={this.handleExited}
-        onKeyPress={this.handleKeyPress}>
-        <DialogTitle>
-          Sign up for an account
+      <React.Fragment>
+        <Dialog
+          open={this.props.signUpDialog.open}
+          onClose={this.props.closeSignUpDialog}
+          onExited={this.handleExited}
+          onKeyPress={this.handleKeyPress}>
+          <DialogTitle>
+            Sign up for an account
         </DialogTitle>
 
-        <DialogContent>
-          <DialogContentText>
-            Create an account to access features that are unavailable to users who haven't signed up.
+          <DialogContent>
+            <DialogContentText>
+              Create an account to access features that are unavailable to users who haven't signed up.
           </DialogContentText>
 
-          <AuthProviderList />
+            <AuthProviderList />
 
-          <form>
-            <TextField
-              name="emailAddress"
-              autoComplete="email"
-              error={!!(errors && errors.emailAddress)}
-              fullWidth
-              helperText={(errors && errors.emailAddress) ? errors.emailAddress[0] : ''}
-              label="E-mail address"
-              margin="normal"
-              onChange={this.handleChange}
-              required
-              type="email"
-              value={emailAddress}
-            />
+            <form>
+              <TextField
+                name="emailAddress"
+                autoComplete="email"
+                error={!!(errors && errors.emailAddress)}
+                fullWidth
+                helperText={(errors && errors.emailAddress) ? errors.emailAddress[0] : ''}
+                label="E-mail address"
+                margin="normal"
+                onChange={this.handleChange}
+                required
+                type="email"
+                value={emailAddress}
+              />
 
-            <TextField
-              name="password"
-              autoComplete="new-password"
-              error={!!(errors && errors.password)}
-              fullWidth
-              helperText={(errors && errors.password) ? errors.password[0] : ''}
-              label="Password"
-              margin="normal"
-              onChange={this.handleChange}
-              required
-              type="password"
-              value={password}
-            />
+              <TextField
+                name="password"
+                autoComplete="new-password"
+                error={!!(errors && errors.password)}
+                fullWidth
+                helperText={(errors && errors.password) ? errors.password[0] : ''}
+                label="Password"
+                margin="normal"
+                onChange={this.handleChange}
+                required
+                type="password"
+                value={password}
+              />
 
-            <TextField
-              name="passwordConfirmation"
-              autoComplete="password"
-              error={!!(errors && errors.passwordConfirmation)}
-              fullWidth
-              helperText={(errors && errors.passwordConfirmation) ? errors.passwordConfirmation[0] : ''}
-              label="Password confirmation"
-              margin="normal"
-              onChange={this.handleChange}
-              required
-              type="password"
-              value={passwordConfirmation}
-            />
-          </form>
-        </DialogContent>
+              <TextField
+                name="passwordConfirmation"
+                autoComplete="password"
+                error={!!(errors && errors.passwordConfirmation)}
+                fullWidth
+                helperText={(errors && errors.passwordConfirmation) ? errors.passwordConfirmation[0] : ''}
+                label="Password confirmation"
+                margin="normal"
+                onChange={this.handleChange}
+                required
+                type="password"
+                value={passwordConfirmation}
+              />
+            </form>
+          </DialogContent>
 
-        <DialogActions>
-          <Button color="primary" onClick={this.props.closeSignUpDialog}>Cancel</Button>
-          <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUp}>Sign Up</Button>
-        </DialogActions>
-      </Dialog>
+          <DialogActions>
+            <Button color="primary" onClick={this.props.closeSignUpDialog}>Cancel</Button>
+            <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUp}>Sign Up</Button>
+          </DialogActions>
+        </Dialog>
+        <WelcomeDialog />
+      </React.Fragment>
     );
   }
 }

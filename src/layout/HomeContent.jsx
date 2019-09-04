@@ -168,18 +168,16 @@ class HomeContent extends Component {
       }
     }
 
-    const searchInput = this.props.searchInput.toUpperCase();
-
     //se o prop de pesquisa for diferente do estado, filtra
     if (prevProps.searchInput !== this.props.searchInput) {
 
-      this.filtroSearch(searchInput);
+      this.filtroSearch(this.props.searchInput.toUpperCase());
 
       return;
     }
 
     if (this.props.isSignedIn && this.props.user) {
-      if (searchInput.length === 0 && this.state.memoryList.length === 0) {
+      if (this.props.searchInput.length === 0 && this.state.memoryList.length === 0) {
         this.getMemories();
         return;
       }

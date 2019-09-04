@@ -1,48 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { getFirebase } from '../helpers/firebase';
-import { initialState } from '../store/store';
 
 import {
   setUser,
   setAuthReady,
   setSignedIn,
-  closeWelcomeDialog,
   openSnackbar,
   closeSnackbar,
   registerUser,
+  updateTheme,
 } from '../store/actions';
 
-import validate from 'validate.js';
-
 import Snackbar from '@material-ui/core/Snackbar';
-
-import colors from '../helpers/colors';
-import settings from '../helpers/settings';
-import constraints from '../helpers/constraints';
 
 import HomeContent from '../layout/HomeContent';
 import NotFoundContent from '../layout/NotFoundContent';
 import LaunchScreen from '../layout/LaunchScreen';
 import Bar from '../layout/Bar';
 
-import SignUpDialog from '../dialogs/SignUpDialog';
-import SignInDialog from '../dialogs/SignInDialog';
-import ResetPasswordDialog from '../dialogs/ResetPasswordDialog';
-import WelcomeDialog from '../dialogs/WelcomeDialog';
-import SettingsDialog from '../dialogs/SettingsDialog';
-
 import MemoryEditor from '../components/memory/MemoryEditor';
-
-let theme = createMuiTheme({
-  palette: {
-    primary: settings.theme.primaryColor.import,
-    secondary: settings.theme.secondaryColor.import,
-    type: settings.theme.type
-  }
-})
 
 class App extends Component {
 
@@ -52,149 +31,16 @@ class App extends Component {
     this._isMounted = false;
     this.firebase = getFirebase();
     this.registerUser = registerUser;
-
-    this.state = initialState;
   }
-
-  resetPassword = (emailAddress) => {
-
-    if (this.props.isSignedIn) {
-      return;
-    }
-
-    if (!emailAddress) {
-      return;
-    }
-
-    const errors = validate(
-      {
-        emailAddress: emailAddress
-      },
-      {
-        emailAddress: constraints.emailAddress
-      })
-
-    if (errors) {
-      return
-    }
-
-    this.firebase.auth().sendPasswordResetEmail(emailAddress)
-      .then(() => {
-        this.closeResetPasswordDialog(() => {
-          this.props.openSnackbar(`Password reset e-mail sent to ${emailAddress}`);
-        })
-      })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      })
-  }
-
-  updateTheme = (palette, removeLocalStorage, callback) => {
-    const { primaryColor, secondaryColor, type } = this.state;
-
-    if (!palette.primaryColor) {
-      palette.primaryColor = primaryColor;
-    }
-
-    if (!palette.secondaryColor) {
-      palette.secondaryColor = secondaryColor;
-    }
-
-    if (!palette.type) {
-      palette.type = type;
-    }
-
-    theme = createMuiTheme({
-      palette: {
-        primary: colors.find(color => color.id === palette.primaryColor).import,
-        secondary: colors.find(color => color.id === palette.secondaryColor).import,
-        type: palette.type
-      }
-    });
-
-    this.setState({
-      primaryColor: palette.primaryColor,
-      secondaryColor: palette.secondaryColor,
-      type: palette.type
-    }, () => {
-      if (removeLocalStorage) {
-        localStorage.removeItem('theme');
-      } else {
-        localStorage.setItem('theme', JSON.stringify({
-          primaryColor: palette.primaryColor,
-          secondaryColor: palette.secondaryColor,
-          type: palette.type
-        }));
-      }
-
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
-
-  resetTheme = () => {
-    this.updateTheme({
-      primaryColor: settings.theme.primaryColor.name,
-      secondaryColor: settings.theme.secondaryColor.name,
-      type: settings.theme.type
-    }, true, () => {
-      this.props.openSnackbar('Settings reset');
-    });
-  };
-
-  changePrimaryColor = (event) => {
-    const primaryColor = event.target.value;
-
-    this.updateTheme({
-      primaryColor
-    });
-  };
-
-  changeSecondaryColor = (event) => {
-    const secondaryColor = event.target.value;
-
-    this.updateTheme({
-      secondaryColor
-    });
-  };
-
-  changeType = (event) => {
-    const type = event.target.value;
-
-    this.updateTheme({
-      type
-    });
-  };
-
-  openResetPasswordDialog = () => {
-    this.setState({
-      resetPasswordDialog: {
-        open: true
-      }
-    });
-  };
-
-  closeResetPasswordDialog = (callback) => {
-    this.setState({
-      resetPasswordDialog: {
-        open: false
-      }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
 
   componentDidMount() {
     this._isMounted = true;
 
-    const theme = JSON.parse(localStorage.getItem('theme'));
-
-    if (theme) {
-      this.updateTheme(theme);
-    }
+    this.props.updateTheme(
+      JSON.parse(
+        localStorage.getItem('theme')
+      )
+    );
 
     const self = this;
 
@@ -205,92 +51,47 @@ class App extends Component {
           self.props.setUser(user);
           self.props.setAuthReady(true);
           self.props.setSignedIn(!!user);
-        }
+        };
       });
-  }
+  };
 
   componentWillUnmount() {
     this._isMounted = false;
-
     this.removeAuthObserver();
   }
 
   render() {
 
-    const {
-      primaryColor,
-      secondaryColor,
-      type,
-    } = this.state;
-
-    const {
-      resetPasswordDialog,
-    } = this.state;
-
     return (
       < Router >
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={this.props.theme}>
           <header>
             <Bar />
           </header>
           <main>
+            <div style={{
+              minHeight: '100vh',
+              backgroundColor: this.props.theme.palette.type === 'dark' ? '#303030' : '#fafafa'
+            }}>
 
-            <div style={{ minHeight: '100vh', backgroundColor: theme.palette.type === 'dark' ? '#303030' : '#fafafa' }}>
               {!this.props.isAuthReady &&
                 <LaunchScreen />
               }
 
               {this.props.isAuthReady &&
-                <React.Fragment>
-                  <Switch>
-                    <Route exact path="/" component={HomeContent} />
-                    <Route exact path="/memory/:id" component={MemoryEditor} />
-                    <Route component={NotFoundContent} />
-                  </Switch>
-
-                  {this.props.isSignedIn &&
-                    <React.Fragment>
-                      <WelcomeDialog />
-
-                      <SettingsDialog
-                        colors={colors}
-                        primaryColor={primaryColor}
-                        secondaryColor={secondaryColor}
-                        type={type}
-                        defaultTheme={settings.theme}
-
-                        onPrimaryColorChange={this.changePrimaryColor}
-                        onSecondaryColorChange={this.changeSecondaryColor}
-                        onTypeChange={this.changeType}
-                        onResetClick={this.resetTheme}
-                      />
-                    </React.Fragment>
-                  }
-
-                  {!this.props.isSignedIn &&
-                    <React.Fragment>
-                      <SignUpDialog />
-
-                      <SignInDialog
-                        onResetPasswordClick={this.openResetPasswordDialog}
-                      />
-                      <ResetPasswordDialog
-                        open={resetPasswordDialog.open}
-                        resetPassword={this.resetPassword}
-                        onClose={this.closeResetPasswordDialog}
-                      />
-                    </React.Fragment>
-                  }
-
-                  <Snackbar
-                    autoHideDuration={this.props.snackbar.autoHideDuration}
-                    message={this.props.snackbar.message}
-                    open={this.props.snackbar.open}
-                    onClose={this.props.closeSnackbar}
-                  />
-                </React.Fragment>
+                <Switch>
+                  <Route exact path="/" component={HomeContent} />
+                  <Route exact path="/memory/:id" component={MemoryEditor} />
+                  <Route component={NotFoundContent} />
+                </Switch>
               }
             </div>
+            <Snackbar
+              autoHideDuration={this.props.snackbar.autoHideDuration}
+              message={this.props.snackbar.message}
+              open={this.props.snackbar.open}
+              onClose={this.props.closeSnackbar}
+            />
           </main>
         </MuiThemeProvider>
       </Router >
@@ -307,7 +108,7 @@ export default connect(mapStateToProps, {
   setUser,
   setAuthReady,
   setSignedIn,
-  closeWelcomeDialog,
   openSnackbar,
-  closeSnackbar
+  closeSnackbar,
+  updateTheme
 })(App);
