@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { getFirestore } from '../../helpers/firebase';
 import { withRouter } from 'react-router-dom';
+import { openSnackbar } from '../../store/actions';
 
-import InputDialog from '../../dialogs/InputDialog';
-import FindUserDialog from '../../dialogs/FindUsersDialog';
+import Editor from '../editor/Editor';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -14,9 +14,14 @@ import CardActions from '@material-ui/core/CardActions';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
-import Editor from '../editor/Editor';
 import Divider from '@material-ui/core/Divider';
+import Popover from '@material-ui/core/Popover';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import ShareIcon from '@material-ui/icons/Share';
+import FindUsersDialog from '../../dialogs/FindUsersDialog';
 
 const useStyles = makeStyles((theme) => (
   {
@@ -25,8 +30,6 @@ const useStyles = makeStyles((theme) => (
       overflow: 'auto',
       width: '100%',
       height: '100%',
-      marginLeft: '10px',
-      marginTop: '10px',
     },
     '@media (max-width: 340px)': {
       card: {
@@ -39,20 +42,27 @@ const useStyles = makeStyles((theme) => (
         padding: '0',
         margin: '0',
         textTransform: 'uppercase',
-      },
-      '&:hover': {
-        backgroundColor: theme.palette.secondary.light,
+        textAlign: 'center',
       },
       '&:focus': {
         backgroundColor: theme.palette.secondary.light,
       },
     },
-    cardAction: {
+    cardActionButton: {
+      padding: '5px',
+      margin: '5px',
+    },
+    cardActionIcon: {
       padding: '0px',
       margin: '0px',
     },
-    actionButtonRight: {
-      marginLeft: 'auto',
+    menuItem: {
+      padding: '0px',
+      margin: '0px',
+    },
+    menuVert: {
+      margin: '5px 0px 0px 0px',
+      padding: '5px',
     },
   }
 ))
@@ -61,52 +71,95 @@ function MemoryCard(props) {
 
   const { memory, user } = props;
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [findUsersOpen, setFindUsersOpen] = useState(false);
 
-  const initialState = {
-    deleteCardDialog: {
-      open: false,
-    },
+  const toggleExpand = (event) => {
+    Boolean(anchorEl)
+      ?
+      closeExpand(event)
+      :
+      openExpand(event);
+  }
+
+  const openExpand = (event) => {
+    setAnchorEl(
+      event.currentTarget
+    );
   };
 
-  const [state, setState] = useState(initialState);
-
-  const openDeleteCardDialog = () => {
-    setState({
-      ...state,
-      deleteCardDialog: {
-        open: true
-      }
-    });
+  const closeExpand = () => {
+    setAnchorEl(
+      null
+    );
   };
 
-  const closeDeleteCardDialog = () => {
-    setState({
-      ...state,
-      deleteCardDialog: {
-        open: false
-      },
-    });
-  };
-
-  const handleDeleteClick = () => {
+  const handleSendTrashClick = () => {
 
     if (!memory.id) { return }
 
-    getFirestore().collection('memoryPosition').doc(user.uid).delete()
+    getFirestore().collection('memoryPosition')
+      .doc(user.uid)
+      .delete();
+
     getFirestore().collection('memories')
       .doc(memory.id)
       .delete()
-      .then((res) => {
-        props.openSnackbar('Card deleted')
-        closeDeleteCardDialog();
+      .then(() => {
+        return getFirestore().collection('archivedMemories')
+          .doc(memory.id)
+          .set(memory)
       })
+      .then(() => props.openSnackbar('Card moved to trash'))
       .catch(error => props.openSnackbar(error));
+  }
+
+  const handleRestoreTrashClick = () => {
+
+    if (!memory.id) { return }
+
+    getFirestore().collection('archivedMemoryPosition')
+      .doc(user.uid)
+      .delete();
+
+    getFirestore().collection('archivedMemories')
+      .doc(memory.id)
+      .delete()
+      .then(() => {
+        return getFirestore().collection('memories')
+          .doc(memory.id)
+          .set(memory)
+      })
+      .then(() => props.openSnackbar('Card restored from trash'))
+      .catch(error => props.openSnackbar(error));
+  }
+
+  const handleDeleteTrashClick = () => {
+
+    if (!memory.id) { return }
+
+    getFirestore().collection('archivedMemoryPosition')
+      .doc(user.uid)
+      .delete();
+
+    getFirestore().collection('archivedMemories')
+      .doc(memory.id)
+      .delete()
+      .then(() => props.openSnackbar('Card deleted'))
+      .catch(error => props.openSnackbar(error));
+  }
+
+  const handleShareClick = () => {
+    setFindUsersOpen(true);
+  }
+
+  const handleCloseFindUsers = () => {
+    setFindUsersOpen(false);
   }
 
   const handleSelectUser = (user) => {
 
     if (memory.owner.indexOf(user.uid) === -1) {
-
       const newMemory = {
         ...memory,
         owner: [...memory.owner, user.uid]
@@ -118,25 +171,56 @@ function MemoryCard(props) {
         .then(() => props.openSnackbar('Card shared'))
         .catch(error => props.openSnackbar(error));
     }
+    setFindUsersOpen(false);
   }
 
   const handleMemoryEdit = () => {
-    props.history.push(`/memory/${memory.id}`)
+    props.history.push(`/memory/${memory.id}`);
   }
 
   return (
-
     <Card
       className={classes.card}
       elevation={8}
-      onDoubleClick={handleMemoryEdit}
+      onDoubleClick={(!props.activeTable.trash) ? handleMemoryEdit : null}
       draggable={true}>
+
       <CardHeader
+        component="div"
         className={classes.cardHeader}
         title={<h3>{memory.headline}</h3>}
         autoCorrect="false"
-        disableTypography={true} />
-
+        disableTypography={true}
+        action={(!props.activeTable.trash) &&
+          <IconButton className={classes.menuVert} onClick={toggleExpand}>
+            <MoreVertIcon />
+            <Popover
+              open={Boolean(anchorEl)}
+              onClose={closeExpand}
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <MenuItem className={classes.menuItem}>
+                <IconButton onClick={handleSendTrashClick}>
+                  <DeleteIcon />
+                </IconButton>
+              </MenuItem>
+              <MenuItem className={classes.menuItem}>
+                <IconButton onClick={handleShareClick}>
+                  <ShareIcon />
+                </IconButton>
+              </MenuItem>
+            </Popover>
+          </IconButton>
+        }
+      />
       <Divider variant="fullWidth" />
       <CardContent className={classes.cardContent} autoCorrect="false" >
         <Typography variant="body1" component="div">
@@ -149,30 +233,23 @@ function MemoryCard(props) {
         </Typography>
       </CardContent>
       <Divider variant="fullWidth" />
-      <CardActions className={classes.cardAction} disableSpacing >
-        <IconButton onClick={handleMemoryEdit}>
-          <EditIcon />
-        </IconButton>
-        <div className={classes.actionButtonRight}>
-          <IconButton onClick={openDeleteCardDialog}>
-            <DeleteIcon />
+      {(!props.activeTable.trash)
+        ?
+        <CardActions className={classes.cardActionIcon}>
+          <IconButton onClick={handleMemoryEdit}>
+            <EditIcon />
           </IconButton>
-          <InputDialog
-            open={state.deleteCardDialog.open}
-
-            title="Delete card"
-            contentText="This action cannot be reversed."
-            okText="Ok"
-
-            onClose={closeDeleteCardDialog}
-            onCancelClick={closeDeleteCardDialog}
-            onOkClick={handleDeleteClick}
-          />
-          <FindUserDialog
-            className={classes.actionButton}
-            onSelectUser={handleSelectUser} />
-        </div>
-      </CardActions>
+        </CardActions>
+        :
+        <CardActions className={classes.cardActionButton}>
+          <Button variant="contained" color="primary" onClick={handleRestoreTrashClick}>Restore</Button>
+          <Button variant="outlined" color="primary" onClick={handleDeleteTrashClick}>Delete</Button>
+        </CardActions>
+      }
+      <FindUsersDialog
+        open={findUsersOpen}
+        onClose={handleCloseFindUsers}
+        onSelectUser={handleSelectUser} />
     </Card >
   )
 }
@@ -182,4 +259,4 @@ const mapStateToProps = (state) => {
   return storeState;
 }
 
-export default connect(mapStateToProps, {})(withRouter(MemoryCard));
+export default connect(mapStateToProps, { openSnackbar })(withRouter(MemoryCard));

@@ -1,19 +1,17 @@
 import React from 'react';
-
 import ReactDOM from 'react-dom';
-
 import ResetPasswordDialog from './ResetPasswordDialog';
+import { Provider } from 'react-redux';
+import store from '../store/reducers';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
 
   ReactDOM.render(
     (
-      <ResetPasswordDialog
-        open={false}
-        resetPassword={() => { }}
-        onClose={() => { }}
-      />
+      <Provider store={store}>
+        <ResetPasswordDialog />
+      </Provider>
     ),
     div
   );

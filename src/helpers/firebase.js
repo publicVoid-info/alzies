@@ -1,10 +1,8 @@
-// Firebase App (the core Firebase SDK) is always required and must be listed first
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
-import "firebase/firestore";
+import 'firebase/firestore';
 import 'firebase/performance';
 import settings from './settings';
-// import messaging from '../pwa/firebase-messaging-sw';
 
 // Initialize Firebase
 firebase.initializeApp(settings.credentials.firebase);
@@ -12,16 +10,8 @@ firebase.auth().useDeviceLanguage();
 
 // eslint-disable-next-line no-unused-vars
 const performance = firebase.performance();
-
-// register service worker
-// if ('serviceWorker' in navigator) {
-//     window.addEventListener('load', async () => {
-//         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-//             updateViaCache: 'none'
-//         });
-//         messaging.useServiceWorker(registration);
-//     });
-// }
+performance.dataCollectionEnabled = true;
+performance.instrumentationEnabled = true;
 
 function getFirestore() {
     return firebase.firestore();
@@ -32,3 +22,35 @@ function getFirebase() {
 }
 
 export { getFirebase, getFirestore }
+
+// import 'firebase/messaging';
+
+// const messaging = firebase.messaging();
+// messaging.usePublicVapidKey('BNhGalLHbQMAbV_Lth6c0nGUzHcGVL5TV2ZUFtXZ1KdvC00Xlq4KJtb5USVqKwHZa1BiDM9nES5Y7rmEMXZiLfI');
+// messaging.requestPermission()
+//     .then(() => {
+//         return messaging.getToken();
+//     })
+//     .then(currentToken => {
+//         if (currentToken) {
+
+//         } else {
+
+//         }
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//     });
+
+// messaging.onTokenRefresh(() => {
+//     messaging.getToken().then((refreshedToken) => {
+
+//     }).catch((err) => {
+
+//     });
+// });
+
+// messaging.onMessage((payload) => {
+//     console.log(`On message:`);
+//     console.table(payload);
+// })

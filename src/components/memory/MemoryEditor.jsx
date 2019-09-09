@@ -6,12 +6,13 @@ import uuidv4 from 'uuid/v4';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import TextField from '@material-ui/core/TextField';
+
 import Editor from '../editor/Editor';
 
 const useStyles = makeStyles(theme => ({
@@ -25,7 +26,7 @@ const useStyles = makeStyles(theme => ({
         '& .MuiInput-input': {
             color: theme.palette.text.secondary,
             backgroundColor: theme.palette.primary.dark,
-        }
+        },
     },
 }))
 
@@ -98,11 +99,11 @@ function MemoryEditor(props) {
                         </IconButton>
                         <TextField
                             className={classes.title}
-                            id="standard-name"
                             label="Título"
+                            type="text"
+                            autoComplete="off"
                             value={memory.headline}
                             onChange={handleChange('headline')}
-                            required
                         />
                         <Button color="inherit" onClick={handleClickSave}>
                             save

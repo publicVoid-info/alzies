@@ -74,7 +74,9 @@ class AuthProviderList extends Component {
     this.firebase.auth().signInWithPopup(new this.firebase.auth.GoogleAuthProvider())
       .then((r) => {
         this.props.closeSignUpDialog(() => {
-          this.registerUser(r);
+          if (r.additionalUserInfo.isNewUser) {
+            this.registerUser(r.user);
+          }
           this.props.closeSignInDialog(() => {
             this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
           });

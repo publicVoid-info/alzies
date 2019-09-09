@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import RootRef from '@material-ui/core/RootRef';
 import { List, ListItem, ListItemSecondaryAction } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import readingTime from 'reading-time';
 
-import Snackbar from '@material-ui/core/Snackbar'
 import MemoryCard from './MemoryCard';
 
 const reorder = (list, startIndex, endIndex) => {
@@ -34,36 +32,7 @@ class MemoryList extends React.Component {
         super(props);
 
         this.onDragEnd = this.onDragEnd.bind(this);
-
-        this.state = {
-            snackbar: {
-                autoHideDuration: 0,
-                message: '',
-                open: false
-            }
-        }
     }
-
-    openSnackbar = (message) => {
-        this.setState({
-            snackbar: {
-                autoHideDuration: readingTime(message).time * 2,
-                message,
-                open: true
-            }
-        });
-    };
-
-    closeSnackbar = (clearMessage = false) => {
-        const { snackbar } = this.state;
-
-        this.setState({
-            snackbar: {
-                message: clearMessage ? '' : snackbar.message,
-                open: false
-            }
-        });
-    };
 
     onDragEnd(result) {
         // dropped outside the list
@@ -103,7 +72,6 @@ class MemoryList extends React.Component {
                                                 <MemoryCard
                                                     key={item.id}
                                                     memory={item}
-                                                    openSnackbar={this.openSnackbar}
                                                 />
                                                 <ListItemSecondaryAction />
                                             </ListItem>
@@ -115,12 +83,6 @@ class MemoryList extends React.Component {
                         </RootRef>
                     )}
                 </Droppable>
-                <Snackbar
-                    autoHideDuration={this.state.snackbar.autoHideDuration}
-                    message={this.state.snackbar.message}
-                    open={this.state.snackbar.open}
-                    onClose={this.closeSnackbar}
-                />
             </DragDropContext>
         )
     }

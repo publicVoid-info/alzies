@@ -1,32 +1,17 @@
 import React from 'react';
-
 import ReactDOM from 'react-dom';
-
 import SettingsDialog from './SettingsDialog';
+import { Provider } from 'react-redux';
+import store from '../store/reducers';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
 
   ReactDOM.render(
     (
-      <SettingsDialog
-        open={false}
-        user={{}}
-        colors={[]}
-        primaryColor=""
-        secondaryColor=""
-        type=""
-        onClose={() => { }}
-        onAddAvatarClick={() => { }}
-        onChangeAvatarClick={() => { }}
-        onAddDisplayNameClick={() => { }}
-        onChangeDisplayNameClick={() => { }}
-        onAddEmailAddressClick={() => { }}
-        onPrimaryColorChange={() => { }}
-        onSecondaryColorChange={() => { }}
-        onTypeChange={() => { }}
-        onResetClick={() => { }}
-      />
+      <Provider store={store}>
+        <SettingsDialog />
+      </Provider>
     ),
     div
   );

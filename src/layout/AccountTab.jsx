@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
+  registerUser,
   verifyEmailAddress,
   setVerifyEmail,
   openSnackbar
@@ -48,6 +49,7 @@ class AccountTab extends Component {
     super(props);
 
     this.verifyEmailAddress = verifyEmailAddress;
+    this.registerUser = registerUser;
 
     this.state = {
       displayName: '',
@@ -125,6 +127,7 @@ class AccountTab extends Component {
 
     this.props.user.updateProfile({ displayName: this.state.displayName })
       .then(() => {
+        this.registerUser(this.props.user);
         this.closeChangeDisplayNameDialog(() => {
           this.props.openSnackbar('Display name changed');
         })

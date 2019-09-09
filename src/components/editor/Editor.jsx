@@ -16,8 +16,8 @@ function Editor(props) {
                 color: theme.palette.text.primary,
             },
             '& .ql-toolbar': {
-                color: theme.palette.text.secondary,
-                backgroundColor: theme.palette.text.primary,
+                color: theme.palette.common.black,
+                backgroundColor: theme.palette.common.white,
             },
             '& .ql-container': {
                 height: props.height,

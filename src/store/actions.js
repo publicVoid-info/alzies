@@ -6,6 +6,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 export const actionTypes = {
     UPDATE_THEME: 'UPDATE_THEME',
+    SET_ACTIVETABLE: 'SET_ACTIVETABLE',
     SET_SEARCHINPUT: 'SET_SEARCHINPUT',
     SET_USER: 'SET_USER',
     SET_AUTHREADY: 'SET_AUTHREADY',
@@ -25,6 +26,13 @@ export const actionTypes = {
     RESETPASSWORD_OPEN: 'RESETPASSWORD_OPEN',
     RESETPASSWORD_CLOSE: 'RESETPASSWORD_CLOSE',
 }
+
+export const setActiveTable = (activeTable) => {
+    return {
+        type: actionTypes.SET_ACTIVETABLE,
+        payload: activeTable
+    };
+};
 
 export const setSearchInput = (input) => {
     return {
@@ -180,19 +188,17 @@ export const closeSnackbar = () => {
     };
 };
 
-export const registerUser = (r) => {
+export const registerUser = (user) => {
 
-    if (!r.additionalUserInfo) return;
+    if (!user) return;
 
-    if (r.additionalUserInfo.isNewUser) {
-        getFirestore().collection('users')
-            .doc(r.user.uid)
-            .set({
-                displayName: r.user.displayName,
-                email: r.user.email,
-                uid: r.user.uid,
-            });
-    };
+    getFirestore().collection('users')
+        .doc(user.uid)
+        .set({
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+        });
 };
 
 export const verifyEmailAddress = (user, callback) => {

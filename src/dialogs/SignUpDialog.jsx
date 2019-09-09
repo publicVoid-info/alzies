@@ -66,7 +66,9 @@ class SignUpDialog extends Component {
           .then((r) => {
             this.props.closeSignUpDialog(() => {
 
-              this.registerUser(r);
+              if (r.additionalUserInfo.isNewUser) {
+                this.registerUser(r.user);
+              }
 
               this.props.openWelcomeDialog();
             })

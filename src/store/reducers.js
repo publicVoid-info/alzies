@@ -22,6 +22,12 @@ const initState = {
 
     searchInput: '',
 
+    activeTable: {
+        trash: false,
+        memories: 'memories',
+        memoryPosition: 'memoryPosition',
+    },
+
     isAuthReady: false,
     isVerifyingEmailAddress: false,
     isSignedIn: false,
@@ -59,6 +65,29 @@ function appReducer(state = initState, action) {
                 theme: action.payload.theme,
                 palette: action.payload.palette,
             }
+        case actionTypes.SET_ACTIVETABLE:
+            let newActiveTable = null;
+
+            newActiveTable = (action.payload === 'trash')
+                ?
+                {
+                    trash: true,
+                    memories: 'archivedMemories',
+                    memoryPosition: 'archivedMemoryPosition',
+                }
+                :
+                {
+                    trash: false,
+                    memories: 'memories',
+                    memoryPosition: 'memoryPosition',
+                };
+
+
+            return {
+                ...state,
+                activeTable: newActiveTable,
+            }
+
         case actionTypes.SET_SEARCHINPUT:
             return {
                 ...state,

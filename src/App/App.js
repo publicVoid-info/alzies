@@ -8,10 +8,8 @@ import {
   setUser,
   setAuthReady,
   setSignedIn,
-  openSnackbar,
-  closeSnackbar,
-  registerUser,
   updateTheme,
+  closeSnackbar
 } from '../store/actions';
 
 import Snackbar from '@material-ui/core/Snackbar';
@@ -29,7 +27,6 @@ class App extends Component {
 
     this._isMounted = false;
     this.firebase = getFirebase();
-    this.registerUser = registerUser;
   }
 
   componentDidMount() {
@@ -62,7 +59,7 @@ class App extends Component {
   render() {
 
     return (
-      < Router >
+      <Router>
         <MuiThemeProvider theme={this.props.theme}>
           <main>
             <div style={{ minHeight: '100vh', backgroundColor: this.props.theme.palette.background.default }}>
@@ -87,7 +84,7 @@ class App extends Component {
             </div>
           </main>
         </MuiThemeProvider>
-      </Router >
+      </Router>
     );
   }
 }
@@ -101,7 +98,6 @@ export default connect(mapStateToProps, {
   setUser,
   setAuthReady,
   setSignedIn,
-  openSnackbar,
-  closeSnackbar,
-  updateTheme
+  updateTheme,
+  closeSnackbar
 })(App);

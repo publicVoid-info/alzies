@@ -1,5 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+
+import {
+    setActiveTable,
+    toggleDrawer
+} from '../store/actions';
+
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -7,44 +14,65 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
-import AlarmIcon from '@material-ui/icons/Alarm';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import WorkIcon from '@material-ui/icons/Work';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import IconButton from '@material-ui/core/IconButton';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+    drawerHeader: {
+        minHeight: '40px',
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        justifyContent: 'flex-end',
+    },
     drawerPaper: {
-        top: '64px',
+        // marginTop: '64px',
         width: drawerWidth,
-        position: 'absolute',
+        position: 'fixed',
         zIndex: '2',
-        height: '90vh',
     },
 }));
 
-export default function DrawerMenu(props) {
+function DrawerMenu(props) {
     const classes = useStyles();
 
-    return (
+    const handleClickMenu = () => {
+        props.toggleDrawer(!props.drawer.open);
+    }
 
+    const handleClickCard = () => {
+        props.setActiveTable('card');
+    }
+
+    const handleClickTrash = () => {
+        props.setActiveTable('trash');
+    }
+
+    return (
         <Drawer
-            variant="persistent"
-            anchor="left"
-            open={props.open}
             classes={{ paper: classes.drawerPaper }}
+            onBackdropClick={handleClickMenu}
+            open={props.open}
+            variant="temporary"
+            anchor="left"
             role="presentation"
         >
-            <Divider />
             <List>
-                <ListItem button key={"Cards"}>
+                <ListItem className={classes.drawerHeader}
+                    button key={"Menu"}
+                    onClick={handleClickMenu}>
+                    <IconButton>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </ListItem>
+                <Divider />
+                <ListItem button key={"Cards"} onClick={handleClickCard}>
                     <ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
                     <ListItemText primary={"Cards"} />
-                </ListItem>
-                <ListItem button key={"Reminders"}>
-                    <ListItemIcon><AlarmIcon /></ListItemIcon>
-                    <ListItemText primary={"Reminders"} />
                 </ListItem>
                 <Divider />
                 <ListItem button key={"Tags"}>
@@ -52,15 +80,18 @@ export default function DrawerMenu(props) {
                     <ListItemText primary={"Tags"} />
                 </ListItem>
                 <Divider />
-                <ListItem button key={"Arquive"}>
-                    <ListItemIcon><WorkIcon /></ListItemIcon>
-                    <ListItemText primary={"Arquive"} />
-                </ListItem>
-                <ListItem button key={"Trash"}>
-                    <ListItemIcon><DeleteForeverIcon /></ListItemIcon>
+                <ListItem button key={"Trash"} onClick={handleClickTrash}>
+                    <ListItemIcon><DeleteIcon /></ListItemIcon>
                     <ListItemText primary={"Trash"} />
                 </ListItem>
             </List>
         </Drawer>
     );
 }
+
+const mapStateToProps = (state) => {
+    const storeState = state;
+    return storeState;
+}
+
+export default connect(mapStateToProps, { setActiveTable, toggleDrawer })(DrawerMenu);
