@@ -193,7 +193,7 @@ class Bar extends Component {
     const { menu } = this.state;
 
     return (
-      <AppBar color="primary" position="static">
+      <AppBar color="primary" position="sticky">
         <Drawer open={this.props.drawer.open} />
         <Toolbar variant="regular">
           <IconButton

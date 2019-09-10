@@ -27,14 +27,14 @@ const settings = {
 
   theme: {
     primaryColor: {
-      name: 'yellow',
-      import: yellow
+      name: 'red',
+      import: red
     },
     secondaryColor: {
       name: 'gray',
       import: gray
     },
-    type: 'dark'
+    type: 'light'
   },
 
   credentials: {
