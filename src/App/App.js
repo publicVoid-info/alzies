@@ -16,7 +16,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 import HomeContent from '../layout/HomeContent';
 import NotFoundContent from '../layout/NotFoundContent';
-import LaunchScreen from '../layout/LaunchScreen';
 import Bar from '../layout/Bar';
 import MemoryEditor from '../components/memory/MemoryEditor';
 
@@ -45,7 +44,7 @@ class App extends Component {
         if (self._isMounted) {
 
           self.props.setUser(user);
-          self.props.setAuthReady(true);
+          self.props.setAuthReady(!!user);
           self.props.setSignedIn(!!user);
         };
       });
@@ -64,17 +63,11 @@ class App extends Component {
           <main>
             <div style={{ minHeight: '100vh', backgroundColor: this.props.theme.palette.background.default }}>
               <Bar />
-              {!this.props.isAuthReady &&
-                <LaunchScreen />
-              }
-
-              {this.props.isAuthReady &&
-                <Switch>
-                  <Route exact path="/" component={HomeContent} />
-                  <Route exact path="/memory/:id" component={MemoryEditor} />
-                  <Route component={NotFoundContent} />
-                </Switch>
-              }
+              <Switch>
+                <Route exact path="/" component={HomeContent} />
+                <Route exact path="/memory/:id" component={MemoryEditor} />
+                <Route component={NotFoundContent} />
+              </Switch>
               <Snackbar
                 autoHideDuration={this.props.snackbar.autoHideDuration}
                 message={this.props.snackbar.message}

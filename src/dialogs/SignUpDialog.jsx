@@ -22,7 +22,6 @@ import validate from 'validate.js';
 import constraints from '../helpers/constraints';
 
 import AuthProviderList from '../layout/AuthProviderList';
-import WelcomeDialog from '../dialogs/WelcomeDialog';
 
 const initialState = {
   emailAddress: '',
@@ -58,26 +57,22 @@ class SignUpDialog extends Component {
 
     if (errors) {
       this.setState({ errors });
-    } else {
-      this.setState({
-        errors: null
-      }, () => {
-        this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
-          .then((r) => {
-            this.props.closeSignUpDialog(() => {
-
-              if (r.additionalUserInfo.isNewUser) {
-                this.registerUser(r.user);
-              }
-
-              this.props.openWelcomeDialog();
-            })
-          })
-          .catch((reason) => {
-            this.props.openSnackbar(reason.message);
-          })
-      });
+      return;
     }
+
+    this.props.closeSignUpDialog(() => {
+      this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
+        .then((r) => {
+          if (r.additionalUserInfo.isNewUser) {
+            this.registerUser(r.user);
+          }
+        })
+        .catch((reason) => {
+          this.props.openSnackbar(reason.message);
+        })
+    });
+
+    this.props.openWelcomeDialog();
   };
 
   handleExited = () => {
@@ -172,7 +167,6 @@ class SignUpDialog extends Component {
             <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUp}>Sign Up</Button>
           </DialogActions>
         </Dialog>
-        <WelcomeDialog />
       </React.Fragment>
     );
   }

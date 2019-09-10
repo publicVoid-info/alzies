@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
+  setVerifyEmail,
   closeWelcomeDialog,
   openSnackbar,
   verifyEmailAddress,
@@ -25,12 +26,15 @@ class WelcomeDialog extends Component {
   }
 
   handleVerifyClick = () => {
-    this.verifyEmailAddress(
-      this.props.user,
-      () => {
-        this.props.openSnackbar('Verification email sent');
-        this.props.closeWelcomeDialog()
-      });
+    const self = this;
+    this.props.closeWelcomeDialog(() => {
+      self.verifyEmailAddress(
+        self.props.user,
+        () => {
+          self.props.setVerifyEmail(true);
+          self.props.openSnackbar('Verification email sent');
+        })
+    });
   };
 
   handleKeyPress = (event) => {
@@ -79,6 +83,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,
   {
+    setVerifyEmail,
     closeWelcomeDialog,
     openSnackbar,
   })(WelcomeDialog);

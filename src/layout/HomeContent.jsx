@@ -8,13 +8,13 @@ import settings from '../helpers/settings';
 
 import Fab from '@material-ui/core/Fab';
 import CodeIcon from '@material-ui/icons/Code';
-import HomeIcon from '@material-ui/icons/Home';
 import GitHubCircleIcon from 'mdi-material-ui/GithubCircle';
 import AddIcon from '@material-ui/icons/Add';
 import Container from '@material-ui/core/Container';
 
 import EmptyState from './EmptyState';
 import MemoryList from '../components/memory/MemoryList';
+import LaunchScreen from '../layout/LaunchScreen';
 
 const styles = (theme) => ({
   emptyStateIcon: {
@@ -171,10 +171,11 @@ class HomeContent extends Component {
       return;
     }
 
-
-    if (this.props.searchInput.length === 0 && this.state.memoryList.length === 0) {
-      this.getMemories();
-      return;
+    if (this.props.isSignedIn && this.props.user) {
+      if (this.props.searchInput.length === 0 && this.state.memoryList.length === 0) {
+        this.getMemories();
+        return;
+      }
     }
   }
 
@@ -191,28 +192,31 @@ class HomeContent extends Component {
     const { classes } = this.props;
 
     if (!this.props.isSignedIn) {
-      return (
-        <EmptyState
-          icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
-          title={settings.title}
-          description="Não ofereço clareiras a razão, virem-se"
-          button={
-            <Fab
-              className={classes.button}
-              color="secondary"
-              href="https://github.com/DonOctavioDelFlores/alzies"
-              rel="noopener noreferrer"
-              target="_blank" variant="extended">
-              <GitHubCircleIcon className={classes.buttonIcon} />
-              github
+      if (this.props.isAuthReady) {
+        return <LaunchScreen />
+      } else {
+        return (
+          <EmptyState
+            icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
+            title={settings.title}
+            description="Não ofereço clareiras a razão, virem-se"
+            button={
+              <Fab
+                className={classes.button}
+                color="secondary"
+                href="https://github.com/DonOctavioDelFlores/alzies"
+                rel="noopener noreferrer"
+                target="_blank" variant="extended">
+                <GitHubCircleIcon className={classes.buttonIcon} />
+                github
           </Fab>
-          }
-        />
-      )
+            }
+          />
+        )
+      }
     }
 
-    return (this.props.user)
-      ?
+    return (this.props.user) &&
       <React.Fragment>
         <Container className={classes.container} maxWidth="md">
           <MemoryList
@@ -227,14 +231,6 @@ class HomeContent extends Component {
           </Fab>
         </Link>
       </React.Fragment>
-      :
-      (
-        <EmptyState
-          icon={< HomeIcon className={classes.emptyStateIcon} color="action" />}
-          title="Home"
-          description=""
-        />
-      );
   }
 }
 

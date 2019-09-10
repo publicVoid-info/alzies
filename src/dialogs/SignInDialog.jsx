@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getFirebase } from '../helpers/firebase';
 
 import {
+  setAuthReady,
   openResetPasswordDialog,
   closeSignInDialog,
   openSnackbar,
@@ -59,18 +60,20 @@ class SignInDialog extends Component {
       this.setState({
         errors: null
       }, () => {
-        this.firebase.auth().signInWithEmailAndPassword(emailAddress, password)
-          .then((r) => {
-            this.props.closeSignInDialog(() => {
+        this.props.closeSignInDialog(() => {
+          this.props.setAuthReady(true);
+          this.firebase.auth().signInWithEmailAndPassword(emailAddress, password)
+            .then((r) => {
               this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
             })
-          })
-          .catch((reason) => {
-            this.props.openSnackbar(reason.message);
-          })
-      });
-    }
-  };
+            .catch((reason) => {
+              this.props.setAuthReady(false);
+              this.props.openSnackbar(reason.message);
+            })
+        });
+      })
+    };
+  }
 
   handleExited = () => {
     this.setState(initialState);
@@ -171,6 +174,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,
   {
+    setAuthReady,
     openResetPasswordDialog,
     closeSignInDialog,
     openSnackbar

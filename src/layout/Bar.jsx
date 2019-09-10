@@ -30,7 +30,9 @@ import SignUpDialog from '../dialogs/SignUpDialog';
 import SignInDialog from '../dialogs/SignInDialog';
 import ConfirmationDialog from '../dialogs/ConfirmationDialog';
 import SettingsDialog from '../dialogs/SettingsDialog';
+import WelcomeDialog from '../dialogs/WelcomeDialog';
 import Drawer from '../layout/Drawer';
+
 
 const styles = (theme) => ({
   titulo: {
@@ -125,6 +127,11 @@ class Bar extends Component {
   handleSignOutClick = () => {
 
     this.closeMenu();
+
+    if (this.props.drawer.open) {
+      this.props.toggleDrawer(!this.props.drawer.open);
+    }
+
     this.openSignOutDialog();
   };
 
@@ -163,7 +170,9 @@ class Bar extends Component {
   };
 
   handleToggleDrawer = () => {
-    this.props.toggleDrawer(!this.props.drawer.open);
+    if (this.props.isSignedIn) {
+      this.props.toggleDrawer(!this.props.drawer.open);
+    }
   }
 
   handleSignInClick = () => {
@@ -275,8 +284,8 @@ class Bar extends Component {
             onCancelClick={this.closeSignOutDialog}
             onOkClick={this.signOut}
           />
-
           <SettingsDialog />
+          <WelcomeDialog />
         </Toolbar>
       </AppBar>
     );
