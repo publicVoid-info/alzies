@@ -14,7 +14,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
+// import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import IconButton from '@material-ui/core/IconButton';
@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'flex-end',
     },
     drawerPaper: {
-        // marginTop: '64px',
         width: drawerWidth,
         position: 'fixed',
         zIndex: '2',
@@ -74,11 +73,11 @@ function DrawerMenu(props) {
                     <ListItemIcon><SpeakerNotesIcon /></ListItemIcon>
                     <ListItemText primary={"Cards"} />
                 </ListItem>
-                <Divider />
+                {/* <Divider />
                 <ListItem button key={"Tags"}>
                     <ListItemIcon><BookmarksIcon /></ListItemIcon>
                     <ListItemText primary={"Tags"} />
-                </ListItem>
+                </ListItem> */}
                 <Divider />
                 <ListItem button key={"Trash"} onClick={handleClickTrash}>
                     <ListItemIcon><DeleteIcon /></ListItemIcon>

@@ -7,8 +7,9 @@ import { getFirestore } from '../helpers/firebase';
 import settings from '../helpers/settings';
 
 import Fab from '@material-ui/core/Fab';
+import Button from '@material-ui/core/Button';
 import CodeIcon from '@material-ui/icons/Code';
-import GitHubCircleIcon from 'mdi-material-ui/GithubCircle';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import AddIcon from '@material-ui/icons/Add';
 import Container from '@material-ui/core/Container';
 
@@ -20,7 +21,8 @@ const styles = (theme) => ({
   emptyStateIcon: {
     fontSize: theme.spacing(12)
   },
-  button: {
+  installButton: {
+    display: 'none',
     marginTop: theme.spacing(1)
   },
   buttonIcon: {
@@ -32,6 +34,26 @@ const styles = (theme) => ({
     bottom: 0,
     right: theme.spacing(2),
   },
+});
+
+let installPromptEvent;
+
+const handleInstallApp = () => {
+
+  installPromptEvent.prompt();
+  installPromptEvent.userChoice.then((choice) => {
+    // Clear the saved prompt since it can't be used again
+    installPromptEvent = null;
+    document.querySelector('#install-app').style.display = 'none';
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (event) => {
+
+  document.querySelector('#install-app').style.display = 'inline-flex';
+  installPromptEvent = event;
+  // Prevent Chrome <= 67 from automatically showing the prompt
+  event.preventDefault();
 });
 
 class HomeContent extends Component {
@@ -200,16 +222,17 @@ class HomeContent extends Component {
             icon={<CodeIcon className={classes.emptyStateIcon} color="action" />}
             title={settings.title}
             description="Não ofereço clareiras a razão, virem-se"
-            button={
-              <Fab
-                className={classes.button}
-                color="secondary"
-                href="https://github.com/DonOctavioDelFlores/alzies"
-                rel="noopener noreferrer"
-                target="_blank" variant="extended">
-                <GitHubCircleIcon className={classes.buttonIcon} />
-                github
-          </Fab>
+            button=
+            {
+              <Button
+                id="install-app"
+                className={classes.installButton}
+                variant="outlined"
+                color="primary"
+                onClick={handleInstallApp}>
+                <GetAppIcon className={classes.buttonIcon} />
+                Get App
+            </Button>
             }
           />
         )

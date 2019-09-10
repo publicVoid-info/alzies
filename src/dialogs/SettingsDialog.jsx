@@ -18,6 +18,11 @@ const styles = (theme) => ({
   tabs: {
     marginBottom: theme.spacing(1),
   },
+  dialog: {
+    '& .MuiDialog-paper': {
+      margin: '24px',
+    }
+  },
 });
 
 class SettingsDialog extends Component {
@@ -60,7 +65,12 @@ class SettingsDialog extends Component {
     const { selectedTab } = this.state;
 
     return (
-      <Dialog open={this.props.settingsDialog.open} onClose={this.props.closeSettingsDialog} onKeyPress={this.handleKeyPress}>
+      <Dialog
+        className={classes.dialog}
+        open={this.props.settingsDialog.open}
+        onClose={this.props.closeSettingsDialog}
+        onKeyPress={this.handleKeyPress}>
+
         <DialogTitle>Settings</DialogTitle>
 
         <Tabs
