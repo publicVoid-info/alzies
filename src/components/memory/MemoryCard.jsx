@@ -39,10 +39,9 @@ const useStyles = makeStyles((theme) => (
     },
     cardHeader: {
       cursor: 'pointer',
-      '& h3': {
+      '& h5': {
         padding: '0',
         margin: '0',
-        textTransform: 'uppercase',
         textAlign: 'center',
       },
       '&:focus': {
@@ -165,9 +164,16 @@ function MemoryCard(props) {
       <CardHeader
         component="div"
         className={classes.cardHeader}
-        title={<h3>{memory.headline}</h3>}
+        title={memory.headline}
         autoCorrect="false"
-        disableTypography={true}
+        disableTypography={false}
+        titleTypographyProps={
+          {
+            align: 'center',
+            overflow: 'auto',
+            variant: 'h6',
+            color: 'textPrimary',
+          }}
         onClick={toggleExpand}
         action={(!props.activeTable.trash) &&
           <IconButton className={classes.menuVert} onClick={toggleExpand}>

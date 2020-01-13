@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RootRef from '@material-ui/core/RootRef';
-import { List, ListItem, ListItemSecondaryAction } from '@material-ui/core';
+import { List, ListItem } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import MemoryCard from './MemoryCard';
@@ -73,7 +73,7 @@ class MemoryList extends React.Component {
                                                     key={item.id}
                                                     memory={item}
                                                 />
-                                                <ListItemSecondaryAction />
+
                                             </ListItem>
                                         )}
                                     </Draggable>
