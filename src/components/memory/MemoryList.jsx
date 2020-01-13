@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RootRef from '@material-ui/core/RootRef';
-import { List, ListItem } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import MemoryCard from './MemoryCard';
@@ -21,10 +19,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
     ...(isDragging && {
         opacity: '0.7',
     })
-});
-
-const getListStyle = isDraggingOver => ({
-    // background: isDraggingOver ? 'lightblue' : 'lightgrey',
 });
 
 class MemoryList extends React.Component {
@@ -53,37 +47,36 @@ class MemoryList extends React.Component {
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <Droppable droppableId="droppable">
-                    {(provided, snapshot) => (
-                        <RootRef rootRef={provided.innerRef}>
-                            <List style={getListStyle(snapshot.isDraggingOver)}>
-                                {this.props.memoryList.map((item) => (
-                                    <Draggable key={item.id} draggableId={item.id} index={item.indexSort}>
-                                        {(provided, snapshot) => (
-                                            <ListItem
-                                                ContainerComponent="div"
-                                                ContainerProps={{ ref: provided.innerRef }}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                style={getItemStyle(
-                                                    snapshot.isDragging,
-                                                    provided.draggableProps.style
-                                                )}
-                                            >
-                                                <MemoryCard
-                                                    key={item.id}
-                                                    memory={item}
-                                                />
-
-                                            </ListItem>
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </List>
-                        </RootRef>
+                    {(provided) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {this.props.memoryList.map((item, index) => (
+                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            style={getItemStyle(
+                                                snapshot.isDragging,
+                                                provided.draggableProps.style
+                                            )}
+                                        >
+                                            <MemoryCard
+                                                key={item.id}
+                                                memory={item}
+                                            />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
                     )}
                 </Droppable>
-            </DragDropContext>
+            </DragDropContext >
         )
     }
 }

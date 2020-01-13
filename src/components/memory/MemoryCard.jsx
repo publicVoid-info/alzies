@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => (
       overflow: 'none',
       width: '100%',
       height: '100%',
+      marginTop: theme.spacing(1),
     },
     '@media (max-width: 340px)': {
       card: {
