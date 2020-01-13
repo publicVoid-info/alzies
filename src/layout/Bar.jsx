@@ -49,7 +49,6 @@ const styles = (theme) => ({
     width: theme.spacing(7),
     height: '100%',
     position: 'absolute',
-    pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -62,12 +61,8 @@ const styles = (theme) => ({
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    marginLeft: 0,
-    width: 'auto',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
+    marginLeft: theme.spacing(1),
+    width: '50%',
   },
   inputRoot: {
     color: 'inherit',

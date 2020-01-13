@@ -7,6 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import Divider from '@material-ui/core/Divider';
 
 class FindUsersDialog extends React.Component {
     constructor(props) {
@@ -73,6 +74,7 @@ class FindUsersDialog extends React.Component {
                 onKeyPress={this.handleKeyPress}
             >
                 <DialogTitle>Share Card</DialogTitle>
+                <Divider variant="fullWidth" />
                 <DialogContent>
                     <MenuList>
                         {this.state.userList.map((value, index) => {

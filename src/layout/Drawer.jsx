@@ -14,7 +14,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import SpeakerNotesIcon from '@material-ui/icons/SpeakerNotes';
-// import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import IconButton from '@material-ui/core/IconButton';
@@ -45,10 +44,12 @@ function DrawerMenu(props) {
 
     const handleClickCard = () => {
         props.setActiveTable('card');
+        props.toggleDrawer(false);
     }
 
     const handleClickTrash = () => {
         props.setActiveTable('trash');
+        props.toggleDrawer(false);
     }
 
     return (

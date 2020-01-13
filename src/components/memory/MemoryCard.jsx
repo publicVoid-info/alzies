@@ -11,18 +11,16 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-// import Chip from '@material-ui/core/Chip';
+import Collapse from '@material-ui/core/Collapse';
+
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
-import Popover from '@material-ui/core/Popover';
-import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import ShareIcon from '@material-ui/icons/Share';
-// import TagIcon from '@material-ui/icons/BookmarkBorder';
+import ArrowDrop from '@material-ui/icons/ArrowDropDownCircleOutlined';
 
 import FindUsersDialog from '../../dialogs/FindUsersDialog';
 
@@ -30,7 +28,7 @@ const useStyles = makeStyles((theme) => (
   {
     card: {
       minWidth: '280px',
-      overflow: 'auto',
+      overflow: 'none',
       width: '100%',
       height: '100%',
     },
@@ -59,43 +57,19 @@ const useStyles = makeStyles((theme) => (
       padding: '0px',
       margin: '0px',
     },
-    menuItem: {
-      padding: '0px',
-      margin: '0px',
-    },
-    menuVert: {
-      margin: '5px 0px 0px 0px',
-      padding: '5px',
-    },
   }
 ))
 
 function MemoryCard(props) {
 
   const { memory, user } = props;
+  const [expanded, setExpanded] = useState(false);
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
   const [findUsersOpen, setFindUsersOpen] = useState(false);
 
-  const toggleExpand = (event) => {
-    Boolean(anchorEl)
-      ?
-      closeExpand(event)
-      :
-      openExpand(event);
+  const toggleExpand = () => {
+    setExpanded(!expanded);
   }
-
-  const openExpand = (event) => {
-    setAnchorEl(
-      event.currentTarget
-    );
-  };
-
-  const closeExpand = () => {
-    setAnchorEl(
-      null
-    );
-  };
 
   const handleSendTrashClick = () => {
 
@@ -194,79 +168,55 @@ function MemoryCard(props) {
         title={<h3>{memory.headline}</h3>}
         autoCorrect="false"
         disableTypography={true}
+        onClick={toggleExpand}
         action={(!props.activeTable.trash) &&
           <IconButton className={classes.menuVert} onClick={toggleExpand}>
-            <MoreVertIcon />
-            <Popover
-              open={Boolean(anchorEl)}
-              onClose={closeExpand}
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-              <MenuItem className={classes.menuItem}>
-                <IconButton onClick={handleSendTrashClick}>
-                  <DeleteIcon />
-                </IconButton>
-              </MenuItem>
-              <MenuItem className={classes.menuItem}>
-                <IconButton onClick={handleShareClick}>
-                  <ShareIcon />
-                </IconButton>
-              </MenuItem>
-            </Popover>
+            <ArrowDrop />
           </IconButton>
         }
       />
-      <Divider variant="fullWidth" />
-      <CardContent className={classes.cardContent} autoCorrect="false" >
-        <Typography variant="body1" component="div">
-          <Editor
-            height="auto"
-            theme="bubble"
-            text={memory.content}
-            readOnly={true}
-          />
-        </Typography>
-      </CardContent>
-      <Divider variant="fullWidth" />
-      {(!props.activeTable.trash)
-        ?
-        <CardActions className={classes.cardActionIcon}>
-          <IconButton onClick={handleMemoryEdit}>
-            <EditIcon />
-          </IconButton>
 
-          {/* <span style={{ marginLeft: 'auto' }}>
-            <Chip
-              label="#opa"
-              variant="default"
-              color="secondary"
-
-              onClick={handleTagClick}
-              onDelete={handleTagDelete}
+      <Collapse in={expanded}>
+        <Divider variant="fullWidth" />
+        <CardContent className={classes.cardContent} autoCorrect="false" >
+          <Typography variant="body1" component="div">
+            <Editor
+              height="auto"
+              theme="bubble"
+              text={memory.content}
+              readOnly={true}
             />
-            <IconButton >
-              <TagIcon />
+          </Typography>
+        </CardContent>
+        <Divider variant="fullWidth" />
+
+        {(!props.activeTable.trash)
+          ?
+          <CardActions className={classes.cardActionIcon}>
+            <IconButton onClick={handleMemoryEdit}>
+              <EditIcon />
             </IconButton>
-          </span> */}
-        </CardActions>
-        :
-        <CardActions className={classes.cardActionButton}>
-          <Button variant="contained" color="primary" onClick={handleRestoreTrashClick}>Restore</Button>
-          <Button variant="outlined" color="primary" onClick={handleDeleteTrashClick}>Delete</Button>
-        </CardActions>
-      }
-      <FindUsersDialog
-        open={findUsersOpen}
-        onClose={handleCloseFindUsers}
-        onSelectUser={handleSelectUser} />
+
+            <IconButton onClick={handleSendTrashClick} style={{ marginLeft: 'auto', marginRight: '0' }}>
+              <DeleteIcon />
+            </IconButton>
+
+            <IconButton onClick={handleShareClick} style={{ marginLeft: '0', marginRight: '0' }}>
+              <ShareIcon />
+            </IconButton>
+          </CardActions>
+          :
+          <CardActions className={classes.cardActionButton}>
+            <Button variant="contained" color="primary" onClick={handleRestoreTrashClick}>Restore</Button>
+            <Button variant="outlined" color="primary" onClick={handleDeleteTrashClick}>Delete</Button>
+          </CardActions>
+        }
+        <FindUsersDialog
+          open={findUsersOpen}
+          onClose={handleCloseFindUsers}
+          onSelectUser={handleSelectUser} />
+      </Collapse>
+
     </Card >
   )
 }
