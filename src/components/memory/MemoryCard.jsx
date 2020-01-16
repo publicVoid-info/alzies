@@ -63,12 +63,20 @@ const useStyles = makeStyles((theme) => (
 function MemoryCard(props) {
 
   const { memory, user } = props;
-  const [expanded, setExpanded] = useState(false);
   const classes = useStyles();
   const [findUsersOpen, setFindUsersOpen] = useState(false);
 
   const toggleExpand = () => {
-    setExpanded(!expanded);
+
+    const newMemory = {
+      ...memory,
+      expanded: !memory.expanded,
+    }
+
+    getFirestore().collection('memories')
+      .doc(memory.id)
+      .set(newMemory)
+      .catch(error => props.openSnackbar(error));
   }
 
   const handleSendTrashClick = () => {
@@ -183,7 +191,7 @@ function MemoryCard(props) {
         }
       />
 
-      <Collapse in={expanded}>
+      <Collapse in={memory.expanded}>
         <Divider variant="fullWidth" />
         <CardContent className={classes.cardContent} autoCorrect="false" >
           <Typography variant="body1" component="div">
