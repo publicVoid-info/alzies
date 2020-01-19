@@ -1,76 +1,76 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import { closeSettingsDialog } from '../store/actions';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
+import { closeSettingsDialog } from '../store/actions'
+import PropTypes from 'prop-types'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 
-import AccountTab from '../layout/AccountTab';
-import AppearanceTab from '../layout/AppearanceTab';
+import AccountTab from '../layout/AccountTab'
+import AppearanceTab from '../layout/AppearanceTab'
 
-const styles = (theme) => ({
+const styles = theme => ({
   tabs: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
   dialog: {
     '& .MuiDialog-paper': {
-      margin: '24px',
+      margin: '24px'
     }
-  },
-});
+  }
+})
 
 class SettingsDialog extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       selectedTab: 0
-    };
+    }
   }
 
-  handleKeyPress = (event) => {
-    const key = event.key;
+  handleKeyPress = event => {
+    const key = event.key
 
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
-      return;
+      return
     }
 
     if (key === 'Enter') {
-      this.props.closeSettingsDialog();
+      this.props.closeSettingsDialog()
     }
-  };
+  }
 
   changeTab = (event, value) => {
     this.setState({
       selectedTab: value
-    });
-  };
+    })
+  }
 
-  changeIndex = (index) => {
+  changeIndex = index => {
     this.setState({
       selectedTab: index
-    });
-  };
+    })
+  }
 
   render() {
     // Styling
-    const { classes } = this.props;
+    const { classes } = this.props
 
-    const { selectedTab } = this.state;
+    const { selectedTab } = this.state
 
     return (
       <Dialog
         className={classes.dialog}
         open={this.props.settingsDialog.open}
         onClose={this.props.closeSettingsDialog}
-        onKeyPress={this.handleKeyPress}>
-
+        onKeyPress={this.handleKeyPress}
+      >
         <DialogTitle>Settings</DialogTitle>
 
         <Tabs
@@ -79,35 +79,31 @@ class SettingsDialog extends Component {
           textColor="primary"
           onChange={this.changeTab}
           value={selectedTab}
-          variant="fullWidth">
-
+          variant="fullWidth"
+        >
           <Tab label="Account" />
           <Tab label="Appearance" />
         </Tabs>
 
         <DialogContent>
-          {selectedTab === 0 &&
-            <AccountTab />
-          }
+          {selectedTab === 0 && <AccountTab />}
 
-          {selectedTab === 1 &&
-            <AppearanceTab />
-          }
+          {selectedTab === 1 && <AppearanceTab />}
         </DialogContent>
       </Dialog>
-    );
+    )
   }
 }
 
 SettingsDialog.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+  classes: PropTypes.object.isRequired
+}
 
-const mapStateToProps = (state) => {
-  const storeState = state;
-  return storeState;
+const mapStateToProps = state => {
+  const storeState = state
+  return storeState
 }
 
 export default connect(mapStateToProps, {
-  closeSettingsDialog,
-})(withStyles(styles)(SettingsDialog));
+  closeSettingsDialog
+})(withStyles(styles)(SettingsDialog))

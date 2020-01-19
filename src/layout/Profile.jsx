@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
-import { openSnackbar } from '../store/actions';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
+import { openSnackbar } from '../store/actions'
 
-import validate from 'validate.js';
-import constraints from '../helpers/constraints';
+import validate from 'validate.js'
+import constraints from '../helpers/constraints'
 
-import Avatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
-import Fab from '@material-ui/core/Fab';
-import Typography from '@material-ui/core/Typography';
-import EditIcon from '@material-ui/icons/Edit';
-import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar'
+import Tooltip from '@material-ui/core/Tooltip'
+import Fab from '@material-ui/core/Fab'
+import Typography from '@material-ui/core/Typography'
+import EditIcon from '@material-ui/icons/Edit'
+import TextField from '@material-ui/core/TextField'
 
-import InputDialog from '../dialogs/InputDialog';
+import InputDialog from '../dialogs/InputDialog'
 
-const styles = (theme) => ({
+const styles = theme => ({
   profile: {
     textAlign: 'center',
 
@@ -40,7 +40,7 @@ const styles = (theme) => ({
   changeAvatar: {
     position: 'absolute',
     top: '-7.5%',
-    left: '60%',
+    left: '60%'
   },
 
   info: {
@@ -49,12 +49,12 @@ const styles = (theme) => ({
 
   emailAddress: {
     marginTop: -theme.spacing(0.5)
-  },
-});
+  }
+})
 
 class Profile extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       avatar: '',
@@ -62,38 +62,40 @@ class Profile extends Component {
       changeAvatarDialog: {
         open: false,
         errors: ''
-      },
+      }
     }
   }
 
-  updateAvatarState = (e) => {
+  updateAvatarState = e => {
     this.setState({
       avatar: e.target.value
-    });
-  };
+    })
+  }
 
   openChangeAvatarDialog = () => {
     this.setState({
       changeAvatarDialog: {
         open: true
       }
-    });
-  };
+    })
+  }
 
-  closeChangeAvatarDialog = (callback) => {
-    this.setState({
-      changeAvatarDialog: {
-        open: false
+  closeChangeAvatarDialog = callback => {
+    this.setState(
+      {
+        changeAvatarDialog: {
+          open: false
+        }
+      },
+      () => {
+        if (callback && typeof callback === 'function') {
+          callback()
+        }
       }
-    }, () => {
-      if (callback && typeof callback === 'function') {
-        callback();
-      }
-    });
-  };
+    )
+  }
 
   handleChangeAvatar = () => {
-
     const errors = validate(
       {
         avatar: this.state.avatar
@@ -104,43 +106,53 @@ class Profile extends Component {
     )
 
     if (errors) {
-      this.setState((state) => ({
+      this.setState(state => ({
         changeAvatarDialog: {
           ...state.changeAvatarDialog,
           errors
         }
       }))
 
-      return;
+      return
     }
 
     if (this.props.user.photoURL === this.state.avatar) {
-      this.props.openSnackbar('Avatar already being used');
+      this.props.openSnackbar('Avatar already being used')
 
-      return;
+      return
     }
 
-    this.props.user.updateProfile({ photoURL: this.state.avatar })
+    this.props.user
+      .updateProfile({ photoURL: this.state.avatar })
       .then(() => {
         this.closeChangeAvatarDialog(() => {
-          this.props.openSnackbar('Avatar changed');
+          this.props.openSnackbar('Avatar changed')
         })
       })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      });
-  };
+      .catch(reason => {
+        this.props.openSnackbar(reason.message)
+      })
+  }
 
   render() {
     // Styling
-    const { classes } = this.props;
+    const { classes } = this.props
 
     return (
       <div className={classes.profile}>
         <div className={classes.changeAvatarContainer}>
-          <Avatar className={classes.avatar} alt="Avatar" src={this.props.user.photoURL} />
+          <Avatar
+            className={classes.avatar}
+            alt="Avatar"
+            src={this.props.user.photoURL}
+          />
           <Tooltip title="Change avatar">
-            <Fab className={classes.changeAvatar} color="primary" size="small" onClick={this.openChangeAvatarDialog}>
+            <Fab
+              className={classes.changeAvatar}
+              color="primary"
+              size="small"
+              onClick={this.openChangeAvatarDialog}
+            >
               <EditIcon />
             </Fab>
           </Tooltip>
@@ -148,11 +160,16 @@ class Profile extends Component {
 
         <div className={classes.info}>
           <Typography variant="h6">{this.props.user.displayName}</Typography>
-          <Typography className={classes.emailAddress} color="textSecondary" variant="body1">{this.props.user.email}</Typography>
+          <Typography
+            className={classes.emailAddress}
+            color="textSecondary"
+            variant="body1"
+          >
+            {this.props.user.email}
+          </Typography>
         </div>
         <InputDialog
           open={this.state.changeAvatarDialog.open}
-
           title="Change avatar"
           contentText="Your avatar is used to represent you. It's visible to other users and can be changed any time."
           textField={
@@ -163,12 +180,13 @@ class Profile extends Component {
               error={Boolean(this.state.changeAvatarDialog.errors)}
               fullWidth
               helperText={
-                (this.state.changeAvatarDialog.errors && this.state.changeAvatarDialog.errors.avatar)
+                this.state.changeAvatarDialog.errors &&
+                this.state.changeAvatarDialog.errors.avatar
                   ? this.state.changeAvatarDialog.errors.avatar[0]
                   : ''
               }
               margin="normal"
-              placeholder={(this.props.user) ? this.props.user.photoURL : ''}
+              placeholder={this.props.user ? this.props.user.photoURL : ''}
               required
               type="url"
               value={this.state.avatar}
@@ -177,29 +195,29 @@ class Profile extends Component {
           okText="Change"
           disableOkButton={!this.state.avatar}
           highlightOkButton
-
           onClose={this.closeChangeAvatarDialog}
           onExited={() => {
             this.setState({
               avatar: ''
-            });
+            })
           }}
-
           onCancelClick={this.closeChangeAvatarDialog}
           onOkClick={this.handleChangeAvatar}
         />
       </div>
-    );
+    )
   }
 }
 
 Profile.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => {
-  const storeState = state;
-  return storeState;
+  classes: PropTypes.object.isRequired
 }
 
-export default connect(mapStateToProps, { openSnackbar })(withStyles(styles)(Profile));
+const mapStateToProps = state => {
+  const storeState = state
+  return storeState
+}
+
+export default connect(mapStateToProps, { openSnackbar })(
+  withStyles(styles)(Profile)
+)

@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { getFirebase } from '../helpers/firebase';
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getFirebase } from '../helpers/firebase'
+import { withStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
 
 import {
   closeSignUpDialog,
   registerUser,
   closeSignInDialog,
-  openSnackbar,
-} from '../store/actions';
+  openSnackbar
+} from '../store/actions'
 
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+import DialogActions from '@material-ui/core/DialogActions'
+import Button from '@material-ui/core/Button'
 
-import GoogleIcon from 'mdi-material-ui/Google';
+import GoogleIcon from 'mdi-material-ui/Google'
 
-const styles = (theme) => ({
+const styles = theme => ({
   dialogActions: {
     justifyContent: 'center',
 
@@ -59,64 +59,69 @@ const styles = (theme) => ({
   icon: {
     marginRight: theme.spacing(0.5)
   }
-});
+})
 
 class AuthProviderList extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.firebase = getFirebase();
-    this.registerUser = registerUser;
+    this.firebase = getFirebase()
+    this.registerUser = registerUser
   }
 
   handleProviderClick = () => {
-
-    this.firebase.auth().signInWithPopup(new this.firebase.auth.GoogleAuthProvider())
-      .then((r) => {
+    this.firebase
+      .auth()
+      .signInWithPopup(new this.firebase.auth.GoogleAuthProvider())
+      .then(r => {
         this.props.closeSignUpDialog(() => {
           if (r.additionalUserInfo.isNewUser) {
-            this.registerUser(r.user);
+            this.registerUser(r.user)
           }
           this.props.closeSignInDialog(() => {
-            this.props.openSnackbar(`Signed in as ${r.user.displayName || r.user.email}`);
-          });
-        });
+            this.props.openSnackbar(
+              `Signed in as ${r.user.displayName || r.user.email}`
+            )
+          })
+        })
       })
-      .catch((reason) => {
-        this.props.openSnackbar(reason.message);
-      });
-  };
-
+      .catch(reason => {
+        this.props.openSnackbar(reason.message)
+      })
+  }
 
   render() {
     // Styling
-    const { classes } = this.props;
+    const { classes } = this.props
 
     return (
       <React.Fragment>
         <DialogActions className={classes.dialogActions}>
-          <Button className={classes.google} variant="contained" onClick={this.handleProviderClick}>
+          <Button
+            className={classes.google}
+            variant="contained"
+            onClick={this.handleProviderClick}
+          >
             <GoogleIcon className={classes.icon} />
             Google
-            </Button>
+          </Button>
         </DialogActions>
       </React.Fragment>
-    );
+    )
   }
 }
 
 AuthProviderList.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => {
-  const storeState = state;
-  return storeState;
+  classes: PropTypes.object.isRequired
 }
 
-export default connect(mapStateToProps,
-  {
-    closeSignUpDialog,
-    closeSignInDialog,
-    openSnackbar,
-  })(withStyles(styles)(AuthProviderList));
+const mapStateToProps = state => {
+  const storeState = state
+  return storeState
+}
+
+export default connect(mapStateToProps, {
+  closeSignUpDialog,
+  closeSignInDialog,
+  openSnackbar
+})(withStyles(styles)(AuthProviderList))

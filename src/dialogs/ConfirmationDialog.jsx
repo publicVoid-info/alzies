@@ -1,31 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogActions from '@material-ui/core/DialogActions'
 
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 
 class ConfirmationDialog extends Component {
-  handleKeyPress = (event) => {
-    const key = event.key;
+  handleKeyPress = event => {
+    const key = event.key
 
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
-      return;
+      return
     }
 
     if (key === 'Enter') {
-      this.props.onOkClick();
+      this.props.onOkClick()
     }
-  };
+  }
 
   render() {
     // Dialog Properties
-    const { open } = this.props;
+    const { open } = this.props
 
     // Custom Properties
     const {
@@ -35,45 +35,50 @@ class ConfirmationDialog extends Component {
       okText,
       disableOkButton,
       highlightOkButton
-    } = this.props;
+    } = this.props
 
     // Dialog Events
-    const { onClose } = this.props;
+    const { onClose } = this.props
 
     // Custom Events
-    const { onCancelClick, onOkClick } = this.props;
+    const { onCancelClick, onOkClick } = this.props
 
     if (!onClose) {
-      return null;
+      return null
     }
 
     return (
       <Dialog open={open} onClose={onClose} onKeyPress={this.handleKeyPress}>
         {title && <DialogTitle>{title}</DialogTitle>}
 
-        {contentText &&
+        {contentText && (
           <DialogContent>
             <DialogContentText>{contentText}</DialogContentText>
           </DialogContent>
-        }
+        )}
 
-        {(onCancelClick || onOkClick) &&
+        {(onCancelClick || onOkClick) && (
           <DialogActions>
-            {onCancelClick &&
+            {onCancelClick && (
               <Button color="primary" onClick={onCancelClick}>
                 {cancelText || 'Cancel'}
               </Button>
-            }
+            )}
 
-            {onOkClick &&
-              <Button color="primary" disabled={disableOkButton} variant={highlightOkButton && 'contained'} onClick={onOkClick}>
+            {onOkClick && (
+              <Button
+                color="primary"
+                disabled={disableOkButton}
+                variant={highlightOkButton && 'contained'}
+                onClick={onOkClick}
+              >
                 {okText || 'OK'}
               </Button>
-            }
+            )}
           </DialogActions>
-        }
+        )}
       </Dialog>
-    );
+    )
   }
 }
 
@@ -90,6 +95,6 @@ ConfirmationDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onCancelClick: PropTypes.func,
   onOkClick: PropTypes.func
-};
+}
 
-export default ConfirmationDialog;
+export default ConfirmationDialog

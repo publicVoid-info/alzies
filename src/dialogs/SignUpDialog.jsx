@@ -1,27 +1,27 @@
-import React, { Component } from 'react';
-import { getFirebase } from '../helpers/firebase';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { getFirebase } from '../helpers/firebase'
+import { connect } from 'react-redux'
 
 import {
   closeSignUpDialog,
   openSnackbar,
   registerUser,
-  openWelcomeDialog,
-} from '../store/actions';
+  openWelcomeDialog
+} from '../store/actions'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogActions from '@material-ui/core/DialogActions'
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
 
-import validate from 'validate.js';
-import constraints from '../helpers/constraints';
+import validate from 'validate.js'
+import constraints from '../helpers/constraints'
 
-import AuthProviderList from '../layout/AuthProviderList';
+import AuthProviderList from '../layout/AuthProviderList'
 
 const initialState = {
   emailAddress: '',
@@ -29,19 +29,19 @@ const initialState = {
   passwordConfirmation: '',
 
   errors: null
-};
+}
 
 class SignUpDialog extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.firebase = getFirebase();
-    this.registerUser = registerUser;
-    this.state = initialState;
+    this.firebase = getFirebase()
+    this.registerUser = registerUser
+    this.state = initialState
   }
 
   handleSignUp = () => {
-    const { emailAddress, password, passwordConfirmation } = this.state;
+    const { emailAddress, password, passwordConfirmation } = this.state
 
     const errors = validate(
       {
@@ -53,51 +53,53 @@ class SignUpDialog extends Component {
         emailAddress: constraints.emailAddress,
         password: constraints.password,
         passwordConfirmation: constraints.passwordConfirmation
-      });
+      }
+    )
 
     if (errors) {
-      this.setState({ errors });
-      return;
+      this.setState({ errors })
+      return
     }
 
     this.props.closeSignUpDialog(() => {
-      this.firebase.auth().createUserWithEmailAndPassword(emailAddress, password)
-        .then((r) => {
+      this.firebase
+        .auth()
+        .createUserWithEmailAndPassword(emailAddress, password)
+        .then(r => {
           if (r.additionalUserInfo.isNewUser) {
-            this.registerUser(r.user);
+            this.registerUser(r.user)
           }
         })
-        .catch((reason) => {
-          this.props.openSnackbar(reason.message);
+        .catch(reason => {
+          this.props.openSnackbar(reason.message)
         })
-    });
+    })
 
-    this.props.openWelcomeDialog();
-  };
+    this.props.openWelcomeDialog()
+  }
 
   handleExited = () => {
-    this.setState(initialState);
-  };
+    this.setState(initialState)
+  }
 
-  handleKeyPress = (event) => {
-    const key = event.key;
+  handleKeyPress = event => {
+    const key = event.key
 
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
-      return;
+      return
     }
 
     if (key === 'Enter') {
-      this.handleSignUp();
+      this.handleSignUp()
     }
-  };
+  }
 
-  handleChange = (event) => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+  handleChange = event => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
 
   render() {
-
-    const { emailAddress, password, passwordConfirmation, errors } = this.state;
+    const { emailAddress, password, passwordConfirmation, errors } = this.state
 
     return (
       <React.Fragment>
@@ -105,15 +107,15 @@ class SignUpDialog extends Component {
           open={this.props.signUpDialog.open}
           onClose={this.props.closeSignUpDialog}
           onExited={this.handleExited}
-          onKeyPress={this.handleKeyPress}>
-          <DialogTitle>
-            Sign up for an account
-        </DialogTitle>
+          onKeyPress={this.handleKeyPress}
+        >
+          <DialogTitle>Sign up for an account</DialogTitle>
 
           <DialogContent>
             <DialogContentText>
-              Create an account to access features that are unavailable to users who haven't signed up.
-          </DialogContentText>
+              Create an account to access features that are unavailable to users
+              who haven't signed up.
+            </DialogContentText>
 
             <AuthProviderList />
 
@@ -123,7 +125,9 @@ class SignUpDialog extends Component {
                 autoComplete="email"
                 error={!!(errors && errors.emailAddress)}
                 fullWidth
-                helperText={(errors && errors.emailAddress) ? errors.emailAddress[0] : ''}
+                helperText={
+                  errors && errors.emailAddress ? errors.emailAddress[0] : ''
+                }
                 label="E-mail address"
                 margin="normal"
                 onChange={this.handleChange}
@@ -137,7 +141,7 @@ class SignUpDialog extends Component {
                 autoComplete="new-password"
                 error={!!(errors && errors.password)}
                 fullWidth
-                helperText={(errors && errors.password) ? errors.password[0] : ''}
+                helperText={errors && errors.password ? errors.password[0] : ''}
                 label="Password"
                 margin="normal"
                 onChange={this.handleChange}
@@ -151,7 +155,11 @@ class SignUpDialog extends Component {
                 autoComplete="password"
                 error={!!(errors && errors.passwordConfirmation)}
                 fullWidth
-                helperText={(errors && errors.passwordConfirmation) ? errors.passwordConfirmation[0] : ''}
+                helperText={
+                  errors && errors.passwordConfirmation
+                    ? errors.passwordConfirmation[0]
+                    : ''
+                }
                 label="Password confirmation"
                 margin="normal"
                 onChange={this.handleChange}
@@ -163,23 +171,31 @@ class SignUpDialog extends Component {
           </DialogContent>
 
           <DialogActions>
-            <Button color="primary" onClick={this.props.closeSignUpDialog}>Cancel</Button>
-            <Button color="primary" disabled={(!emailAddress || !password || !passwordConfirmation)} variant="contained" onClick={this.handleSignUp}>Sign Up</Button>
+            <Button color="primary" onClick={this.props.closeSignUpDialog}>
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              disabled={!emailAddress || !password || !passwordConfirmation}
+              variant="contained"
+              onClick={this.handleSignUp}
+            >
+              Sign Up
+            </Button>
           </DialogActions>
         </Dialog>
       </React.Fragment>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => {
-  const storeState = state;
-  return storeState;
+const mapStateToProps = state => {
+  const storeState = state
+  return storeState
 }
 
-export default connect(mapStateToProps,
-  {
-    closeSignUpDialog,
-    openSnackbar,
-    openWelcomeDialog,
-  })(SignUpDialog);
+export default connect(mapStateToProps, {
+  closeSignUpDialog,
+  openSnackbar,
+  openWelcomeDialog
+})(SignUpDialog)

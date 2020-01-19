@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
 
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
 const styles = {
   center: {
@@ -14,24 +14,32 @@ const styles = {
     transform: 'translate(-50%, -50%)',
     textAlign: 'center'
   }
-};
+}
 
 class EmptyState extends Component {
   render() {
     // Styling
-    const { classes } = this.props;
+    const { classes } = this.props
 
     // Properties
-    const { icon, title, description, button } = this.props;
+    const { icon, title, description, button } = this.props
 
     return (
       <div className={classes.center}>
         {icon}
-        {title && <Typography color="textSecondary" variant="h4">{title}</Typography>}
-        {description && <Typography color="textSecondary" variant="subtitle1">{description}</Typography>}
+        {title && (
+          <Typography color="textSecondary" variant="h4">
+            {title}
+          </Typography>
+        )}
+        {description && (
+          <Typography color="textSecondary" variant="subtitle1">
+            {description}
+          </Typography>
+        )}
         {button}
       </div>
-    );
+    )
   }
 }
 
@@ -42,6 +50,6 @@ EmptyState.propTypes = {
   title: PropTypes.string,
   description: PropTypes.string,
   button: PropTypes.element
-};
+}
 
-export default withStyles(styles)(EmptyState);
+export default withStyles(styles)(EmptyState)
